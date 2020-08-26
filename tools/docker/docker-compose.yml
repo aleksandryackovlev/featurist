@@ -1,0 +1,84 @@
+version: '3.7'
+
+x-app-defaults: &app_defaults
+  image: node:12
+  volumes:
+    - ./:/usr/src/service/
+  working_dir: /usr/src/service/
+  environment:
+    NODE_ENV: "${NODE_ENV:-production}"
+    DB_HOST: db
+    DB_PORT: 5432
+    DB_DATABASE: features
+    DB_USERNAME: features
+    DB_PASSWORD: features
+    DB_SCHEMA: public
+    ETCD_HOST: etcd
+    ETCD_PORT: 2379
+
+services:
+  app-install:
+    << : *app_defaults
+    command: bash -c "yarn install"
+
+  app-build:
+    << : *app_defaults
+    command:  bash -c "rm -rf dist && yarn build"
+
+  app-start:
+    << : *app_defaults
+    depends_on:
+      - etcd
+      - db
+    command: bash -c "third_party/wait-for-it.sh db:5432 -- yarn start:prod"
+    ports:
+      - "3000:3000"
+
+  app-dev:
+    << : *app_defaults
+    depends_on:
+      - etcd
+      - db
+    command: bash -c "third_party/wait-for-it.sh db:5432 -- yarn start:dev"
+    ports:
+      - "3000:3000"
+
+  etcd:
+    image: quay.io/coreos/etcd:v3.3.23
+    command: "/usr/local/bin/etcd --data-dir=/etcd-data --name node1 --initial-advertise-peer-urls http://0.0.0.0:2380 --listen-peer-urls http://0.0.0.0:2380 --advertise-client-urls http://0.0.0.0:2379 --listen-client-urls http://0.0.0.0:2379 --initial-cluster node1=http://0.0.0.0:2380"
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    volumes:
+      - etcd-data:/etcd-data
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: features
+      POSTGRES_PASSWORD: features
+      POSTGRES_DB: features
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
+    volumes:
+      - strapi-db:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - db
+    ports:
+      - "8001:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@payday.ru
+      PGADMIN_DEFAULT_PASSWORD: test
+    volumes:
+      - ./develop/pgadmin/servers.json:/pgadmin4/servers.json
+      - pgadmin:/var/lib/pgadmin
+
+volumes:
+  etcd-data:
+    name: "${ETCD_VOLUME:-feature_service_etcd_volume}"
+  strapi-db:
+    name: "${DB_VOLUME:-feature_service_db_volume}"
+  pgadmin:
+    name: "${PGADMIN_VOLUME:-feaute_service_pgadmin_volume}"
