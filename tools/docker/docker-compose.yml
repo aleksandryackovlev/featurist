@@ -13,7 +13,7 @@ x-app-defaults: &app_defaults
     DB_USERNAME: features
     DB_PASSWORD: features
     DB_SCHEMA: public
-    ETCD_HOST: etcd
+    ETCD_HOST: etcd0
     ETCD_PORT: 2379
 
 services:
@@ -28,7 +28,7 @@ services:
   app-start:
     << : *app_defaults
     depends_on:
-      - etcd
+      - etcd0
       - db
     command: bash -c "third_party/wait-for-it.sh db:5432 -- yarn start:prod"
     ports:
@@ -37,15 +37,30 @@ services:
   app-dev:
     << : *app_defaults
     depends_on:
-      - etcd
+      - etcd0
       - db
     command: bash -c "third_party/wait-for-it.sh db:5432 -- yarn start:dev"
     ports:
       - "3000:3000"
 
-  etcd:
-    image: quay.io/coreos/etcd:v3.3.23
-    command: "/usr/local/bin/etcd --data-dir=/etcd-data --name node1 --initial-advertise-peer-urls http://0.0.0.0:2380 --listen-peer-urls http://0.0.0.0:2380 --advertise-client-urls http://0.0.0.0:2379 --listen-client-urls http://0.0.0.0:2379 --initial-cluster node1=http://0.0.0.0:2380"
+  etcd0:
+    image: quay.io/coreos/etcd:v3.3.25
+    command:
+      - /usr/local/bin/etcd
+      -  --name
+      - etcd0
+      - --data-dir
+      - /etcd-data
+      - --advertise-client-urls
+      - http://etcd0:2379
+      - --listen-client-urls
+      - http://0.0.0.0:2379
+      -  --initial-advertise-peer-urls
+      - http://etcd0:2380
+      - --listen-peer-urls
+      - http://0.0.0.0:2380
+      - --initial-cluster
+      - node1=http://etcd0:2380"
     ports:
       - "2379:2379"
       - "2380:2380"
