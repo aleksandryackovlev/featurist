@@ -1,0 +1,1 @@
+export const ETCD_CONNECTION = 'ETCD_CONNECTION'
