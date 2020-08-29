@@ -1,10 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+
 import { UsersModule } from './users/users.module';
+import { EtcdModule } from './etcd/etcd.module';
+import { FeaturesModule } from './features/features.module';
 
 import config from './config';
 
+console.log(`${process.env.ETCD_HOST}:${process.env.ETCD_PORT}`);
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,7 +30,9 @@ import config from './config';
       }),
       inject: [ConfigService],
     }),
+    EtcdModule.forRoot({ hosts: `http://${process.env.ETCD_HOST}:${process.env.ETCD_PORT}`}),
     UsersModule,
+    FeaturesModule,
   ],
   providers: [],
 })
