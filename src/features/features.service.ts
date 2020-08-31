@@ -1,9 +1,9 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 
 import { CreateFeatureDto } from './dto/create-feature.dto';
+import { Feature } from './interfaces/feature';
 
 import { Etcd3, EtcdClient } from '../etcd';
-
 
 @Injectable()
 export class FeaturesService {
@@ -12,45 +12,86 @@ export class FeaturesService {
     private readonly etcdClient: Etcd3,
   ) {}
 
-  async create(createFeatureDto: CreateFeatureDto): Promise<void> {
-    const isExist = await this.findOne(createFeatureDto.name);
+  async create(
+    appId: string,
+    createFeatureDto: CreateFeatureDto,
+  ): Promise<Feature> {
+    const isExist = await this.findOne(appId, createFeatureDto.name);
 
     if (isExist) {
       throw new BadRequestException('Feature already exists');
     }
 
-    await this.etcdClient.put(createFeatureDto.name).value('0');
+    await this.etcdClient.put(`${appId}/${createFeatureDto.name}`).value('0');
+
+    return {
+      name: createFeatureDto.name,
+      isEnabled: false,
+    };
   }
 
-  async enable(name: string): Promise<void> {
-    const isExist = await this.findOne(name);
+  async enable(appId: string, name: string): Promise<Feature> {
+    const isExist = await this.findOne(appId, name);
 
     if (!isExist) {
       throw new BadRequestException('Feature does not exist');
     }
 
-    await this.etcdClient.put(name).value('1');
+    await this.etcdClient.put(`${appId}/${name}`).value('1');
+
+    return {
+      name,
+      isEnabled: true,
+    };
   }
 
-  async disable(name: string): Promise<void> {
-    const isExist = await this.findOne(name);
+  async disable(appId: string, name: string): Promise<Feature> {
+    const isExist = await this.findOne(appId, name);
 
     if (!isExist) {
       throw new BadRequestException('Feature does not exist');
     }
 
-    await this.etcdClient.put(name).value('0');
+    await this.etcdClient.put(`${appId}/${name}`).value('0');
+
+    return {
+      name,
+      isEnabled: false,
+    };
   }
 
-  findAll(): Promise<string[]> {
-    return this.etcdClient.getAll().keys();
+  async findAll(appId: string): Promise<Feature[]> {
+    const features = await this.etcdClient
+      .getAll()
+      .prefix(`${appId}/`)
+      .strings();
+
+    return Object.keys(features).map(feature => ({
+      name: feature.split(`${appId}/`)[1],
+      isEnabled: features[feature] === '1',
+    }));
   }
 
-  findOne(name: string): Promise<string | null> {
-    return this.etcdClient.get(name).string();
+  async findOne(appId: string, name: string): Promise<Feature | null> {
+    const value = await this.etcdClient.get(`${appId}/${name}`).string();
+
+    return value
+      ? {
+          name,
+          isEnabled: value === '1',
+        }
+      : null;
   }
 
-  async remove(name: string): Promise<void> {
-    await this.etcdClient.delete().key(name);
+  async remove(appId: string, name: string): Promise<Feature> {
+    const value = await this.findOne(appId, name);
+
+    if (!value) {
+      throw new BadRequestException('Feature does not exist');
+    }
+
+    await this.etcdClient.delete().key(`${appId}/${name}`);
+
+    return value;
   }
 }
