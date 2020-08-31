@@ -1,0 +1,248 @@
+openapi: 3.0.1
+info:
+  title: Feature toggle server API
+  description: Feature toggle service API spec
+  version: v1
+servers:
+- url: http://localhost:8001/api/v1
+tags:
+- name: applications
+  description: Applications methods
+- name: features
+  description: Features methods
+- name: users
+  description: Users methods
+
+paths:
+  /applications/{appId}/features:
+    get:
+      tags:
+        - features
+        - applications
+      summary: Get all features by application id
+      operationId: getAllFeatures
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: appId
+          schema:
+            type: string
+          required: true
+          description: UUID of the application
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Feature'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags:
+        - features
+        - applications
+      summary: Create a feature for the application
+      operationId: createFeature
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: appId
+          schema:
+            type: string
+          required: true
+          description: UUID of the application
+      requestBody:
+        description: Create feature dto
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFeatureDto'
+      responses:
+        201:
+          description: Created feature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feature'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /applications/{appId}/features/{featureId}:
+    get:
+      tags:
+        - features
+        - applications
+      summary: Get a feature by application id and feature id
+      operationId: getFeature
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: appId
+          schema:
+            type: string
+          required: true
+          description: UUID of the application
+        - in: path
+          name: featureId
+          schema:
+            type: string
+          required: true
+          description: ID of the feature
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feature'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+    delete:
+      tags:
+        - features
+        - applications
+      summary: Delete a feature by application id and feature id
+      operationId: deleteFeature
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: appId
+          schema:
+            type: string
+          required: true
+          description: UUID of the application
+        - in: path
+          name: featureId
+          schema:
+            type: string
+          required: true
+          description: ID of the feature
+      responses:
+        200:
+          description: Deleted feature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feature'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /applications/{appId}/features/{featureId}/enable:
+    post:
+      tags:
+        - features
+        - applications
+      summary: Enable feature by application id and feature id
+      operationId: enableFeature
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: appId
+          schema:
+            type: string
+          required: true
+          description: UUID of the application
+        - in: path
+          name: featureId
+          schema:
+            type: string
+          required: true
+          description: ID of the feature
+      responses:
+        200:
+          description: Enabled feature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feature'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /applications/{appId}/features/{featureId}/disable:
+    post:
+      tags:
+        - features
+        - applications
+      summary: Disable feature by application id and feature id
+      operationId: disableFeature
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: appId
+          schema:
+            type: string
+          required: true
+          description: UUID of the application
+        - in: path
+          name: featureId
+          schema:
+            type: string
+          required: true
+          description: ID of the feature
+      responses:
+        200:
+          description: Disabled feature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feature'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+components:
+  schemas:
+    Feature:
+      type: object
+      required:
+        - id
+        - description
+        - isEnabled
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        isEnabled:
+          type: boolean
+
+    CreateFeatureDto:
+      type: object
+      required:
+        - id
+        - description
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+
+    Application:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+
+  responses:
+    UnauthorizedError:
+      description: Unauthorized access
+
+  securitySchemes:
+    bearerAuth: 
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
