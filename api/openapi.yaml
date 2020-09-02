@@ -14,11 +14,169 @@ tags:
   description: Users methods
 
 paths:
+  /applications:
+    get:
+      tags:
+        - applications
+      summary: Get all applications
+      operationId: getAllApplications
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: number
+            format: int
+        - in: query
+          name: offset
+          schema:
+            type: number
+            format: int
+        - in: query
+          name: search
+          schema:
+            type: string
+        - in: query
+          name: createdFrom
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: createdTo
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: updatedFrom
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: updatedTo
+          schema:
+            type: string
+            format: date-time
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Application'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+    post:
+      tags:
+        - applications
+      summary: Create an application
+      operationId: createApplication
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Create application dto
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateApplicationDto'
+      responses:
+        201:
+          description: Created application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /applications/{appId}:
+    get:
+      tags:
+        - applications
+      summary: Get an application
+      operationId: getApplication
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: appId
+          schema:
+            type: string
+          required: true
+          description: UUID of the application
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+    put:
+      tags:
+        - applications
+      summary: Update an application
+      operationId: updateApplication
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: appId
+          schema:
+            type: string
+          required: true
+          description: UUID of the application
+      requestBody:
+        description: Update application dto
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateApplicationDto'
+      responses:
+        201:
+          description: Updated application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+    delete:
+      tags:
+        - applications
+      summary: Delete an application by id
+      operationId: deleteApplication
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: appId
+          schema:
+            type: string
+          required: true
+          description: UUID of the application
+      responses:
+        200:
+          description: Deleted application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
   /applications/{appId}/features:
     get:
       tags:
         - features
-        - applications
       summary: Get all features by application id
       operationId: getAllFeatures
       security:
@@ -79,7 +237,6 @@ paths:
     post:
       tags:
         - features
-        - applications
       summary: Create a feature for the application
       operationId: createFeature
       security:
@@ -112,7 +269,6 @@ paths:
     get:
       tags:
         - features
-        - applications
       summary: Get a feature by application id and feature id
       operationId: getFeature
       security:
@@ -143,7 +299,6 @@ paths:
     put:
       tags:
         - features
-        - applications
       summary: Update a feature for the application
       operationId: updateFeature
       security:
@@ -181,7 +336,6 @@ paths:
     delete:
       tags:
         - features
-        - applications
       summary: Delete a feature by application id and feature id
       operationId: deleteFeature
       security:
@@ -213,7 +367,6 @@ paths:
     post:
       tags:
         - features
-        - applications
       summary: Enable feature by application id and feature id
       operationId: enableFeature
       security:
@@ -245,7 +398,6 @@ paths:
     post:
       tags:
         - features
-        - applications
       summary: Disable feature by application id and feature id
       operationId: disableFeature
       security:
@@ -275,12 +427,55 @@ paths:
 
 components:
   schemas:
+    Application:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateApplicationDto:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    UpdateApplicationDto:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
     Feature:
       type: object
       required:
         - id
         - description
         - isEnabled
+        - createdAt
+        - updatedAt
       properties:
         id:
           type: string
@@ -313,16 +508,6 @@ components:
           type: string
         isEnabled:
           type: boolean
-
-    Application:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
 
   responses:
     UnauthorizedError:
