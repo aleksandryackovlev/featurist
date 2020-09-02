@@ -30,6 +30,40 @@ paths:
             type: string
           required: true
           description: UUID of the application
+        - in: query
+          name: limit
+          schema:
+            type: number
+            format: int
+        - in: query
+          name: offset
+          schema:
+            type: number
+            format: int
+        - in: query
+          name: search
+          schema:
+            type: string
+        - in: query
+          name: createdFrom
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: createdTo
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: updatedFrom
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: updatedTo
+          schema:
+            type: string
+            format: date-time
       responses:
         200:
           description: Successful operation
@@ -41,6 +75,7 @@ paths:
                   $ref: '#/components/schemas/Feature'
         401:
           $ref: '#/components/responses/UnauthorizedError'
+
     post:
       tags:
         - features
@@ -104,7 +139,45 @@ paths:
                 $ref: '#/components/schemas/Feature'
         401:
           $ref: '#/components/responses/UnauthorizedError'
-    
+
+    put:
+      tags:
+        - features
+        - applications
+      summary: Update a feature for the application
+      operationId: updateFeature
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: appId
+          schema:
+            type: string
+          required: true
+          description: UUID of the application
+        - in: path
+          name: featureId
+          schema:
+            type: string
+          required: true
+          description: ID of the feature
+      requestBody:
+        description: Update feature dto
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFeatureDto'
+      responses:
+        201:
+          description: Updated feature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feature'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
     delete:
       tags:
         - features
@@ -135,7 +208,7 @@ paths:
                 $ref: '#/components/schemas/Feature'
         401:
           $ref: '#/components/responses/UnauthorizedError'
-          
+
   /applications/{appId}/features/{featureId}/enable:
     post:
       tags:
@@ -167,7 +240,7 @@ paths:
                 $ref: '#/components/schemas/Feature'
         401:
           $ref: '#/components/responses/UnauthorizedError'
-    
+
   /applications/{appId}/features/{featureId}/disable:
     post:
       tags:
@@ -200,7 +273,6 @@ paths:
         401:
           $ref: '#/components/responses/UnauthorizedError'
 
-
 components:
   schemas:
     Feature:
@@ -216,7 +288,13 @@ components:
           type: string
         isEnabled:
           type: boolean
-    
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
     CreateFeatureDto:
       type: object
       required:
@@ -227,7 +305,15 @@ components:
           type: string
         description:
           type: string
-          
+
+    UpdateFeatureDto:
+      type: object
+      properties:
+        description:
+          type: string
+        isEnabled:
+          type: boolean
+
     Application:
       type: object
       properties:
