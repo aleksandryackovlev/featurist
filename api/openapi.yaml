@@ -425,6 +425,165 @@ paths:
         401:
           $ref: '#/components/responses/UnauthorizedError'
 
+  /users:
+    get:
+      tags:
+        - users
+      summary: Get all users
+      operationId: getAllUsers
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: number
+            format: int
+        - in: query
+          name: offset
+          schema:
+            type: number
+            format: int
+        - in: query
+          name: search
+          schema:
+            type: string
+        - in: query
+          name: createdFrom
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: createdTo
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: updatedFrom
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: updatedTo
+          schema:
+            type: string
+            format: date-time
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+    post:
+      tags:
+        - users
+      summary: Create a user
+      operationId: createUser
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Create user dto
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserDto'
+      responses:
+        201:
+          description: Created user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /users/{userId}:
+    get:
+      tags:
+        - users
+      summary: Get a user
+      operationId: getUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: UUID of the user
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+    put:
+      tags:
+        - users
+      summary: Update a user
+      operationId: updateUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: UUID of the user
+      requestBody:
+        description: Update user dto
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDto'
+      responses:
+        201:
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+    delete:
+      tags:
+        - users
+      summary: Delete a user by id
+      operationId: deleteUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: UUID of the user
+      responses:
+        200:
+          description: Deleted user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
 components:
   schemas:
     Application:
@@ -507,6 +666,52 @@ components:
         description:
           type: string
         isEnabled:
+          type: boolean
+
+    User:
+      type: object
+      required: 
+        - id
+        - username
+        - isActive
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateUserDto:
+      type: object
+      required:
+        - name
+        - password
+        - isActive
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        isActive:
+          type: boolean
+
+    UpdateUserDto:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        isActive:
           type: boolean
 
   responses:
