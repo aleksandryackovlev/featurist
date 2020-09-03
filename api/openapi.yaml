@@ -425,6 +425,24 @@ paths:
         401:
           $ref: '#/components/responses/UnauthorizedError'
 
+  /users/current_user:
+    get:
+      tags:
+        - users
+      summary: Get current user
+      operationId: getCurrentUser
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
   /users:
     get:
       tags:
