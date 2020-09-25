@@ -143,7 +143,7 @@ describe('CrudService Factory', () => {
     });
   });
 
-  describe('deleteOne', () => {
+  describe('remove', () => {
     it('should return a deleted entity', () => {
       expect(service.remove('a uuid')).resolves.toEqual(oneEntity);
     });
