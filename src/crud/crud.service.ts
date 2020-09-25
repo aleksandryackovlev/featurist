@@ -1,4 +1,9 @@
-import { Injectable, BadRequestException, Type } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+  Type,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, EntitySchema, DeepPartial } from 'typeorm';
 
@@ -51,11 +56,17 @@ export const CrudService = <
 
       await this.repository.update(id, updateDto);
 
-      return entity;
+      return { ...entity, ...updateDto };
     }
 
-    findOne(id: string): Promise<T> {
-      return this.repository.findOne(id);
+    async findOne(id: string): Promise<T> {
+      const entity = await this.repository.findOne(id);
+
+      if (!entity) {
+        throw new NotFoundException('Entity does not exist');
+      }
+
+      return entity;
     }
 
     async remove(id: string): Promise<T> {
