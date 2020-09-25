@@ -9,7 +9,6 @@ import { ApplicationsModule } from './applications/applications.module';
 
 import config from './config';
 
-console.log(`${process.env.ETCD_HOST}:${process.env.ETCD_PORT}`);
 @Module({
   imports: [
     ConfigModule.forRoot({
