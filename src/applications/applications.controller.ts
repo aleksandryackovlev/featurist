@@ -22,8 +22,10 @@ export class ApplicationsController {
   constructor(private readonly service: ApplicationsService) {}
 
   @Get()
-  find(): Promise<Application[]> {
-    return this.service.findAll();
+  find(
+    @Query() findApplicationsDto: FindApplicationsDto,
+  ): Promise<Application[]> {
+    return this.service.find(findApplicationsDto);
   }
 
   @Get(':id')
