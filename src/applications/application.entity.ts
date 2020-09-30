@@ -1,19 +1,10 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  OneToMany,
-} from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 
+import { CrudEntity } from '../crud/crud.entity';
 import { Feature } from '../features/feature.entity';
 
 @Entity()
-export class Application {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Application extends CrudEntity {
   @Column({
     type: 'varchar',
     length: 150,
@@ -31,14 +22,4 @@ export class Application {
 
   @Column('text')
   description: string;
-
-  @CreateDateColumn({
-    name: 'created_at',
-  })
-  createdAt: Date;
-
-  @UpdateDateColumn({
-    name: 'updated_at',
-  })
-  updatedAt: Date;
 }

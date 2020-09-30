@@ -9,11 +9,11 @@ import { Repository, EntitySchema, DeepPartial } from 'typeorm';
 
 export interface ICrudService<T> {
   readonly repository: Repository<T>;
-  findAll: () => Promise<T[]>;
-  findOne: (id: string) => Promise<T>;
-  remove: (id: string) => Promise<T>;
-  create: (createDto: DeepPartial<T>) => Promise<T>;
-  update: (id: string, updateDto: DeepPartial<T>) => Promise<T>;
+  find(findDto: any): Promise<T[]>; // any is because of https://github.com/microsoft/TypeScript/issues/30071
+  findOne(id: string): Promise<T>;
+  remove(id: string): Promise<T>;
+  create(createDto: DeepPartial<T>): Promise<T>;
+  update(id: string, updateDto: DeepPartial<T>): Promise<T>;
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -35,7 +35,7 @@ export const CrudService = <
     @InjectRepository(<EntitySchema>(<unknown>Entity))
     readonly repository: Repository<T>;
 
-    findAll(): Promise<T[]> {
+    find(): Promise<T[]> {
       return this.repository.find();
     }
 
