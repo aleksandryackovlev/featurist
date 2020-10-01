@@ -96,9 +96,9 @@ describe('CrudService Factory', () => {
     expect(service).toBeDefined();
   });
 
-  describe('findAll', () => {
+  describe('find', () => {
     it('should return an array of entities', async () => {
-      const entities = await service.findAll();
+      const entities = await service.find({});
       expect(entities).toEqual(entitiesArray);
     });
   });
