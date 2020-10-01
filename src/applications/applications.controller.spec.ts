@@ -4,11 +4,13 @@ import { ApplicationsController } from './applications.controller';
 import { ApplicationsService } from './applications.service';
 
 import { Application } from './application.entity';
+import { FindApplicationsDto } from './dto/find-applications.dto';
 
 const application = {
   id: 'some-id',
   name: 'Test name',
   description: 'Test description',
+  features: [],
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -26,7 +28,7 @@ describe('ApplicationsController', () => {
         {
           provide: ApplicationsService,
           useValue: {
-            findAll: jest.fn().mockResolvedValue(applicationsArray),
+            find: jest.fn().mockResolvedValue(applicationsArray),
             findOne: jest.fn().mockResolvedValue(application),
             create: jest.fn().mockReturnValue(application),
             update: jest.fn().mockResolvedValue(application),
@@ -42,7 +44,9 @@ describe('ApplicationsController', () => {
 
   describe('find', () => {
     it('should return an array of applicatins', async () => {
-      expect(await controller.find()).toBe(applicationsArray);
+      expect(
+        await controller.find(<FindApplicationsDto>{ offset: 10, limit: 10 }),
+      ).toBe(applicationsArray);
     });
   });
 
