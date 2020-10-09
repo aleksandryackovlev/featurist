@@ -28,6 +28,7 @@ import config from './config';
           ssl: configService.get<boolean>('db.ssl'),
           entities: ['dist/**/*.entity{.ts,.js}'],
           synchronize: true,
+          logging: true,
         },
       inject: [ConfigService],
     }),
