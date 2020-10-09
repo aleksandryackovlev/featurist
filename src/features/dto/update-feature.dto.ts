@@ -1,11 +1,7 @@
 import { IsString, IsNotEmpty } from 'class-validator';
 
-export class CreateFeatureDto {
-  @IsNotEmpty()
+export class UpdateFeatureDto {
   @IsString()
-  readonly name: string;
-
   @IsNotEmpty()
-  @IsString()
   readonly description: string;
 }

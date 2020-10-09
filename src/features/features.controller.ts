@@ -6,13 +6,16 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 
 import { CreateFeatureDto } from './dto/create-feature.dto';
+import { UpdateFeatureDto } from './dto/update-feature.dto';
+import { FindFeaturesDto } from './dto/find-features.dto';
 import { Feature } from './interfaces/feature';
 import { FeaturesService } from './features.service';
 
-@Controller('features/:appId')
+@Controller('applications/:appId/features')
 export class FeaturesController {
   constructor(private readonly featuresService: FeaturesService) {}
 
@@ -25,8 +28,11 @@ export class FeaturesController {
   }
 
   @Get()
-  findAll(@Param('appId') appId: string): Promise<Feature[]> {
-    return this.featuresService.findAll(appId);
+  findAll(
+    @Param('appId') appId: string,
+    @Query() findFeaturesDto: FindFeaturesDto,
+  ): Promise<Feature[]> {
+    return this.featuresService.find(appId, findFeaturesDto);
   }
 
   @Get(':id')
@@ -35,6 +41,15 @@ export class FeaturesController {
     @Param('id') id: string,
   ): Promise<Feature | null> {
     return this.featuresService.findOne(appId, id);
+  }
+
+  @Put(':id')
+  update(
+    @Param('appId') appId: string,
+    @Param('id') id: string,
+    @Body() updateFeatureDto: UpdateFeatureDto,
+  ): Promise<Feature> {
+    return this.featuresService.update(appId, id, updateFeatureDto);
   }
 
   @Put(':id/enable')
