@@ -1,4 +1,3 @@
-import { Get } from '@nestjs/common';
 import { CrudService } from '../crud/crud.service';
 
 import { Application } from './application.entity';
@@ -11,7 +10,12 @@ export class ApplicationsService extends CrudService({
   CreateDto: CreateApplicationDto,
   UpdateDto: UpdateApplicationDto,
 }) {
-  @Get()
+  async isApplicationExists(id: string): Promise<boolean> {
+    const entity = await this.repository.findOne(id);
+
+    return !!entity;
+  }
+
   async find(findApplicationsDto: FindApplicationsDto): Promise<Application[]> {
     const {
       createdFrom,
@@ -26,33 +30,44 @@ export class ApplicationsService extends CrudService({
     } = findApplicationsDto;
 
     const query = this.repository.createQueryBuilder('application');
+    let method: 'where' | 'andWhere' = 'where';
 
     if (createdFrom) {
-      query.where('CAST (application.createdAt AS DATE) >= :createdFrom', {
+      query[method]('CAST (application.createdAt AS DATE) >= :createdFrom', {
         createdFrom,
       });
+
+      method = 'andWhere';
     }
 
     if (createdTo) {
-      query.where('CAST (application.createdAt AS DATE) <= :createdTo', {
+      query[method]('CAST (application.createdAt AS DATE) <= :createdTo', {
         createdTo,
       });
+
+      method = 'andWhere';
     }
 
     if (updatedFrom) {
-      query.where('CAST (application.updatedAt AS DATE) >= :updatedFrom', {
+      query[method]('CAST (application.updatedAt AS DATE) >= :updatedFrom', {
         updatedFrom,
       });
+
+      method = 'andWhere';
     }
 
     if (updatedTo) {
-      query.where('CAST (application.updatedAt AS DATE) <= :updatedTo', {
+      query[method]('CAST (application.updatedAt AS DATE) <= :updatedTo', {
         updatedTo,
       });
+
+      method = 'andWhere';
     }
 
     if (search) {
-      query.where('application.name LIKE :search', { search: `%${search}%` });
+      query[method]('application.name LIKE :search', { search: `%${search}%` });
+
+      method = 'andWhere';
     }
 
     if (offset) {
