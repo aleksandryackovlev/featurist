@@ -21,6 +21,7 @@ async function bootstrap() {
     .setTitle('Feature toggle server')
     .setDescription('The api for manging features')
     .setVersion('0.1.0')
+    .addBearerAuth()
     .addTag('applications')
     .addTag('features')
     .addTag('users')
