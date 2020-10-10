@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Query,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 
 import {
   ApiBearerAuth,
@@ -8,6 +17,8 @@ import {
 } from '@nestjs/swagger';
 
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { FindUsersDto } from './dto/find-users.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 
@@ -25,8 +36,8 @@ export class UsersController {
     type: [User],
   })
   @ApiResponse({ status: 400, description: 'Invalid search parameters' })
-  findAll(): Promise<User[]> {
-    return this.usersService.findAll();
+  find(@Query() findUsersDto: FindUsersDto): Promise<User[]> {
+    return this.usersService.find(findUsersDto);
   }
 
   @Post()
@@ -52,6 +63,21 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  @Put(':id')
+  @ApiOperation({ summary: 'Update the user' })
+  @ApiResponse({
+    status: 200,
+    description: 'The updated user',
+    type: User,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    return this.usersService.update(id, updateUserDto);
+  }
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete the user' })
   @ApiResponse({
@@ -60,7 +86,7 @@ export class UsersController {
     type: User,
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
-  remove(@Param('id') id: string): Promise<void> {
+  remove(@Param('id') id: string): Promise<User> {
     return this.usersService.remove(id);
   }
 }
