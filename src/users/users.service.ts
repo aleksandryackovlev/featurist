@@ -1,33 +1,81 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
+import { BadRequestException } from '@nestjs/common';
+
+import { CrudService } from '../crud/crud.service';
+
 import { User } from './user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { FindUsersDto } from './dto/find-users.dto';
 
-@Injectable()
-export class UsersService {
-  constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
-  ) {}
+export class UsersService extends CrudService({
+  Entity: User,
+  CreateDto: CreateUserDto,
+  UpdateDto: UpdateUserDto,
+}) {
+  async find(findUsersDto: FindUsersDto): Promise<User[]> {
+    const {
+      createdFrom,
+      createdTo,
+      updatedFrom,
+      updatedTo,
+      search,
+      sortBy = 'createdAt',
+      sortDirection = 'desc',
+      offset,
+      limit = 10,
+    } = findUsersDto;
 
-  create(createUserDto: CreateUserDto): Promise<User> {
-    const user = new User();
-    user.username = createUserDto.username;
-    user.password = createUserDto.password;
+    const query = this.repository.createQueryBuilder('user');
+    let method: 'where' | 'andWhere' = 'where';
 
-    return this.usersRepository.save(user);
-  }
+    if (createdFrom) {
+      query[method]('CAST (user.createdAt AS DATE) >= :createdFrom', {
+        createdFrom,
+      });
 
-  async findAll(): Promise<User[]> {
-    return this.usersRepository.find();
-  }
+      method = 'andWhere';
+    }
 
-  findOne(id: string): Promise<User> {
-    return this.usersRepository.findOne(id);
-  }
+    if (createdTo) {
+      query[method]('CAST (user.createdAt AS DATE) <= :createdTo', {
+        createdTo,
+      });
 
-  async remove(id: string): Promise<void> {
-    await this.usersRepository.delete(id);
+      method = 'andWhere';
+    }
+
+    if (updatedFrom) {
+      query[method]('CAST (user.updatedAt AS DATE) >= :updatedFrom', {
+        updatedFrom,
+      });
+
+      method = 'andWhere';
+    }
+
+    if (updatedTo) {
+      query[method]('CAST (user.updatedAt AS DATE) <= :updatedTo', {
+        updatedTo,
+      });
+
+      method = 'andWhere';
+    }
+
+    if (search) {
+      query[method]('user.username LIKE :search', { search: `%${search}%` });
+
+      method = 'andWhere';
+    }
+
+    if (offset) {
+      query.offset(offset);
+    }
+
+    return query
+      .orderBy(
+        `application.${sortBy}`,
+        <'ASC' | 'DESC'>sortDirection.toUpperCase(),
+      )
+      .limit(limit)
+      .getMany();
   }
 }
