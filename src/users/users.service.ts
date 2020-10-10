@@ -1,5 +1,3 @@
-import { BadRequestException } from '@nestjs/common';
-
 import { CrudService } from '../crud/crud.service';
 
 import { User } from './user.entity';
