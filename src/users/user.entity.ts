@@ -8,6 +8,7 @@ export class User extends CrudEntity {
   @Column({
     type: 'varchar',
     length: 150,
+    update: false,
     unique: true,
   })
   @ApiProperty({
