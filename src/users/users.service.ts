@@ -10,6 +10,10 @@ export class UsersService extends CrudService({
   CreateDto: CreateUserDto,
   UpdateDto: UpdateUserDto,
 }) {
+  findByUsername(username: string): Promise<User | null> {
+    return this.repository.findOne({ username });
+  }
+
   async find(findUsersDto: FindUsersDto): Promise<User[]> {
     const {
       createdFrom,
@@ -69,10 +73,7 @@ export class UsersService extends CrudService({
     }
 
     return query
-      .orderBy(
-        `application.${sortBy}`,
-        <'ASC' | 'DESC'>sortDirection.toUpperCase(),
-      )
+      .orderBy(`user.${sortBy}`, <'ASC' | 'DESC'>sortDirection.toUpperCase())
       .limit(limit)
       .getMany();
   }
