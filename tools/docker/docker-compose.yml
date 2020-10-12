@@ -16,7 +16,7 @@ x-app-defaults: &app_defaults
     ETCD_HOST: etcd0
     ETCD_PORT: 2379
     JWT_SECRET: secretKey
-    JWT_EXPIRES_IN: 60s
+    JWT_EXPIRES_IN: 12h
 
 services:
   app-install:
