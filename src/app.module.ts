@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { EtcdModule } from './etcd/etcd.module';
 import { FeaturesModule } from './features/features.module';
 import { ApplicationsModule } from './applications/applications.module';
+import { AuthModule } from './auth/auth.module';
 
 import config from './config';
 
@@ -38,6 +39,7 @@ import config from './config';
     UsersModule,
     FeaturesModule,
     ApplicationsModule,
+    AuthModule,
   ],
   providers: [],
 })
