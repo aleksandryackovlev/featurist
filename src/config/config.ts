@@ -13,4 +13,8 @@ export default () => ({
     host: process.env.ETCD_HOST,
     port: parseInt(process.env.ETCD_PORT, 10),
   },
+  jwt: {
+    secret: process.env.JWT_SECRET,
+    expiresIn: process.env.JWT_EXPIRES_IN || '12h',
+  },
 });
