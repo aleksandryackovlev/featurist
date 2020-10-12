@@ -72,9 +72,12 @@ export class UsersService extends CrudService({
       query.offset(offset);
     }
 
-    return query
-      .orderBy(`user.${sortBy}`, <'ASC' | 'DESC'>sortDirection.toUpperCase())
-      .limit(limit)
-      .getMany();
+    query.orderBy(
+      `user.${sortBy}`,
+      <'ASC' | 'DESC'>sortDirection.toUpperCase(),
+    );
+    query.limit(limit);
+
+    return query.getMany();
   }
 }
