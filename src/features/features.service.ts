@@ -125,10 +125,13 @@ export class FeaturesService {
       query.offset(offset);
     }
 
-    const features = await query
-      .orderBy(`feature.${sortBy}`, <'ASC' | 'DESC'>sortDirection.toUpperCase())
-      .limit(limit)
-      .getMany();
+    query.orderBy(
+      `feature.${sortBy}`,
+      <'ASC' | 'DESC'>sortDirection.toUpperCase(),
+    );
+    query.limit(limit);
+
+    const features = await query.getMany();
 
     const featuresValues = await this.etcdClient
       .getAll()

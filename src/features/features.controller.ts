@@ -40,7 +40,7 @@ export class FeaturesController {
     type: [Feature],
   })
   @ApiResponse({ status: 400, description: 'Invalid search parameters' })
-  findAll(
+  find(
     @Param('appId') appId: string,
     @Query() findFeaturesDto: FindFeaturesDto,
   ): Promise<Feature[]> {
