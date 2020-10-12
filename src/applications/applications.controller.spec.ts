@@ -43,7 +43,7 @@ describe('ApplicationsController', () => {
   });
 
   describe('find', () => {
-    it('should return an array of applicatins', async () => {
+    it('should return an array of applications', async () => {
       expect(
         await controller.find(<FindApplicationsDto>{ offset: 10, limit: 10 }),
       ).toBe(applicationsArray);
@@ -51,7 +51,7 @@ describe('ApplicationsController', () => {
   });
 
   describe('findOne', () => {
-    it('should return an array of applications', async () => {
+    it('should return the application by id', async () => {
       const serviceSpy = jest.spyOn(service, 'findOne');
       expect(await controller.findOne('some-id')).toBe(application);
       expect(serviceSpy).toBeCalledWith('some-id');
@@ -75,7 +75,7 @@ describe('ApplicationsController', () => {
   });
 
   describe('update', () => {
-    it('should create an application', async () => {
+    it('should update an application', async () => {
       const serviceSpy = jest.spyOn(service, 'update');
       expect(
         await controller.update('some-id-to-update', {
@@ -91,7 +91,7 @@ describe('ApplicationsController', () => {
   });
 
   describe('remove', () => {
-    it('should return an array of applications', async () => {
+    it('should an application by id', async () => {
       const serviceSpy = jest.spyOn(service, 'remove');
       expect(await controller.remove('some-id-to-remove')).toBe(application);
       expect(serviceSpy).toBeCalledWith('some-id-to-remove');

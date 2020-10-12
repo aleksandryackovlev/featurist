@@ -1,18 +1,29 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
+import { FindApplicationsDto } from './dto/find-applications.dto';
+
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
 
+const app = new Application();
+app.id = '935a38e8-ec14-41b8-8066-2bc5c818577a';
+app.name = 'John Doe';
+app.features = [];
+app.description = 'Description';
+
+const resultArr = [app];
+
 const query = {
-  where: jest.fn().mockReturnValue(this),
-  offset: jest.fn().mockReturnValue(this),
-  limit: jest.fn().mockReturnValue(this),
-  orderBy: jest.fn().mockReturnValue(this),
-  getMany: jest.fn().mockReturnValue([]),
+  where: jest.fn(),
+  andWhere: jest.fn(),
+  offset: jest.fn(),
+  limit: jest.fn(),
+  orderBy: jest.fn(),
+  getMany: jest.fn().mockReturnValue(resultArr),
 };
 
-describe('FeaturesService', () => {
+describe('ApplicationsService', () => {
   let service: ApplicationsService;
 
   beforeEach(async () => {
@@ -30,10 +41,26 @@ describe('FeaturesService', () => {
       ],
     }).compile();
 
+    jest.clearAllMocks();
+
     service = module.get<ApplicationsService>(ApplicationsService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('find', () => {
+    it('should query the repository with the default params if no args are given', () => {
+      expect(service.find(<FindApplicationsDto>{})).resolves.toEqual(resultArr);
+
+      expect(query.where).toBeCalledTimes(0);
+      expect(query.andWhere).toBeCalledTimes(0);
+      expect(query.offset).toBeCalledTimes(0);
+
+      expect(query.orderBy).toBeCalledTimes(1);
+      expect(query.orderBy).toBeCalledWith('application.createdAt', 'DESC');
+
+      expect(query.limit).toBeCalledTimes(1);
+      expect(query.limit).toBeCalledWith(10);
+
+      expect(query.getMany).toBeCalledTimes(1);
+    });
   });
 });

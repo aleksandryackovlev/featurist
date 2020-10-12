@@ -74,12 +74,13 @@ export class ApplicationsService extends CrudService({
       query.offset(offset);
     }
 
-    return query
-      .orderBy(
-        `application.${sortBy}`,
-        <'ASC' | 'DESC'>sortDirection.toUpperCase(),
-      )
-      .limit(limit)
-      .getMany();
+    query.orderBy(
+      `application.${sortBy}`,
+      <'ASC' | 'DESC'>sortDirection.toUpperCase(),
+    );
+
+    query.limit(limit);
+
+    return query.getMany();
   }
 }
