@@ -1,7 +1,9 @@
+import { Request } from 'express';
 import {
   Body,
   Query,
   Controller,
+  Req,
   Delete,
   Get,
   Param,
@@ -31,6 +33,17 @@ import { UsersService } from './users.service';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get('me')
+  @ApiOperation({ summary: 'Get current user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Current user',
+    type: [User],
+  })
+  getCurrentUser(@Req() req: Request): User {
+    return <User>req.user;
+  }
 
   @Get()
   @ApiOperation({ summary: 'Find users by params' })
