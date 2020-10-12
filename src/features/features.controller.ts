@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 
 import {
@@ -16,6 +17,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
+
 import { CreateFeatureDto } from './dto/create-feature.dto';
 import { UpdateFeatureDto } from './dto/update-feature.dto';
 import { FindFeaturesDto } from './dto/find-features.dto';
@@ -24,6 +27,7 @@ import { FeaturesService } from './features.service';
 
 @ApiTags('features')
 @ApiBearerAuth()
+@UseGuards(AuthJwtGuard)
 @Controller('applications/:appId/features')
 export class FeaturesController {
   constructor(private readonly featuresService: FeaturesService) {}

@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 
 import {
@@ -16,6 +17,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FindUsersDto } from './dto/find-users.dto';
@@ -24,6 +27,7 @@ import { UsersService } from './users.service';
 
 @ApiTags('users')
 @ApiBearerAuth()
+@UseGuards(AuthJwtGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

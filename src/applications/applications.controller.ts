@@ -7,6 +7,7 @@ import {
   Body,
   Query,
   Param,
+  UseGuards,
 } from '@nestjs/common';
 
 import {
@@ -15,6 +16,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+
+import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
 
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
@@ -26,6 +29,7 @@ import { Application } from './application.entity';
 
 @ApiTags('applications')
 @ApiBearerAuth()
+@UseGuards(AuthJwtGuard)
 @Controller('applications')
 export class ApplicationsController {
   constructor(private readonly service: ApplicationsService) {}
