@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+
 import * as bcrypt from 'bcrypt';
 
 import { UsersService } from '../users/users.service';
@@ -6,7 +8,10 @@ import { UsersService } from '../users/users.service';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
   async validateUser(username: string, pwd: string): Promise<any> {
     const user = await this.usersService.findByUsername(username);
@@ -18,5 +23,12 @@ export class AuthService {
     const { password, ...result } = user;
 
     return result;
+  }
+
+  async login(user: any) {
+    const payload = { username: user.username, sub: user.id };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }
