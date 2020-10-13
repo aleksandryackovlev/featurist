@@ -34,8 +34,6 @@ describe('ApplicationsService', () => {
         ApplicationsService,
         {
           provide: getRepositoryToken(Application),
-          // define all the methods that you use from the catRepo
-          // give proper return values as expected or mock implementations, your choice
           useValue: {
             createQueryBuilder: jest.fn().mockReturnValue(query),
             findOne: jest.fn().mockResolvedValue(null),
