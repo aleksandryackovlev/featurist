@@ -57,20 +57,22 @@ describe('ApplicationsService', () => {
       expect(repoSpy).toBeCalledWith('uid');
     });
 
-    it('should return true if an application with the given id does not exist', () => {
+    it('should return true if an application with the given id does not exist', async () => {
       const repoSpy = jest
         .spyOn(repo, 'findOne')
         .mockResolvedValueOnce(<Application>{ name: 'name' });
 
-      expect(service.isApplicationExists('uid')).resolves.toEqual(true);
+      await expect(service.isApplicationExists('uid')).resolves.toEqual(true);
       expect(repoSpy).toBeCalledTimes(1);
       expect(repoSpy).toBeCalledWith('uid');
     });
   });
 
   describe('find', () => {
-    it('should query the repository with the default params if no args are given', () => {
-      expect(service.find(<FindApplicationsDto>{})).resolves.toEqual(resultArr);
+    it('should query the repository with the default params if no args are given', async () => {
+      await expect(service.find(<FindApplicationsDto>{})).resolves.toEqual(
+        resultArr,
+      );
 
       expect(query.where).toBeCalledTimes(0);
       expect(query.andWhere).toBeCalledTimes(0);
@@ -85,8 +87,8 @@ describe('ApplicationsService', () => {
       expect(query.getMany).toBeCalledTimes(1);
     });
 
-    it('should be able to filter applications by the creation date range', () => {
-      expect(
+    it('should be able to filter applications by the creation date range', async () => {
+      await expect(
         service.find(<FindApplicationsDto>{
           createdFrom: new Date('2020-09-09'),
           createdTo: new Date('2020-09-14'),
@@ -110,8 +112,8 @@ describe('ApplicationsService', () => {
       );
     });
 
-    it('should be able to filter applications by the update date range', () => {
-      expect(
+    it('should be able to filter applications by the update date range', async () => {
+      await expect(
         service.find(<FindApplicationsDto>{
           updatedFrom: new Date('2020-09-09'),
           updatedTo: new Date('2020-09-14'),
@@ -135,8 +137,8 @@ describe('ApplicationsService', () => {
       );
     });
 
-    it('should be able to filter applications by substring of the name', () => {
-      expect(
+    it('should be able to filter applications by substring of the name', async () => {
+      await expect(
         service.find(<FindApplicationsDto>{ search: 'some name' }),
       ).resolves.toEqual(resultArr);
 
@@ -146,8 +148,8 @@ describe('ApplicationsService', () => {
       });
     });
 
-    it('should skip the given amount on entities if offset is set', () => {
-      expect(
+    it('should skip the given amount on entities if offset is set', async () => {
+      await expect(
         service.find(<FindApplicationsDto>{ search: 'some name', offset: 300 }),
       ).resolves.toEqual(resultArr);
 
@@ -155,8 +157,8 @@ describe('ApplicationsService', () => {
       expect(query.offset).toBeCalledWith(300);
     });
 
-    it('should sort entities by given params', () => {
-      expect(
+    it('should sort entities by given params', async () => {
+      await expect(
         service.find(<FindApplicationsDto>{
           sortBy: 'name',
           sortDirection: 'asc',
@@ -167,8 +169,8 @@ describe('ApplicationsService', () => {
       expect(query.orderBy).toBeCalledWith('application.name', 'ASC');
     });
 
-    it('should return the given amount of entities if limit is set', () => {
-      expect(
+    it('should return the given amount of entities if limit is set', async () => {
+      await expect(
         service.find(<FindApplicationsDto>{
           limit: 200,
           sortBy: 'name',
