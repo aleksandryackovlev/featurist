@@ -48,7 +48,7 @@ export const CrudService = <
     }
 
     async update(id: string, updateDto: UpdateDtoType): Promise<T> {
-      const entity = await this.findOne(id);
+      const entity = await this.repository.findOne(id);
 
       if (!entity) {
         throw new BadRequestException('Entity does not exist');
@@ -70,7 +70,7 @@ export const CrudService = <
     }
 
     async remove(id: string): Promise<T> {
-      const entity = await this.findOne(id);
+      const entity = await this.repository.findOne(id);
 
       if (!entity) {
         throw new BadRequestException('Entity does not exist');

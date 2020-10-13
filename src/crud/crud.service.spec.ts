@@ -1,4 +1,3 @@
-import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import {
@@ -109,6 +108,14 @@ describe('CrudService Factory', () => {
       expect(service.findOne('a uuid')).resolves.toEqual(oneEntity);
       expect(repoSpy).toBeCalledWith('a uuid');
     });
+
+    it('should throw an error if a entity does not exist', async () => {
+      jest.spyOn(repo, 'findOne').mockResolvedValueOnce(null);
+
+      await expect(service.findOne('a uuid')).rejects.toThrow(
+        'Entity does not exist',
+      );
+    });
   });
 
   describe('create', () => {
@@ -141,6 +148,17 @@ describe('CrudService Factory', () => {
         description: 'Test Desc 1',
       });
     });
+
+    it('should throw an error if a entity does not exist', async () => {
+      jest.spyOn(repo, 'findOne').mockResolvedValueOnce(null);
+
+      await expect(
+        service.update('a uuid', {
+          name: 'Test Entity 1',
+          description: 'Test Desc 1',
+        }),
+      ).rejects.toThrow('Entity does not exist');
+    });
   });
 
   describe('remove', () => {
@@ -153,8 +171,8 @@ describe('CrudService Factory', () => {
 
       const repoDelSpy = jest.spyOn(repo, 'delete').mockResolvedValueOnce(null);
 
-      expect(service.remove('a bad uuid')).rejects.toEqual(
-        new BadRequestException('Entity does not exist'),
+      expect(service.remove('a bad uuid')).rejects.toThrow(
+        'Entity does not exist',
       );
       expect(repoSpy).toBeCalledTimes(1);
       expect(repoDelSpy).toBeCalledTimes(0);
