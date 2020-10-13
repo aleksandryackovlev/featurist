@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { FindUsersDto } from './dto/find-users.dto';
 
@@ -24,6 +25,7 @@ const query = {
 
 describe('UsersService', () => {
   let service: UsersService;
+  let repo: Repository<User>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -31,10 +33,9 @@ describe('UsersService', () => {
         UsersService,
         {
           provide: getRepositoryToken(User),
-          // define all the methods that you use from the catRepo
-          // give proper return values as expected or mock implementations, your choice
           useValue: {
             createQueryBuilder: jest.fn().mockReturnValue(query),
+            findOne: jest.fn().mockResolvedValue(null),
           },
         },
       ],
@@ -43,6 +44,17 @@ describe('UsersService', () => {
     jest.clearAllMocks();
 
     service = module.get<UsersService>(UsersService);
+    repo = module.get<Repository<User>>(getRepositoryToken(User));
+  });
+
+  describe('findByUsername', () => {
+    it('should return a user by its username', () => {
+      const repoSpy = jest.spyOn(repo, 'findOne').mockResolvedValueOnce(null);
+
+      expect(service.findByUsername('uid')).resolves.toEqual(false);
+      expect(repoSpy).toBeCalledTimes(1);
+      expect(repoSpy).toBeCalledWith({ username: 'uid' });
+    });
   });
 
   describe('find', () => {
@@ -60,6 +72,101 @@ describe('UsersService', () => {
       expect(query.limit).toBeCalledWith(10);
 
       expect(query.getMany).toBeCalledTimes(1);
+    });
+
+    it('should be able to filter users by the creation date range', () => {
+      expect(
+        service.find(<FindUsersDto>{
+          createdFrom: new Date('2020-09-09'),
+          createdTo: new Date('2020-09-14'),
+        }),
+      ).resolves.toEqual(resultArr);
+
+      expect(query.where).toBeCalledTimes(1);
+      expect(query.where).toBeCalledWith(
+        'CAST (user.createdAt AS DATE) >= :createdFrom',
+        {
+          createdFrom: new Date('2020-09-09'),
+        },
+      );
+
+      expect(query.andWhere).toBeCalledTimes(1);
+      expect(query.andWhere).toBeCalledWith(
+        'CAST (user.createdAt AS DATE) <= :createdTo',
+        {
+          createdTo: new Date('2020-09-14'),
+        },
+      );
+    });
+
+    it('should be able to filter users by the update date range', () => {
+      expect(
+        service.find(<FindUsersDto>{
+          updatedFrom: new Date('2020-09-09'),
+          updatedTo: new Date('2020-09-14'),
+        }),
+      ).resolves.toEqual(resultArr);
+
+      expect(query.where).toBeCalledTimes(1);
+      expect(query.where).toBeCalledWith(
+        'CAST (user.updatedAt AS DATE) >= :updatedFrom',
+        {
+          updatedFrom: new Date('2020-09-09'),
+        },
+      );
+
+      expect(query.andWhere).toBeCalledTimes(1);
+      expect(query.andWhere).toBeCalledWith(
+        'CAST (user.updatedAt AS DATE) <= :updatedTo',
+        {
+          updatedTo: new Date('2020-09-14'),
+        },
+      );
+    });
+
+    it('should be able to filter users by substring of the name', () => {
+      expect(
+        service.find(<FindUsersDto>{ search: 'some name' }),
+      ).resolves.toEqual(resultArr);
+
+      expect(query.where).toBeCalledTimes(1);
+      expect(query.where).toBeCalledWith('user.username LIKE :search', {
+        search: '%some name%',
+      });
+    });
+
+    it('should skip the given amount on entities if offset is set', () => {
+      expect(
+        service.find(<FindUsersDto>{ search: 'some name', offset: 300 }),
+      ).resolves.toEqual(resultArr);
+
+      expect(query.offset).toBeCalledTimes(1);
+      expect(query.offset).toBeCalledWith(300);
+    });
+
+    it('should sort entities by given params', () => {
+      expect(
+        service.find(<FindUsersDto>{
+          sortBy: 'name',
+          sortDirection: 'asc',
+        }),
+      ).resolves.toEqual(resultArr);
+
+      expect(query.orderBy).toBeCalledTimes(1);
+      expect(query.orderBy).toBeCalledWith('user.name', 'ASC');
+    });
+
+    it('should return the given amount of entities if limit is set', () => {
+      expect(
+        service.find(<FindUsersDto>{
+          limit: 200,
+          sortBy: 'name',
+          sortDirection: 'asc',
+        }),
+      ).resolves.toEqual(resultArr);
+
+      expect(query.limit).toBeCalledTimes(1);
+      expect(query.limit).toBeCalledWith(200);
     });
   });
 });
