@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Request } from 'express';
 
 import { FindUsersDto } from './dto/find-users.dto';
 
@@ -38,6 +39,16 @@ describe('UsersController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('getCurrentUser', () => {
+    it('should return a current logged in user', async () => {
+      expect(
+        await controller.getCurrentUser(<Request>(
+          (<unknown>{ user: { username: 'John Doe' } })
+        )),
+      ).toEqual({ username: 'John Doe' });
+    });
   });
 
   describe('find', () => {

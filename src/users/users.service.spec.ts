@@ -51,7 +51,7 @@ describe('UsersService', () => {
     it('should return a user by its username', () => {
       const repoSpy = jest.spyOn(repo, 'findOne').mockResolvedValueOnce(null);
 
-      expect(service.findByUsername('uid')).resolves.toEqual(false);
+      expect(service.findByUsername('uid')).resolves.toEqual(null);
       expect(repoSpy).toBeCalledTimes(1);
       expect(repoSpy).toBeCalledWith({ username: 'uid' });
     });
