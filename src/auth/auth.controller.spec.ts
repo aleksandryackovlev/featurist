@@ -43,7 +43,9 @@ describe('UsersController', () => {
         },
       };
 
-      expect(controller.login(<Request>request)).resolves.toEqual(response);
+      await expect(controller.login(<Request>request)).resolves.toEqual(
+        response,
+      );
       expect(service.login).toBeCalledWith({
         username: 'username',
       });

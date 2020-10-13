@@ -166,12 +166,12 @@ describe('CrudService Factory', () => {
       expect(service.remove('a uuid')).resolves.toEqual(oneEntity);
     });
 
-    it('should throw an error if an entity with a given id does not exit', () => {
+    it('should throw an error if an entity with a given id does not exit', async () => {
       const repoSpy = jest.spyOn(repo, 'findOne').mockResolvedValueOnce(null);
 
       const repoDelSpy = jest.spyOn(repo, 'delete').mockResolvedValueOnce(null);
 
-      expect(service.remove('a bad uuid')).rejects.toThrow(
+      await expect(service.remove('a bad uuid')).rejects.toThrow(
         'Entity does not exist',
       );
       expect(repoSpy).toBeCalledTimes(1);

@@ -48,18 +48,18 @@ describe('UsersService', () => {
   });
 
   describe('findByUsername', () => {
-    it('should return a user by its username', () => {
+    it('should return a user by its username', async () => {
       const repoSpy = jest.spyOn(repo, 'findOne').mockResolvedValueOnce(null);
 
-      expect(service.findByUsername('uid')).resolves.toEqual(null);
+      await expect(service.findByUsername('uid')).resolves.toEqual(null);
       expect(repoSpy).toBeCalledTimes(1);
       expect(repoSpy).toBeCalledWith({ username: 'uid' });
     });
   });
 
   describe('find', () => {
-    it('should query the repository with the default params if no args are given', () => {
-      expect(service.find(<FindUsersDto>{})).resolves.toEqual(resultArr);
+    it('should query the repository with the default params if no args are given', async () => {
+      await expect(service.find(<FindUsersDto>{})).resolves.toEqual(resultArr);
 
       expect(query.where).toBeCalledTimes(0);
       expect(query.andWhere).toBeCalledTimes(0);
@@ -74,8 +74,8 @@ describe('UsersService', () => {
       expect(query.getMany).toBeCalledTimes(1);
     });
 
-    it('should be able to filter users by the creation date range', () => {
-      expect(
+    it('should be able to filter users by the creation date range', async () => {
+      await expect(
         service.find(<FindUsersDto>{
           createdFrom: new Date('2020-09-09'),
           createdTo: new Date('2020-09-14'),
@@ -99,8 +99,8 @@ describe('UsersService', () => {
       );
     });
 
-    it('should be able to filter users by the update date range', () => {
-      expect(
+    it('should be able to filter users by the update date range', async () => {
+      await expect(
         service.find(<FindUsersDto>{
           updatedFrom: new Date('2020-09-09'),
           updatedTo: new Date('2020-09-14'),
@@ -124,8 +124,8 @@ describe('UsersService', () => {
       );
     });
 
-    it('should be able to filter users by substring of the name', () => {
-      expect(
+    it('should be able to filter users by substring of the name', async () => {
+      await expect(
         service.find(<FindUsersDto>{ search: 'some name' }),
       ).resolves.toEqual(resultArr);
 
@@ -135,8 +135,8 @@ describe('UsersService', () => {
       });
     });
 
-    it('should skip the given amount on entities if offset is set', () => {
-      expect(
+    it('should skip the given amount on entities if offset is set', async () => {
+      await expect(
         service.find(<FindUsersDto>{ search: 'some name', offset: 300 }),
       ).resolves.toEqual(resultArr);
 
@@ -144,8 +144,8 @@ describe('UsersService', () => {
       expect(query.offset).toBeCalledWith(300);
     });
 
-    it('should sort entities by given params', () => {
-      expect(
+    it('should sort entities by given params', async () => {
+      await expect(
         service.find(<FindUsersDto>{
           sortBy: 'name',
           sortDirection: 'asc',
@@ -156,8 +156,8 @@ describe('UsersService', () => {
       expect(query.orderBy).toBeCalledWith('user.name', 'ASC');
     });
 
-    it('should return the given amount of entities if limit is set', () => {
-      expect(
+    it('should return the given amount of entities if limit is set', async () => {
+      await expect(
         service.find(<FindUsersDto>{
           limit: 200,
           sortBy: 'name',
