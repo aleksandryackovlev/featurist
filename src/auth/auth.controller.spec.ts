@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Request } from 'express';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -34,9 +35,18 @@ describe('UsersController', () => {
     expect(controller).toBeDefined();
   });
 
-  // describe('login', () => {
-  //   it('should login users', async () => {
+  describe('login', () => {
+    it('should login users', async () => {
+      const request: unknown = {
+        user: {
+          username: 'username',
+        },
+      };
 
-  //   });
-  // });
+      expect(controller.login(<Request>request)).resolves.toEqual(response);
+      expect(service.login).toBeCalledWith({
+        username: 'username',
+      });
+    });
+  });
 });
