@@ -35,6 +35,8 @@ describe('FeaturesController', () => {
             create: jest.fn().mockReturnValue(feature),
             update: jest.fn().mockResolvedValue(feature),
             remove: jest.fn().mockResolvedValue(feature),
+            enable: jest.fn().mockResolvedValue(feature),
+            disable: jest.fn().mockResolvedValue(feature),
           },
         },
       ],
@@ -81,7 +83,7 @@ describe('FeaturesController', () => {
   });
 
   describe('update', () => {
-    it('should update an feature', async () => {
+    it('should update a feature', async () => {
       const serviceSpy = jest.spyOn(service, 'update');
       expect(
         await controller.update(appId, 'some-id-to-update', {
@@ -91,6 +93,24 @@ describe('FeaturesController', () => {
       expect(serviceSpy).toBeCalledWith(appId, 'some-id-to-update', {
         description: 'Some desc',
       });
+    });
+  });
+
+  describe('enable', () => {
+    it('should enable a feature', async () => {
+      const serviceSpy = jest.spyOn(service, 'enable');
+      expect(await controller.enable(appId, 'some-id-to-update')).toBe(feature);
+      expect(serviceSpy).toBeCalledWith(appId, 'some-id-to-update');
+    });
+  });
+
+  describe('disable', () => {
+    it('should disable a feature', async () => {
+      const serviceSpy = jest.spyOn(service, 'disable');
+      expect(await controller.disable(appId, 'some-id-to-update')).toBe(
+        feature,
+      );
+      expect(serviceSpy).toBeCalledWith(appId, 'some-id-to-update');
     });
   });
 
