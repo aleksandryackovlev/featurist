@@ -90,7 +90,10 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "^.+\\.(dto|entity)\\.ts$"
+    ]
   },
   "husky": {
     "hooks": {
