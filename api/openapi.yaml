@@ -1,743 +1,940 @@
-openapi: 3.0.1
+openapi: 3.0.0
 info:
-  title: Feature toggle server API
-  description: Feature toggle service API spec
-  version: v1
-servers:
-- url: http://localhost:8001/api/v1
+  title: Feature toggle server
+  description: API for manging feature toggles
+  version: 0.1.0
+  contact: {}
 tags:
-- name: applications
-  description: Applications methods
-- name: features
-  description: Features methods
-- name: users
-  description: Users methods
-
+  - name: Applications
+    description: Methods for managing applications
+  - name: Features
+    description: Methods for managing features
+  - name: Users
+    description: Methods for managing users
+servers:
+  - url: 'http://localhost:3000'
+    description: development server
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier
+          x-faker: random.uuid
+        createdAt:
+          format: date-time
+          type: string
+          description: The date of the creation
+          x-faker: date.past
+        updatedAt:
+          format: date-time
+          type: string
+          description: The date of the last update
+          x-faker: date.recent
+        username:
+          type: string
+          description: The username of the user
+          x-faker: internet.username
+        isActive:
+          type: boolean
+          description: Is user active
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - username
+        - isActive
+    UserSingleResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/User'
+      required:
+        - data
+    UsersListResponse:
+      type: object
+      properties:
+        total:
+          type: number
+          example: 10
+          description: The total amount of entities
+        data:
+          description: The list of users
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+      required:
+        - total
+        - data
+    CreateUserDto:
+      type: object
+      properties:
+        username:
+          type: string
+          example: username
+          description: The username of a new user
+        password:
+          type: string
+          example: somePassword
+          description: The password of a new user
+      required:
+        - username
+        - password
+    UpdateUserDto:
+      type: object
+      properties:
+        password:
+          type: string
+          example: somePassword
+          description: User password
+      required:
+        - password
+    Feature:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier
+          x-faker: random.uuid
+        createdAt:
+          format: date-time
+          type: string
+          description: The date of the creation
+          x-faker: date.past
+        updatedAt:
+          format: date-time
+          type: string
+          description: The date of the last update
+          x-faker: date.recent
+        name:
+          type: string
+          description: The name of the feature
+          x-faker: git.branch
+        description:
+          type: string
+          description: The description of the feature
+          x-faker: hacker.phrase
+        applicationId:
+          type: string
+          description: The id of the application the feature belongs to
+          x-faker: random.uuid
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - name
+        - description
+        - applicationId
+    FeaturesListResponse:
+      type: object
+      properties:
+        total:
+          type: number
+          example: 10
+          description: The total amount of entities
+        data:
+          description: The list of features
+          type: array
+          items:
+            $ref: '#/components/schemas/Feature'
+      required:
+        - total
+        - data
+    CreateFeatureDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Feature name
+          description: The name of a new feature
+        description:
+          type: string
+          example: Feature description
+          description: The description of a new feature
+      required:
+        - name
+        - description
+    FeatureSingleResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Feature'
+      required:
+        - data
+    UpdateFeatureDto:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Feature description
+          description: The description of the feature
+      required:
+        - description
+    Application:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier
+          x-faker: random.uuid
+        createdAt:
+          format: date-time
+          type: string
+          description: The date of the creation
+          x-faker: date.past
+        updatedAt:
+          format: date-time
+          type: string
+          description: The date of the last update
+          x-faker: date.recent
+        name:
+          type: string
+          description: The name of the application
+          x-faker: git.branch
+        description:
+          type: string
+          description: The description of the application
+          x-faker: hacker.phrase
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - name
+        - description
+    ApplicationsListResponse:
+      type: object
+      properties:
+        total:
+          type: number
+          example: 10
+          description: The total amount of entities
+        data:
+          description: The list of applications
+          type: array
+          items:
+            $ref: '#/components/schemas/Application'
+      required:
+        - total
+        - data
+    ApplicationSingleResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Application'
+      required:
+        - data
+    CreateApplicationDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Application name
+          description: The name of a new application
+        description:
+          type: string
+          example: Application description
+          description: The description of a new application
+      required:
+        - name
+        - description
+    UpdateApplicationDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Application name
+          description: The name of the application
+        description:
+          type: string
+          example: Application description
+          description: The description of the application
 paths:
-  /applications:
+  /users/me:
     get:
-      tags:
-        - applications
-      summary: Get all applications
-      operationId: getAllApplications
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: query
-          name: limit
-          schema:
-            type: number
-            format: int
-        - in: query
-          name: offset
-          schema:
-            type: number
-            format: int
-        - in: query
-          name: search
-          schema:
-            type: string
-        - in: query
-          name: createdFrom
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: createdTo
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: updatedFrom
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: updatedTo
-          schema:
-            type: string
-            format: date-time
-      responses:
-        200:
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Application'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-    post:
-      tags:
-        - applications
-      summary: Create an application
-      operationId: createApplication
-      security:
-        - bearerAuth: []
-      requestBody:
-        description: Create application dto
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateApplicationDto'
-      responses:
-        201:
-          description: Created application
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Application'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-  /applications/{appId}:
-    get:
-      tags:
-        - applications
-      summary: Get an application
-      operationId: getApplication
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: appId
-          schema:
-            type: string
-          required: true
-          description: UUID of the application
-      responses:
-        200:
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Application'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-    put:
-      tags:
-        - applications
-      summary: Update an application
-      operationId: updateApplication
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: appId
-          schema:
-            type: string
-          required: true
-          description: UUID of the application
-      requestBody:
-        description: Update application dto
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateApplicationDto'
-      responses:
-        201:
-          description: Updated application
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Application'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-    delete:
-      tags:
-        - applications
-      summary: Delete an application by id
-      operationId: deleteApplication
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: appId
-          schema:
-            type: string
-          required: true
-          description: UUID of the application
-      responses:
-        200:
-          description: Deleted application
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Application'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-  /applications/{appId}/features:
-    get:
-      tags:
-        - features
-      summary: Get all features by application id
-      operationId: getAllFeatures
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: appId
-          schema:
-            type: string
-          required: true
-          description: UUID of the application
-        - in: query
-          name: limit
-          schema:
-            type: number
-            format: int
-        - in: query
-          name: offset
-          schema:
-            type: number
-            format: int
-        - in: query
-          name: search
-          schema:
-            type: string
-        - in: query
-          name: createdFrom
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: createdTo
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: updatedFrom
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: updatedTo
-          schema:
-            type: string
-            format: date-time
-      responses:
-        200:
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Feature'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-    post:
-      tags:
-        - features
-      summary: Create a feature for the application
-      operationId: createFeature
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: appId
-          schema:
-            type: string
-          required: true
-          description: UUID of the application
-      requestBody:
-        description: Create feature dto
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateFeatureDto'
-      responses:
-        201:
-          description: Created feature
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Feature'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-  /applications/{appId}/features/{featureId}:
-    get:
-      tags:
-        - features
-      summary: Get a feature by application id and feature id
-      operationId: getFeature
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: appId
-          schema:
-            type: string
-          required: true
-          description: UUID of the application
-        - in: path
-          name: featureId
-          schema:
-            type: string
-          required: true
-          description: ID of the feature
-      responses:
-        200:
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Feature'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-    put:
-      tags:
-        - features
-      summary: Update a feature for the application
-      operationId: updateFeature
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: appId
-          schema:
-            type: string
-          required: true
-          description: UUID of the application
-        - in: path
-          name: featureId
-          schema:
-            type: string
-          required: true
-          description: ID of the feature
-      requestBody:
-        description: Update feature dto
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateFeatureDto'
-      responses:
-        201:
-          description: Updated feature
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Feature'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-    delete:
-      tags:
-        - features
-      summary: Delete a feature by application id and feature id
-      operationId: deleteFeature
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: appId
-          schema:
-            type: string
-          required: true
-          description: UUID of the application
-        - in: path
-          name: featureId
-          schema:
-            type: string
-          required: true
-          description: ID of the feature
-      responses:
-        200:
-          description: Deleted feature
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Feature'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-  /applications/{appId}/features/{featureId}/enable:
-    post:
-      tags:
-        - features
-      summary: Enable feature by application id and feature id
-      operationId: enableFeature
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: appId
-          schema:
-            type: string
-          required: true
-          description: UUID of the application
-        - in: path
-          name: featureId
-          schema:
-            type: string
-          required: true
-          description: ID of the feature
-      responses:
-        200:
-          description: Enabled feature
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Feature'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-  /applications/{appId}/features/{featureId}/disable:
-    post:
-      tags:
-        - features
-      summary: Disable feature by application id and feature id
-      operationId: disableFeature
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: appId
-          schema:
-            type: string
-          required: true
-          description: UUID of the application
-        - in: path
-          name: featureId
-          schema:
-            type: string
-          required: true
-          description: ID of the feature
-      responses:
-        200:
-          description: Disabled feature
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Feature'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-  /users/current_user:
-    get:
-      tags:
-        - users
-      summary: Get current user
       operationId: getCurrentUser
-      security:
-        - bearerAuth: []
+      summary: Get current user
+      parameters: []
       responses:
-        200:
-          description: Successful operation
+        '200':
+          description: Current user
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
+                $ref: '#/components/schemas/UserSingleResponse'
+      tags:
+        - Users
+      security:
+        - bearer: []
   /users:
     get:
-      tags:
-        - users
-      summary: Get all users
-      operationId: getAllUsers
-      security:
-        - bearerAuth: []
+      operationId: getUsers
+      summary: Find users by params
       parameters:
-        - in: query
-          name: limit
+        - name: offset
+          required: false
+          in: query
+          example: 10
+          description: The number of items to skip
           schema:
+            minimum: 1
+            format: int32
+            default: 10
             type: number
-            format: int
-        - in: query
-          name: offset
+        - name: limit
+          required: false
+          in: query
+          example: 10
+          description: The number of items to return
           schema:
+            minimum: 1
+            format: int32
+            default: 10
             type: number
-            format: int
-        - in: query
-          name: search
+        - name: search
+          required: false
+          in: query
+          example: Search string
+          description: The search string by which items should be searched
           schema:
             type: string
-        - in: query
-          name: createdFrom
+        - name: createdFrom
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The start of the creation date range
           schema:
+            format: date
             type: string
-            format: date-time
-        - in: query
-          name: createdTo
+        - name: createdTo
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The end of the creation date range
           schema:
+            format: date
             type: string
-            format: date-time
-        - in: query
-          name: updatedFrom
+        - name: updatedFrom
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The start of the updating date range
           schema:
+            format: date
             type: string
-            format: date-time
-        - in: query
-          name: updatedTo
+        - name: updatedTo
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The end of the updating date range
           schema:
+            format: date
             type: string
-            format: date-time
+        - name: sortBy
+          required: false
+          in: query
+          example: createdAt
+          description: The field by which the result should be ordered
+          schema:
+            default: createdAt
+            enum:
+              - id
+              - username
+              - createdAt
+              - updatedAt
+            type: string
+        - name: sortDirection
+          required: false
+          in: query
+          example: desc
+          description: The sort derection
+          schema:
+            default: desc
+            enum:
+              - asc
+              - desc
+            type: string
       responses:
-        200:
-          description: Successful operation
+        '200':
+          description: The list of found users
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-    post:
+                $ref: '#/components/schemas/UsersListResponse'
+        '400':
+          description: Invalid search parameters
       tags:
-        - users
-      summary: Create a user
-      operationId: createUser
+        - Users
       security:
-        - bearerAuth: []
+        - bearer: []
+    post:
+      operationId: createUser
+      summary: Create a new user
+      parameters: []
       requestBody:
-        description: Create user dto
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateUserDto'
       responses:
-        201:
-          description: Created user
+        '201':
+          description: The created user
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-  /users/{userId}:
+                $ref: '#/components/schemas/UserSingleResponse'
+        '400':
+          description: Invalid request
+      tags:
+        - Users
+      security:
+        - bearer: []
+  '/users/{id}':
     get:
-      tags:
-        - users
-      summary: Get a user
       operationId: getUser
-      security:
-        - bearerAuth: []
+      summary: Get user by id
       parameters:
-        - in: path
-          name: userId
+        - name: id
+          required: true
+          in: path
           schema:
             type: string
-          required: true
-          description: UUID of the user
       responses:
-        200:
-          description: Successful operation
+        '200':
+          description: The user
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-    put:
+                $ref: '#/components/schemas/UserSingleResponse'
       tags:
-        - users
-      summary: Update a user
-      operationId: updateUser
+        - Users
       security:
-        - bearerAuth: []
+        - bearer: []
+    put:
+      operationId: updateUser
+      summary: Update the user
       parameters:
-        - in: path
-          name: userId
+        - name: id
+          required: true
+          in: path
           schema:
             type: string
-          required: true
-          description: UUID of the user
       requestBody:
-        description: Update user dto
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/UpdateUserDto'
       responses:
-        201:
-          description: Updated user
+        '200':
+          description: The updated user
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-    delete:
+                $ref: '#/components/schemas/UserSingleResponse'
+        '400':
+          description: Invalid request
       tags:
-        - users
-      summary: Delete a user by id
-      operationId: deleteUser
+        - Users
       security:
-        - bearerAuth: []
+        - bearer: []
+    delete:
+      operationId: deleteUser
+      summary: Delete the user
       parameters:
-        - in: path
-          name: userId
+        - name: id
+          required: true
+          in: path
           schema:
             type: string
-          required: true
-          description: UUID of the user
       responses:
-        200:
-          description: Deleted user
+        '200':
+          description: The deleted user
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-
-components:
-  schemas:
-    Application:
-      type: object
-      required:
-        - id
-        - name
-        - description
-        - createdAt
-        - updatedAt
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-
-    CreateApplicationDto:
-      type: object
-      required:
-        - name
-        - description
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-
-    UpdateApplicationDto:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-
-    Feature:
-      type: object
-      required:
-        - id
-        - description
-        - isEnabled
-        - createdAt
-        - updatedAt
-      properties:
-        id:
-          type: string
-        description:
-          type: string
-        isEnabled:
-          type: boolean
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-
-    CreateFeatureDto:
-      type: object
-      required:
-        - id
-        - description
-      properties:
-        id:
-          type: string
-        description:
-          type: string
-
-    UpdateFeatureDto:
-      type: object
-      properties:
-        description:
-          type: string
-        isEnabled:
-          type: boolean
-
-    User:
-      type: object
-      required: 
-        - id
-        - username
-        - isActive
-        - createdAt
-        - updatedAt
-      properties:
-        id:
-          type: string
-        username:
-          type: string
-        isActive:
-          type: boolean
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-
-    CreateUserDto:
-      type: object
-      required:
-        - name
-        - password
-        - isActive
-      properties:
-        username:
-          type: string
-        password:
-          type: string
-        isActive:
-          type: boolean
-
-    UpdateUserDto:
-      type: object
-      properties:
-        username:
-          type: string
-        password:
-          type: string
-        isActive:
-          type: boolean
-
-  responses:
-    UnauthorizedError:
-      description: Unauthorized access
-
-  securitySchemes:
-    bearerAuth: 
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+                $ref: '#/components/schemas/UserSingleResponse'
+        '400':
+          description: Invalid id
+      tags:
+        - Users
+      security:
+        - bearer: []
+  '/applications/{appId}/features':
+    get:
+      operationId: getFeatures
+      summary: Find features by params
+      parameters:
+        - name: appId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: offset
+          required: false
+          in: query
+          example: 10
+          description: The number of items to skip
+          schema:
+            minimum: 1
+            format: int32
+            default: 10
+            type: number
+        - name: limit
+          required: false
+          in: query
+          example: 10
+          description: The number of items to return
+          schema:
+            minimum: 1
+            format: int32
+            default: 10
+            type: number
+        - name: search
+          required: false
+          in: query
+          example: Search string
+          description: The search string by which items should be searched
+          schema:
+            type: string
+        - name: createdFrom
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The start of the creation date range
+          schema:
+            format: date
+            type: string
+        - name: createdTo
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The end of the creation date range
+          schema:
+            format: date
+            type: string
+        - name: updatedFrom
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The start of the updating date range
+          schema:
+            format: date
+            type: string
+        - name: updatedTo
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The end of the updating date range
+          schema:
+            format: date
+            type: string
+        - name: sortBy
+          required: false
+          in: query
+          example: createdAt
+          description: The field by which the result should be ordered
+          schema:
+            default: createdAt
+            enum:
+              - id
+              - name
+              - createdAt
+              - updatedAt
+            type: string
+        - name: sortDirection
+          required: false
+          in: query
+          example: desc
+          description: The sort derection
+          schema:
+            default: desc
+            enum:
+              - asc
+              - desc
+            type: string
+      responses:
+        '200':
+          description: The list of found features
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeaturesListResponse'
+        '400':
+          description: Invalid search parameters
+      tags:
+        - Features
+      security:
+        - bearer: []
+    post:
+      operationId: createFeature
+      summary: Create a new feature
+      parameters:
+        - name: appId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFeatureDto'
+      responses:
+        '201':
+          description: The created feature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureSingleResponse'
+        '400':
+          description: Invalid request
+      tags:
+        - Features
+      security:
+        - bearer: []
+  '/applications/{appId}/features/{id}':
+    get:
+      operationId: getFeature
+      summary: Get feature by id
+      parameters:
+        - name: appId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The feature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureSingleResponse'
+      tags:
+        - Features
+      security:
+        - bearer: []
+    put:
+      operationId: updateFeature
+      summary: Update the feature
+      parameters:
+        - name: appId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFeatureDto'
+      responses:
+        '200':
+          description: The updated feature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureSingleResponse'
+        '400':
+          description: Invalid request
+      tags:
+        - Features
+      security:
+        - bearer: []
+    delete:
+      operationId: deleteFeature
+      summary: Delete the feature
+      parameters:
+        - name: appId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The deleted feature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureSingleResponse'
+        '400':
+          description: Invalid id
+      tags:
+        - Features
+      security:
+        - bearer: []
+  '/applications/{appId}/features/{id}/enable':
+    post:
+      operationId: enableFeature
+      summary: Enable the feature
+      parameters:
+        - name: appId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The enabled feature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureSingleResponse'
+        '400':
+          description: Invalid id
+      tags:
+        - Features
+      security:
+        - bearer: []
+  '/applications/{appId}/features/{id}/disable':
+    post:
+      operationId: disableFeature
+      summary: Disable the feature
+      parameters:
+        - name: appId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The disabled feature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureSingleResponse'
+        '400':
+          description: Invalid id
+      tags:
+        - Features
+      security:
+        - bearer: []
+  /applications:
+    get:
+      operationId: getApplications
+      summary: Find applications by params
+      parameters:
+        - name: offset
+          required: false
+          in: query
+          example: 10
+          description: The number of items to skip
+          schema:
+            minimum: 1
+            format: int32
+            default: 10
+            type: number
+        - name: limit
+          required: false
+          in: query
+          example: 10
+          description: The number of items to return
+          schema:
+            minimum: 1
+            format: int32
+            default: 10
+            type: number
+        - name: search
+          required: false
+          in: query
+          example: Search string
+          description: The search string by which items should be searched
+          schema:
+            type: string
+        - name: createdFrom
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The start of the creation date range
+          schema:
+            format: date
+            type: string
+        - name: createdTo
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The end of the creation date range
+          schema:
+            format: date
+            type: string
+        - name: updatedFrom
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The start of the updating date range
+          schema:
+            format: date
+            type: string
+        - name: updatedTo
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The end of the updating date range
+          schema:
+            format: date
+            type: string
+        - name: sortBy
+          required: false
+          in: query
+          example: createdAt
+          description: The field by which the result should be ordered
+          schema:
+            default: createdAt
+            enum:
+              - id
+              - name
+              - createdAt
+              - updatedAt
+            type: string
+        - name: sortDirection
+          required: false
+          in: query
+          example: desc
+          description: The sort derection
+          schema:
+            default: desc
+            enum:
+              - asc
+              - desc
+            type: string
+      responses:
+        '200':
+          description: The list of found applications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationsListResponse'
+        '400':
+          description: Invalid search parameters
+      tags:
+        - Applications
+      security:
+        - bearer: []
+    post:
+      operationId: createApplication
+      summary: Create a new application
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateApplicationDto'
+      responses:
+        '201':
+          description: The created application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationSingleResponse'
+        '400':
+          description: Invalid request
+      tags:
+        - Applications
+      security:
+        - bearer: []
+  '/applications/{id}':
+    get:
+      operationId: getApplication
+      summary: Get application by id
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationSingleResponse'
+      tags:
+        - Applications
+      security:
+        - bearer: []
+    put:
+      operationId: updateApplication
+      summary: Update the application
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateApplicationDto'
+      responses:
+        '200':
+          description: The updated application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationSingleResponse'
+        '400':
+          description: Invalid request
+      tags:
+        - Applications
+      security:
+        - bearer: []
+    delete:
+      operationId: removeApplication
+      summary: Delete the application
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The deleted application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationSingleResponse'
+        '400':
+          description: Invalid id
+      tags:
+        - Applications
+      security:
+        - bearer: []
