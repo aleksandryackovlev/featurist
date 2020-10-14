@@ -92,7 +92,7 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
-      "^.+\\.(dto|entity)\\.ts$"
+      "^.+\\.(dto|entity|response)\\.ts$"
     ]
   },
   "husky": {
