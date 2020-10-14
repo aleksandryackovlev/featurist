@@ -30,7 +30,10 @@ describe('FeaturesController', () => {
         {
           provide: FeaturesService,
           useValue: {
-            find: jest.fn().mockResolvedValue(featuresArray),
+            find: jest.fn().mockResolvedValue({
+              data: featuresArray,
+              total: 10,
+            }),
             findOne: jest.fn().mockResolvedValue(feature),
             create: jest.fn().mockReturnValue(feature),
             update: jest.fn().mockResolvedValue(feature),
@@ -49,9 +52,10 @@ describe('FeaturesController', () => {
   describe('find', () => {
     it('should return an array of features', async () => {
       const findDto = { offset: 10, limit: 10 };
-      expect(await controller.find(appId, <FindFeaturesDto>findDto)).toBe(
-        featuresArray,
-      );
+      expect(await controller.find(appId, <FindFeaturesDto>findDto)).toEqual({
+        data: featuresArray,
+        total: 10,
+      });
 
       expect(service.find).toBeCalledTimes(1);
       expect(service.find).toBeCalledWith(appId, findDto);
@@ -61,7 +65,9 @@ describe('FeaturesController', () => {
   describe('findOne', () => {
     it('should return the feature by id', async () => {
       const serviceSpy = jest.spyOn(service, 'findOne');
-      expect(await controller.findOne(appId, 'some-id')).toBe(feature);
+      expect(await controller.findOne(appId, 'some-id')).toEqual({
+        data: feature,
+      });
       expect(serviceSpy).toBeCalledWith(appId, 'some-id');
     });
   });
@@ -74,7 +80,9 @@ describe('FeaturesController', () => {
           name: 'Some name',
           description: 'Some desc',
         }),
-      ).toBe(feature);
+      ).toEqual({
+        data: feature,
+      });
       expect(serviceSpy).toBeCalledWith(appId, {
         name: 'Some name',
         description: 'Some desc',
@@ -89,7 +97,9 @@ describe('FeaturesController', () => {
         await controller.update(appId, 'some-id-to-update', {
           description: 'Some desc',
         }),
-      ).toBe(feature);
+      ).toEqual({
+        data: feature,
+      });
       expect(serviceSpy).toBeCalledWith(appId, 'some-id-to-update', {
         description: 'Some desc',
       });
@@ -99,7 +109,9 @@ describe('FeaturesController', () => {
   describe('enable', () => {
     it('should enable a feature', async () => {
       const serviceSpy = jest.spyOn(service, 'enable');
-      expect(await controller.enable(appId, 'some-id-to-update')).toBe(feature);
+      expect(await controller.enable(appId, 'some-id-to-update')).toEqual({
+        data: feature,
+      });
       expect(serviceSpy).toBeCalledWith(appId, 'some-id-to-update');
     });
   });
@@ -107,9 +119,9 @@ describe('FeaturesController', () => {
   describe('disable', () => {
     it('should disable a feature', async () => {
       const serviceSpy = jest.spyOn(service, 'disable');
-      expect(await controller.disable(appId, 'some-id-to-update')).toBe(
-        feature,
-      );
+      expect(await controller.disable(appId, 'some-id-to-update')).toEqual({
+        data: feature,
+      });
       expect(serviceSpy).toBeCalledWith(appId, 'some-id-to-update');
     });
   });
@@ -117,7 +129,9 @@ describe('FeaturesController', () => {
   describe('remove', () => {
     it('should an feature by id', async () => {
       const serviceSpy = jest.spyOn(service, 'remove');
-      expect(await controller.remove(appId, 'some-id-to-remove')).toBe(feature);
+      expect(await controller.remove(appId, 'some-id-to-remove')).toEqual({
+        data: feature,
+      });
       expect(serviceSpy).toBeCalledWith(appId, 'some-id-to-remove');
     });
   });

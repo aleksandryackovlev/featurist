@@ -23,7 +23,7 @@ const query = {
   offset: jest.fn(),
   limit: jest.fn(),
   orderBy: jest.fn(),
-  getMany: jest.fn().mockReturnValue(resultArr),
+  getManyAndCount: jest.fn().mockReturnValue([resultArr, 10]),
 };
 
 const etcd = {
@@ -79,14 +79,17 @@ describe('FeaturesService', () => {
   describe('find', () => {
     it('should query the repository with the default params if no args are given', async () => {
       await expect(service.find('appId', <FindFeaturesDto>{})).resolves.toEqual(
-        [
-          {
-            id: '935a38e8-ec14-41b8-8066-2bc5c818577a',
-            description: 'John Doe',
-            name: 'feature_name',
-            isEnabled: true,
-          },
-        ],
+        {
+          data: [
+            {
+              id: '935a38e8-ec14-41b8-8066-2bc5c818577a',
+              description: 'John Doe',
+              name: 'feature_name',
+              isEnabled: true,
+            },
+          ],
+          total: 10,
+        },
       );
 
       expect(query.where).toBeCalledTimes(1);
@@ -102,10 +105,7 @@ describe('FeaturesService', () => {
       expect(query.limit).toBeCalledTimes(1);
       expect(query.limit).toBeCalledWith(10);
 
-      expect(query.getMany).toBeCalledTimes(1);
+      expect(query.getManyAndCount).toBeCalledTimes(1);
     });
-  });
-  it('dummy test', () => {
-    expect(true).toEqual(true);
   });
 });

@@ -22,6 +22,10 @@ import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
 import { CreateFeatureDto } from './dto/create-feature.dto';
 import { UpdateFeatureDto } from './dto/update-feature.dto';
 import { FindFeaturesDto } from './dto/find-features.dto';
+
+import { FeaturesListResponse } from './responses/features.list.response';
+import { FeatureSingleResponse } from './responses/feature.single.response';
+
 import { Feature } from './interfaces/feature';
 import { FeaturesService } from './features.service';
 
@@ -37,13 +41,13 @@ export class FeaturesController {
   @ApiResponse({
     status: 200,
     description: 'The list of found features',
-    type: [Feature],
+    type: FeaturesListResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid search parameters' })
   find(
     @Param('appId') appId: string,
     @Query() findFeaturesDto: FindFeaturesDto,
-  ): Promise<Feature[]> {
+  ): Promise<{ data: Feature[]; total: number }> {
     return this.featuresService.find(appId, findFeaturesDto);
   }
 
@@ -52,14 +56,16 @@ export class FeaturesController {
   @ApiResponse({
     status: 201,
     description: 'The created feature',
-    type: Feature,
+    type: FeatureSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
-  create(
+  async create(
     @Param('appId') appId: string,
     @Body() createFeatureDto: CreateFeatureDto,
-  ): Promise<Feature> {
-    return this.featuresService.create(appId, createFeatureDto);
+  ): Promise<{ data: Feature }> {
+    return {
+      data: await this.featuresService.create(appId, createFeatureDto),
+    };
   }
 
   @Get(':id')
@@ -67,13 +73,15 @@ export class FeaturesController {
   @ApiResponse({
     status: 200,
     description: 'The feature',
-    type: Feature,
+    type: FeatureSingleResponse,
   })
-  findOne(
+  async findOne(
     @Param('appId') appId: string,
     @Param('id') id: string,
-  ): Promise<Feature> {
-    return this.featuresService.findOne(appId, id);
+  ): Promise<{ data: Feature }> {
+    return {
+      data: await this.featuresService.findOne(appId, id),
+    };
   }
 
   @Put(':id')
@@ -81,15 +89,17 @@ export class FeaturesController {
   @ApiResponse({
     status: 200,
     description: 'The updated feature',
-    type: Feature,
+    type: FeatureSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
-  update(
+  async update(
     @Param('appId') appId: string,
     @Param('id') id: string,
     @Body() updateFeatureDto: UpdateFeatureDto,
-  ): Promise<Feature> {
-    return this.featuresService.update(appId, id, updateFeatureDto);
+  ): Promise<{ data: Feature }> {
+    return {
+      data: await this.featuresService.update(appId, id, updateFeatureDto),
+    };
   }
 
   @Post(':id/enable')
@@ -97,14 +107,16 @@ export class FeaturesController {
   @ApiResponse({
     status: 200,
     description: 'The enabled feature',
-    type: Feature,
+    type: FeatureSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
-  enable(
+  async enable(
     @Param('appId') appId: string,
     @Param('id') id: string,
-  ): Promise<Feature> {
-    return this.featuresService.enable(appId, id);
+  ): Promise<{ data: Feature }> {
+    return {
+      data: await this.featuresService.enable(appId, id),
+    };
   }
 
   @Post(':id/disable')
@@ -112,14 +124,16 @@ export class FeaturesController {
   @ApiResponse({
     status: 200,
     description: 'The disabled feature',
-    type: Feature,
+    type: FeatureSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
-  disable(
+  async disable(
     @Param('appId') appId: string,
     @Param('id') id: string,
-  ): Promise<Feature> {
-    return this.featuresService.disable(appId, id);
+  ): Promise<{ data: Feature }> {
+    return {
+      data: await this.featuresService.disable(appId, id),
+    };
   }
 
   @Delete(':id')
@@ -127,13 +141,15 @@ export class FeaturesController {
   @ApiResponse({
     status: 200,
     description: 'The deleted feature',
-    type: Feature,
+    type: FeatureSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
-  remove(
+  async remove(
     @Param('appId') appId: string,
     @Param('id') id: string,
-  ): Promise<Feature> {
-    return this.featuresService.remove(appId, id);
+  ): Promise<{ data: Feature }> {
+    return {
+      data: await this.featuresService.remove(appId, id),
+    };
   }
 }

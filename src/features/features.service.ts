@@ -72,7 +72,7 @@ export class FeaturesService {
   async find(
     appId: string,
     findFeaturesDto: FindFeaturesDto,
-  ): Promise<IFeature[]> {
+  ): Promise<{ data: IFeature[]; total: number }> {
     const {
       createdFrom,
       createdTo,
@@ -131,17 +131,20 @@ export class FeaturesService {
     );
     query.limit(limit);
 
-    const features = await query.getMany();
+    const [features, total] = await query.getManyAndCount();
 
     const featuresValues = await this.etcdClient
       .getAll()
       .prefix(`${appId}/`)
       .strings();
 
-    return features.map(feature => ({
-      ...feature,
-      isEnabled: featuresValues[`${appId}/${feature.name}`] === '1',
-    }));
+    return {
+      data: features.map(feature => ({
+        ...feature,
+        isEnabled: featuresValues[`${appId}/${feature.name}`] === '1',
+      })),
+      total,
+    };
   }
 
   async findOne(appId: string, featureId: string): Promise<IFeature> {
