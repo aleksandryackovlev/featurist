@@ -29,7 +29,7 @@ import { FeatureSingleResponse } from './responses/feature.single.response';
 import { Feature } from './interfaces/feature';
 import { FeaturesService } from './features.service';
 
-@ApiTags('features')
+@ApiTags('Features')
 @ApiBearerAuth()
 @UseGuards(AuthJwtGuard)
 @Controller('applications/:appId/features')
@@ -37,7 +37,10 @@ export class FeaturesController {
   constructor(private readonly featuresService: FeaturesService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Find features by params' })
+  @ApiOperation({
+    summary: 'Find features by params',
+    operationId: 'getFeatures',
+  })
   @ApiResponse({
     status: 200,
     description: 'The list of found features',
@@ -52,7 +55,10 @@ export class FeaturesController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Create a new feature' })
+  @ApiOperation({
+    summary: 'Create a new feature',
+    operationId: 'createFeature',
+  })
   @ApiResponse({
     status: 201,
     description: 'The created feature',
@@ -69,7 +75,10 @@ export class FeaturesController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get feature by id' })
+  @ApiOperation({
+    summary: 'Get feature by id',
+    operationId: 'getFeature',
+  })
   @ApiResponse({
     status: 200,
     description: 'The feature',
@@ -85,7 +94,10 @@ export class FeaturesController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Update the feature' })
+  @ApiOperation({
+    summary: 'Update the feature',
+    operationId: 'updateFeature',
+  })
   @ApiResponse({
     status: 200,
     description: 'The updated feature',
@@ -103,7 +115,10 @@ export class FeaturesController {
   }
 
   @Post(':id/enable')
-  @ApiOperation({ summary: 'Enable the feature' })
+  @ApiOperation({
+    summary: 'Enable the feature',
+    operationId: 'enableFeature',
+  })
   @ApiResponse({
     status: 200,
     description: 'The enabled feature',
@@ -120,7 +135,10 @@ export class FeaturesController {
   }
 
   @Post(':id/disable')
-  @ApiOperation({ summary: 'Disable the feature' })
+  @ApiOperation({
+    summary: 'Disable the feature',
+    operationId: 'disableFeature',
+  })
   @ApiResponse({
     status: 200,
     description: 'The disabled feature',
@@ -137,7 +155,10 @@ export class FeaturesController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete the feature' })
+  @ApiOperation({
+    summary: 'Delete the feature',
+    operationId: 'deleteFeature',
+  })
   @ApiResponse({
     status: 200,
     description: 'The deleted feature',

@@ -1,5 +1,5 @@
 import { Entity, Index, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 
 import { Application } from '../applications/application.entity';
 import { CrudEntity } from '../crud/crud.entity';
@@ -13,16 +13,16 @@ export class Feature extends CrudEntity {
     update: false,
     unique: true,
   })
-  @ApiProperty({
-    example: 'Feature name',
+  @ApiProperty(<ApiPropertyOptions>{
     description: 'The name of the feature',
+    'x-faker': 'git.branch',
   })
   name: string;
 
   @Column('text')
-  @ApiProperty({
-    example: 'Feature description',
+  @ApiProperty(<ApiPropertyOptions>{
     description: 'The description of the feature',
+    'x-faker': 'hacker.phrase',
   })
   description: string;
 
@@ -30,9 +30,9 @@ export class Feature extends CrudEntity {
     type: 'uuid',
     name: 'application_id',
   })
-  @ApiProperty({
-    example: '29d1c242-a6ec-4de6-bc2a-ff4654c91262',
+  @ApiProperty(<ApiPropertyOptions>{
     description: 'The id of the application the feature belongs to',
+    'x-faker': 'random.uuid',
   })
   applicationId: string;
 

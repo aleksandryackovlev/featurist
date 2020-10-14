@@ -7,7 +7,6 @@ export class UpdateFeatureDto {
   @ApiProperty({
     example: 'Feature description',
     description: 'The description of the feature',
-    required: false,
   })
   readonly description: string;
 }
