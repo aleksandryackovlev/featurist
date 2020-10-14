@@ -1,4 +1,5 @@
 import { Entity, Column, BeforeInsert } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import * as bcrypt from 'bcrypt';
 
@@ -18,6 +19,7 @@ export class User extends CrudEntity {
   })
   username: string;
 
+  @Exclude()
   @Column()
   password: string;
 

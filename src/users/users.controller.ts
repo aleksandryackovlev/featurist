@@ -46,9 +46,7 @@ export class UsersController {
     type: UserSingleResponse,
   })
   getCurrentUser(@Req() req: Request): { data: User } {
-    return {
-      data: <User>req.user,
-    };
+    return new UserSingleResponse(<User>req.user);
   }
 
   @Get()
@@ -59,10 +57,10 @@ export class UsersController {
     type: UsersListResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid search parameters' })
-  find(
-    @Query() findUsersDto: FindUsersDto,
-  ): Promise<{ data: User[]; total: number }> {
-    return this.usersService.find(findUsersDto);
+  async find(@Query() findUsersDto: FindUsersDto): Promise<UsersListResponse> {
+    const { data, total } = await this.usersService.find(findUsersDto);
+
+    return new UsersListResponse(data, total);
   }
 
   @Post()
@@ -73,10 +71,12 @@ export class UsersController {
     type: UserSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
-  async create(@Body() createUserDto: CreateUserDto): Promise<{ data: User }> {
-    return {
-      data: await this.usersService.create(createUserDto),
-    };
+  async create(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserSingleResponse> {
+    return new UserSingleResponse(
+      await this.usersService.create(createUserDto),
+    );
   }
 
   @Get(':id')
@@ -86,10 +86,8 @@ export class UsersController {
     description: 'The user',
     type: UserSingleResponse,
   })
-  async findOne(@Param('id') id: string): Promise<{ data: User }> {
-    return {
-      data: await this.usersService.findOne(id),
-    };
+  async findOne(@Param('id') id: string): Promise<UserSingleResponse> {
+    return new UserSingleResponse(await this.usersService.findOne(id));
   }
 
   @Put(':id')
@@ -103,10 +101,10 @@ export class UsersController {
   async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<{ data: User }> {
-    return {
-      data: await this.usersService.update(id, updateUserDto),
-    };
+  ): Promise<UserSingleResponse> {
+    return new UserSingleResponse(
+      await this.usersService.update(id, updateUserDto),
+    );
   }
 
   @Delete(':id')
@@ -117,9 +115,7 @@ export class UsersController {
     type: UserSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
-  async remove(@Param('id') id: string): Promise<{ data: User }> {
-    return {
-      data: await this.usersService.remove(id),
-    };
+  async remove(@Param('id') id: string): Promise<UserSingleResponse> {
+    return new UserSingleResponse(await this.usersService.remove(id));
   }
 }

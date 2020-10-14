@@ -15,7 +15,7 @@ user.id = 'id';
 const usersArr = [user];
 
 const service = {
-  find: jest.fn().mockResolvedValue(usersArr),
+  find: jest.fn().mockResolvedValue({ data: usersArr, total: 10 }),
   findOne: jest.fn().mockResolvedValue(user),
   create: jest.fn().mockResolvedValue(user),
   update: jest.fn().mockResolvedValue(user),
@@ -59,7 +59,10 @@ describe('UsersController', () => {
     it('should return an array of users', async () => {
       const findDto: unknown = {};
 
-      expect(await controller.find(<FindUsersDto>findDto)).toBe(usersArr);
+      expect(await controller.find(<FindUsersDto>findDto)).toEqual({
+        data: usersArr,
+        total: 10,
+      });
 
       expect(service.find).toBeCalledTimes(1);
       expect(service.find).toBeCalledWith(findDto);
