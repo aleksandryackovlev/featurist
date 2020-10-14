@@ -16,7 +16,9 @@ export class ApplicationsService extends CrudService({
     return !!entity;
   }
 
-  async find(findApplicationsDto: FindApplicationsDto): Promise<Application[]> {
+  async find(
+    findApplicationsDto: FindApplicationsDto,
+  ): Promise<{ data: Application[]; total: number }> {
     const {
       createdFrom,
       createdTo,
@@ -81,6 +83,11 @@ export class ApplicationsService extends CrudService({
 
     query.limit(limit);
 
-    return query.getMany();
+    const [data, total] = await query.getManyAndCount();
+
+    return {
+      total,
+      data,
+    };
   }
 }

@@ -53,7 +53,9 @@ describe('ApplicationsController', () => {
   describe('findOne', () => {
     it('should return the application by id', async () => {
       const serviceSpy = jest.spyOn(service, 'findOne');
-      expect(await controller.findOne('some-id')).toBe(application);
+      expect(await controller.findOne('some-id')).toEqual({
+        data: application,
+      });
       expect(serviceSpy).toBeCalledWith('some-id');
     });
   });
@@ -66,7 +68,7 @@ describe('ApplicationsController', () => {
           name: 'Some name',
           description: 'Some desc',
         }),
-      ).toBe(application);
+      ).toEqual({ data: application });
       expect(serviceSpy).toBeCalledWith({
         name: 'Some name',
         description: 'Some desc',
@@ -82,7 +84,7 @@ describe('ApplicationsController', () => {
           name: 'Some new name',
           description: 'Some desc',
         }),
-      ).toBe(application);
+      ).toEqual({ data: application });
       expect(serviceSpy).toBeCalledWith('some-id-to-update', {
         name: 'Some new name',
         description: 'Some desc',
@@ -93,7 +95,9 @@ describe('ApplicationsController', () => {
   describe('remove', () => {
     it('should an application by id', async () => {
       const serviceSpy = jest.spyOn(service, 'remove');
-      expect(await controller.remove('some-id-to-remove')).toBe(application);
+      expect(await controller.remove('some-id-to-remove')).toEqual({
+        data: application,
+      });
       expect(serviceSpy).toBeCalledWith('some-id-to-remove');
     });
   });

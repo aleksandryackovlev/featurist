@@ -23,6 +23,9 @@ import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { FindApplicationsDto } from './dto/find-applications.dto';
 
+import { ApplicationsListResponse } from './responses/applications.list.response';
+import { ApplicationSingleResponse } from './responses/application.single.response';
+
 import { ApplicationsService } from './applications.service';
 
 import { Application } from './application.entity';
@@ -39,12 +42,12 @@ export class ApplicationsController {
   @ApiResponse({
     status: 200,
     description: 'The list of found applications',
-    type: [Application],
+    type: ApplicationsListResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid search parameters' })
   find(
     @Query() findApplicationsDto: FindApplicationsDto,
-  ): Promise<Application[]> {
+  ): Promise<{ data: Application[]; total: number }> {
     return this.service.find(findApplicationsDto);
   }
 
@@ -53,10 +56,12 @@ export class ApplicationsController {
   @ApiResponse({
     status: 200,
     description: 'The application',
-    type: Application,
+    type: ApplicationSingleResponse,
   })
-  findOne(@Param('id') id: string): Promise<Application> {
-    return this.service.findOne(id);
+  async findOne(@Param('id') id: string): Promise<{ data: Application }> {
+    return {
+      data: await this.service.findOne(id),
+    };
   }
 
   @Post()
@@ -64,13 +69,15 @@ export class ApplicationsController {
   @ApiResponse({
     status: 201,
     description: 'The created application',
-    type: Application,
+    type: ApplicationSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
-  create(
+  async create(
     @Body() createApplicationDto: CreateApplicationDto,
-  ): Promise<Application> {
-    return this.service.create(createApplicationDto);
+  ): Promise<{ data: Application }> {
+    return {
+      data: await this.service.create(createApplicationDto),
+    };
   }
 
   @Put(':id')
@@ -78,14 +85,16 @@ export class ApplicationsController {
   @ApiResponse({
     status: 200,
     description: 'The updated application',
-    type: Application,
+    type: ApplicationSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateApplicationDto: UpdateApplicationDto,
-  ): Promise<Application> {
-    return this.service.update(id, updateApplicationDto);
+  ): Promise<{ data: Application }> {
+    return {
+      data: await this.service.update(id, updateApplicationDto),
+    };
   }
 
   @Delete(':id')
@@ -93,10 +102,12 @@ export class ApplicationsController {
   @ApiResponse({
     status: 200,
     description: 'The deleted application',
-    type: Application,
+    type: ApplicationSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
-  remove(@Param('id') id: string): Promise<Application> {
-    return this.service.remove(id);
+  async remove(@Param('id') id: string): Promise<{ data: Application }> {
+    return {
+      data: await this.service.remove(id),
+    };
   }
 }
