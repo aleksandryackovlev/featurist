@@ -95,7 +95,9 @@ describe('AuthService', () => {
         .mockReturnValueOnce('some_token');
 
       await expect(service.login(user)).resolves.toEqual({
-        access_token: 'some_token',
+        data: {
+          access_token: 'some_token',
+        },
       });
 
       expect(jwtSpy).toBeCalledWith({
