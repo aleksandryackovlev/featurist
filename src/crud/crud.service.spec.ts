@@ -71,10 +71,8 @@ describe('CrudService Factory', () => {
         CustomEntityService,
         {
           provide: getRepositoryToken(CustomEntity),
-          // define all the methods that you use from the catRepo
-          // give proper return values as expected or mock implementations, your choice
           useValue: {
-            find: jest.fn().mockResolvedValue(entitiesArray),
+            findAndCount: jest.fn().mockResolvedValue([entitiesArray, 10]),
             findOne: jest.fn().mockResolvedValue(oneEntity),
             create: jest.fn().mockReturnValue(oneEntity),
             save: jest.fn(),
@@ -91,14 +89,13 @@ describe('CrudService Factory', () => {
     );
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
   describe('find', () => {
     it('should return an array of entities', async () => {
       const entities = await service.find({});
-      expect(entities).toEqual(entitiesArray);
+      expect(entities).toEqual({
+        data: entitiesArray,
+        total: 10,
+      });
     });
   });
 

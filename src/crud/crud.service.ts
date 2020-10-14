@@ -9,7 +9,7 @@ import { Repository, EntitySchema, DeepPartial } from 'typeorm';
 
 export interface ICrudService<T> {
   readonly repository: Repository<T>;
-  find(findDto: any): Promise<T[]>; // any is because of https://github.com/microsoft/TypeScript/issues/30071
+  find(findDto: any): Promise<{ data: T[]; total: number }>; // any is because of https://github.com/microsoft/TypeScript/issues/30071
   findOne(id: string): Promise<T>;
   remove(id: string): Promise<T>;
   create(createDto: DeepPartial<T>): Promise<T>;
@@ -35,8 +35,12 @@ export const CrudService = <
     @InjectRepository(<EntitySchema>(<unknown>Entity))
     readonly repository: Repository<T>;
 
-    find(): Promise<T[]> {
-      return this.repository.find();
+    async find(): Promise<{ data: T[]; total: number }> {
+      const [data, total] = await this.repository.findAndCount();
+      return {
+        total,
+        data,
+      };
     }
 
     async create(createDto: CreateDtoType): Promise<T> {
