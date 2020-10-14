@@ -1,6 +1,6 @@
 import { Entity, Column, BeforeInsert } from 'typeorm';
 import { Exclude } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 import * as bcrypt from 'bcrypt';
 
 import { CrudEntity } from '../crud/crud.entity';
@@ -13,9 +13,9 @@ export class User extends CrudEntity {
     update: false,
     unique: true,
   })
-  @ApiProperty({
-    example: 'username',
+  @ApiProperty(<ApiPropertyOptions>{
     description: 'The username of the user',
+    'x-faker': 'internet.username',
   })
   username: string;
 
@@ -28,7 +28,6 @@ export class User extends CrudEntity {
     name: 'active',
   })
   @ApiProperty({
-    example: true,
     description: 'Is user active',
   })
   isActive: boolean;

@@ -59,6 +59,7 @@ export class FindUsersDto {
     example: '2020-09-09',
     description: 'The start of the creation date range',
     required: false,
+    type: 'string',
     format: 'date',
   })
   readonly createdFrom: Date;
@@ -71,6 +72,7 @@ export class FindUsersDto {
     example: '2020-09-09',
     description: 'The end of the creation date range',
     required: false,
+    type: 'string',
     format: 'date',
   })
   readonly createdTo: Date;
@@ -83,6 +85,7 @@ export class FindUsersDto {
     example: '2020-09-09',
     description: 'The start of the updating date range',
     required: false,
+    type: 'string',
     format: 'date',
   })
   readonly updatedFrom: Date;
@@ -95,6 +98,7 @@ export class FindUsersDto {
     example: '2020-09-09',
     description: 'The end of the updating date range',
     required: false,
+    type: 'string',
     format: 'date',
   })
   readonly updatedTo: Date;

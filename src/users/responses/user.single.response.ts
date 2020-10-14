@@ -9,7 +9,6 @@ export class UserSingleResponse {
   }
 
   @ApiProperty({
-    description: 'The user',
     type: User,
   })
   @Type(() => User)

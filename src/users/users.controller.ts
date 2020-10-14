@@ -31,7 +31,7 @@ import { UserSingleResponse } from './responses/user.single.response';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 
-@ApiTags('users')
+@ApiTags('Users')
 @ApiBearerAuth()
 @UseGuards(AuthJwtGuard)
 @Controller('users')
@@ -39,7 +39,10 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('me')
-  @ApiOperation({ summary: 'Get current user' })
+  @ApiOperation({
+    summary: 'Get current user',
+    operationId: 'getCurrentUser',
+  })
   @ApiResponse({
     status: 200,
     description: 'Current user',
@@ -50,7 +53,10 @@ export class UsersController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Find users by params' })
+  @ApiOperation({
+    summary: 'Find users by params',
+    operationId: 'getUsers',
+  })
   @ApiResponse({
     status: 200,
     description: 'The list of found users',
@@ -64,7 +70,10 @@ export class UsersController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Create a new user' })
+  @ApiOperation({
+    summary: 'Create a new user',
+    operationId: 'createUser',
+  })
   @ApiResponse({
     status: 201,
     description: 'The created user',
@@ -80,7 +89,10 @@ export class UsersController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get user by id' })
+  @ApiOperation({
+    summary: 'Get user by id',
+    operationId: 'getUser',
+  })
   @ApiResponse({
     status: 200,
     description: 'The user',
@@ -91,7 +103,10 @@ export class UsersController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Update the user' })
+  @ApiOperation({
+    summary: 'Update the user',
+    operationId: 'updateUser',
+  })
   @ApiResponse({
     status: 200,
     description: 'The updated user',
@@ -108,7 +123,10 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete the user' })
+  @ApiOperation({
+    summary: 'Delete the user',
+    operationId: 'deleteUser',
+  })
   @ApiResponse({
     status: 200,
     description: 'The deleted user',
