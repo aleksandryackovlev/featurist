@@ -20,7 +20,7 @@ const query = {
   offset: jest.fn(),
   limit: jest.fn(),
   orderBy: jest.fn(),
-  getMany: jest.fn().mockReturnValue(resultArr),
+  getManyAndCount: jest.fn().mockReturnValue([resultArr, 10]),
 };
 
 describe('UsersService', () => {
@@ -59,7 +59,10 @@ describe('UsersService', () => {
 
   describe('find', () => {
     it('should query the repository with the default params if no args are given', async () => {
-      await expect(service.find(<FindUsersDto>{})).resolves.toEqual(resultArr);
+      await expect(service.find(<FindUsersDto>{})).resolves.toEqual({
+        data: resultArr,
+        total: 10,
+      });
 
       expect(query.where).toBeCalledTimes(0);
       expect(query.andWhere).toBeCalledTimes(0);
@@ -71,7 +74,7 @@ describe('UsersService', () => {
       expect(query.limit).toBeCalledTimes(1);
       expect(query.limit).toBeCalledWith(10);
 
-      expect(query.getMany).toBeCalledTimes(1);
+      expect(query.getManyAndCount).toBeCalledTimes(1);
     });
 
     it('should be able to filter users by the creation date range', async () => {
@@ -80,7 +83,10 @@ describe('UsersService', () => {
           createdFrom: new Date('2020-09-09'),
           createdTo: new Date('2020-09-14'),
         }),
-      ).resolves.toEqual(resultArr);
+      ).resolves.toEqual({
+        data: resultArr,
+        total: 10,
+      });
 
       expect(query.where).toBeCalledTimes(1);
       expect(query.where).toBeCalledWith(
@@ -105,7 +111,10 @@ describe('UsersService', () => {
           updatedFrom: new Date('2020-09-09'),
           updatedTo: new Date('2020-09-14'),
         }),
-      ).resolves.toEqual(resultArr);
+      ).resolves.toEqual({
+        data: resultArr,
+        total: 10,
+      });
 
       expect(query.where).toBeCalledTimes(1);
       expect(query.where).toBeCalledWith(
@@ -127,7 +136,10 @@ describe('UsersService', () => {
     it('should be able to filter users by substring of the name', async () => {
       await expect(
         service.find(<FindUsersDto>{ search: 'some name' }),
-      ).resolves.toEqual(resultArr);
+      ).resolves.toEqual({
+        data: resultArr,
+        total: 10,
+      });
 
       expect(query.where).toBeCalledTimes(1);
       expect(query.where).toBeCalledWith('user.username LIKE :search', {
@@ -138,7 +150,10 @@ describe('UsersService', () => {
     it('should skip the given amount on entities if offset is set', async () => {
       await expect(
         service.find(<FindUsersDto>{ search: 'some name', offset: 300 }),
-      ).resolves.toEqual(resultArr);
+      ).resolves.toEqual({
+        data: resultArr,
+        total: 10,
+      });
 
       expect(query.offset).toBeCalledTimes(1);
       expect(query.offset).toBeCalledWith(300);
@@ -150,7 +165,10 @@ describe('UsersService', () => {
           sortBy: 'name',
           sortDirection: 'asc',
         }),
-      ).resolves.toEqual(resultArr);
+      ).resolves.toEqual({
+        data: resultArr,
+        total: 10,
+      });
 
       expect(query.orderBy).toBeCalledTimes(1);
       expect(query.orderBy).toBeCalledWith('user.name', 'ASC');
@@ -163,7 +181,10 @@ describe('UsersService', () => {
           sortBy: 'name',
           sortDirection: 'asc',
         }),
-      ).resolves.toEqual(resultArr);
+      ).resolves.toEqual({
+        data: resultArr,
+        total: 10,
+      });
 
       expect(query.limit).toBeCalledTimes(1);
       expect(query.limit).toBeCalledWith(200);

@@ -24,6 +24,10 @@ import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FindUsersDto } from './dto/find-users.dto';
+
+import { UsersListResponse } from './responses/users.list.response';
+import { UserSingleResponse } from './responses/user.single.response';
+
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 
@@ -39,10 +43,12 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: 'Current user',
-    type: [User],
+    type: UserSingleResponse,
   })
-  getCurrentUser(@Req() req: Request): User {
-    return <User>req.user;
+  getCurrentUser(@Req() req: Request): { data: User } {
+    return {
+      data: <User>req.user,
+    };
   }
 
   @Get()
@@ -50,10 +56,12 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: 'The list of found users',
-    type: [User],
+    type: UsersListResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid search parameters' })
-  find(@Query() findUsersDto: FindUsersDto): Promise<User[]> {
+  find(
+    @Query() findUsersDto: FindUsersDto,
+  ): Promise<{ data: User[]; total: number }> {
     return this.usersService.find(findUsersDto);
   }
 
@@ -62,11 +70,13 @@ export class UsersController {
   @ApiResponse({
     status: 201,
     description: 'The created user',
-    type: User,
+    type: UserSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
-  create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto): Promise<{ data: User }> {
+    return {
+      data: await this.usersService.create(createUserDto),
+    };
   }
 
   @Get(':id')
@@ -74,10 +84,12 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: 'The user',
-    type: User,
+    type: UserSingleResponse,
   })
-  findOne(@Param('id') id: string): Promise<User> {
-    return this.usersService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<{ data: User }> {
+    return {
+      data: await this.usersService.findOne(id),
+    };
   }
 
   @Put(':id')
@@ -85,14 +97,16 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: 'The updated user',
-    type: User,
+    type: UserSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<User> {
-    return this.usersService.update(id, updateUserDto);
+  ): Promise<{ data: User }> {
+    return {
+      data: await this.usersService.update(id, updateUserDto),
+    };
   }
 
   @Delete(':id')
@@ -100,10 +114,12 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: 'The deleted user',
-    type: User,
+    type: UserSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
-  remove(@Param('id') id: string): Promise<User> {
-    return this.usersService.remove(id);
+  async remove(@Param('id') id: string): Promise<{ data: User }> {
+    return {
+      data: await this.usersService.remove(id),
+    };
   }
 }

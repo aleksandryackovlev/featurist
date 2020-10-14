@@ -14,7 +14,9 @@ export class UsersService extends CrudService({
     return this.repository.findOne({ username });
   }
 
-  async find(findUsersDto: FindUsersDto): Promise<User[]> {
+  async find(
+    findUsersDto: FindUsersDto,
+  ): Promise<{ data: User[]; total: number }> {
     const {
       createdFrom,
       createdTo,
@@ -78,6 +80,10 @@ export class UsersService extends CrudService({
     );
     query.limit(limit);
 
-    return query.getMany();
+    const [data, total] = await query.getManyAndCount();
+    return {
+      data,
+      total,
+    };
   }
 }

@@ -8,6 +8,10 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
 const user = new User();
+user.password = 'password';
+user.username = 'username';
+user.id = 'id';
+
 const usersArr = [user];
 
 const service = {
@@ -47,7 +51,7 @@ describe('UsersController', () => {
         await controller.getCurrentUser(<Request>(
           (<unknown>{ user: { username: 'John Doe' } })
         )),
-      ).toEqual({ username: 'John Doe' });
+      ).toEqual({ data: { username: 'John Doe' } });
     });
   });
 
@@ -65,7 +69,7 @@ describe('UsersController', () => {
   describe('findOne', () => {
     it('should return the user by id', async () => {
       const serviceSpy = jest.spyOn(service, 'findOne');
-      expect(await controller.findOne('some-id')).toBe(user);
+      expect(await controller.findOne('some-id')).toEqual({ data: user });
       expect(serviceSpy).toBeCalledWith('some-id');
     });
   });
@@ -78,7 +82,7 @@ describe('UsersController', () => {
           username: 'name',
           password: 'password',
         }),
-      ).toBe(user);
+      ).toEqual({ data: user });
       expect(serviceSpy).toBeCalledWith({
         username: 'name',
         password: 'password',
@@ -93,7 +97,7 @@ describe('UsersController', () => {
         await controller.update('some-id-to-update', {
           password: 'password',
         }),
-      ).toBe(user);
+      ).toEqual({ data: user });
       expect(serviceSpy).toBeCalledWith('some-id-to-update', {
         password: 'password',
       });
@@ -103,7 +107,9 @@ describe('UsersController', () => {
   describe('remove', () => {
     it('should delete a user by id', async () => {
       const serviceSpy = jest.spyOn(service, 'remove');
-      expect(await controller.remove('some-id-to-remove')).toBe(user);
+      expect(await controller.remove('some-id-to-remove')).toEqual({
+        data: user,
+      });
       expect(serviceSpy).toBeCalledWith('some-id-to-remove');
     });
   });
