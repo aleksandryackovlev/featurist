@@ -30,7 +30,7 @@ import { ApplicationsService } from './applications.service';
 
 import { Application } from './application.entity';
 
-@ApiTags('applications')
+@ApiTags('Applications')
 @ApiBearerAuth()
 @UseGuards(AuthJwtGuard)
 @Controller('applications')
@@ -38,7 +38,10 @@ export class ApplicationsController {
   constructor(private readonly service: ApplicationsService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Find applications by params' })
+  @ApiOperation({
+    summary: 'Find applications by params',
+    operationId: 'getApplications',
+  })
   @ApiResponse({
     status: 200,
     description: 'The list of found applications',
@@ -52,7 +55,10 @@ export class ApplicationsController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get application by id' })
+  @ApiOperation({
+    summary: 'Get application by id',
+    operationId: 'getApplication',
+  })
   @ApiResponse({
     status: 200,
     description: 'The application',
@@ -65,7 +71,10 @@ export class ApplicationsController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Create a new application' })
+  @ApiOperation({
+    summary: 'Create a new application',
+    operationId: 'createApplication',
+  })
   @ApiResponse({
     status: 201,
     description: 'The created application',
@@ -81,7 +90,10 @@ export class ApplicationsController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Update the application' })
+  @ApiOperation({
+    summary: 'Update the application',
+    operationId: 'updateApplication',
+  })
   @ApiResponse({
     status: 200,
     description: 'The updated application',
@@ -98,7 +110,10 @@ export class ApplicationsController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete the application' })
+  @ApiOperation({
+    summary: 'Delete the application',
+    operationId: 'removeApplication',
+  })
   @ApiResponse({
     status: 200,
     description: 'The deleted application',

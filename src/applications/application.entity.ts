@@ -1,5 +1,5 @@
 import { Entity, Column, OneToMany } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 
 import { CrudEntity } from '../crud/crud.entity';
 import { Feature } from '../features/feature.entity';
@@ -10,9 +10,9 @@ export class Application extends CrudEntity {
     type: 'varchar',
     length: 150,
   })
-  @ApiProperty({
-    example: 'Application name',
+  @ApiProperty(<ApiPropertyOptions>{
     description: 'The name of the application',
+    'x-faker': 'git.branch',
   })
   name: string;
 
@@ -26,9 +26,9 @@ export class Application extends CrudEntity {
   features: Feature[];
 
   @Column('text')
-  @ApiProperty({
-    example: 'Application description',
+  @ApiProperty(<ApiPropertyOptions>{
     description: 'The description of the application',
+    'x-faker': 'hacker.phrase',
   })
   description: string;
 }
