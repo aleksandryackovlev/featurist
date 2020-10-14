@@ -21,12 +21,13 @@ async function bootstrap() {
 
   const options = new DocumentBuilder()
     .setTitle('Feature toggle server')
-    .setDescription('The api for manging features')
+    .setDescription('API for manging feature toggles')
     .setVersion('0.1.0')
+    .addServer('http://localhost:3000', 'development server')
     .addBearerAuth()
-    .addTag('applications')
-    .addTag('features')
-    .addTag('users')
+    .addTag('Applications', 'Methods for managing applications')
+    .addTag('Features', 'Methods for managing features')
+    .addTag('Users', 'Methods for managing users')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
