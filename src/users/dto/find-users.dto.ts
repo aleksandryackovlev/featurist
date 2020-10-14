@@ -16,6 +16,7 @@ export class FindUsersDto {
   @IsOptional()
   @IsInt()
   @Min(1)
+  @Type(() => Number)
   @ApiProperty({
     default: 10,
     example: 10,
@@ -29,6 +30,7 @@ export class FindUsersDto {
   @IsOptional()
   @IsInt()
   @Min(1)
+  @Type(() => Number)
   @ApiProperty({
     default: 10,
     example: 10,
