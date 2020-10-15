@@ -100,9 +100,9 @@ describe('CrudService Factory', () => {
   });
 
   describe('findOne', () => {
-    it('should get a single entity', () => {
+    it('should get a single entity', async () => {
       const repoSpy = jest.spyOn(repo, 'findOne');
-      expect(service.findOne('a uuid')).resolves.toEqual(oneEntity);
+      await expect(service.findOne('a uuid')).resolves.toEqual(oneEntity);
       expect(repoSpy).toBeCalledWith('a uuid');
     });
 
@@ -116,8 +116,8 @@ describe('CrudService Factory', () => {
   });
 
   describe('create', () => {
-    it('should successfully insert an entity', () => {
-      expect(
+    it('should successfully insert an entity', async () => {
+      await expect(
         service.create({
           name: 'Test Entity 1',
           description: 'Test Desc 1',
