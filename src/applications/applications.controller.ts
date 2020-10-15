@@ -28,8 +28,6 @@ import { ApplicationSingleResponse } from './responses/application.single.respon
 
 import { ApplicationsService } from './applications.service';
 
-import { Application } from './application.entity';
-
 @ApiTags('Applications')
 @ApiBearerAuth()
 @UseGuards(AuthJwtGuard)
@@ -48,10 +46,12 @@ export class ApplicationsController {
     type: ApplicationsListResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid search parameters' })
-  find(
+  async find(
     @Query() findApplicationsDto: FindApplicationsDto,
-  ): Promise<{ data: Application[]; total: number }> {
-    return this.service.find(findApplicationsDto);
+  ): Promise<ApplicationsListResponse> {
+    const { data, total } = await this.service.find(findApplicationsDto);
+
+    return new ApplicationsListResponse(data, total);
   }
 
   @Get(':id')
@@ -64,10 +64,8 @@ export class ApplicationsController {
     description: 'The application',
     type: ApplicationSingleResponse,
   })
-  async findOne(@Param('id') id: string): Promise<{ data: Application }> {
-    return {
-      data: await this.service.findOne(id),
-    };
+  async findOne(@Param('id') id: string): Promise<ApplicationSingleResponse> {
+    return new ApplicationSingleResponse(await this.service.findOne(id));
   }
 
   @Post()
@@ -83,10 +81,10 @@ export class ApplicationsController {
   @ApiResponse({ status: 400, description: 'Invalid request' })
   async create(
     @Body() createApplicationDto: CreateApplicationDto,
-  ): Promise<{ data: Application }> {
-    return {
-      data: await this.service.create(createApplicationDto),
-    };
+  ): Promise<ApplicationSingleResponse> {
+    return new ApplicationSingleResponse(
+      await this.service.create(createApplicationDto),
+    );
   }
 
   @Put(':id')
@@ -103,10 +101,10 @@ export class ApplicationsController {
   async update(
     @Param('id') id: string,
     @Body() updateApplicationDto: UpdateApplicationDto,
-  ): Promise<{ data: Application }> {
-    return {
-      data: await this.service.update(id, updateApplicationDto),
-    };
+  ): Promise<ApplicationSingleResponse> {
+    return new ApplicationSingleResponse(
+      await this.service.update(id, updateApplicationDto),
+    );
   }
 
   @Delete(':id')
@@ -120,9 +118,7 @@ export class ApplicationsController {
     type: ApplicationSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
-  async remove(@Param('id') id: string): Promise<{ data: Application }> {
-    return {
-      data: await this.service.remove(id),
-    };
+  async remove(@Param('id') id: string): Promise<ApplicationSingleResponse> {
+    return new ApplicationSingleResponse(await this.service.remove(id));
   }
 }

@@ -28,7 +28,10 @@ describe('ApplicationsController', () => {
         {
           provide: ApplicationsService,
           useValue: {
-            find: jest.fn().mockResolvedValue(applicationsArray),
+            find: jest.fn().mockResolvedValue({
+              data: applicationsArray,
+              total: 10,
+            }),
             findOne: jest.fn().mockResolvedValue(application),
             create: jest.fn().mockReturnValue(application),
             update: jest.fn().mockResolvedValue(application),
@@ -46,7 +49,10 @@ describe('ApplicationsController', () => {
     it('should return an array of applications', async () => {
       expect(
         await controller.find(<FindApplicationsDto>{ offset: 10, limit: 10 }),
-      ).toBe(applicationsArray);
+      ).toEqual({
+        data: applicationsArray,
+        total: 10,
+      });
     });
   });
 
