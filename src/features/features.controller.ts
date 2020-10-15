@@ -26,7 +26,6 @@ import { FindFeaturesDto } from './dto/find-features.dto';
 import { FeaturesListResponse } from './responses/features.list.response';
 import { FeatureSingleResponse } from './responses/feature.single.response';
 
-import { Feature } from './interfaces/feature';
 import { FeaturesService } from './features.service';
 
 @ApiTags('Features')
@@ -47,11 +46,16 @@ export class FeaturesController {
     type: FeaturesListResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid search parameters' })
-  find(
+  async find(
     @Param('appId') appId: string,
     @Query() findFeaturesDto: FindFeaturesDto,
-  ): Promise<{ data: Feature[]; total: number }> {
-    return this.featuresService.find(appId, findFeaturesDto);
+  ): Promise<FeaturesListResponse> {
+    const { data, total } = await this.featuresService.find(
+      appId,
+      findFeaturesDto,
+    );
+
+    return new FeaturesListResponse(data, total);
   }
 
   @Post()
@@ -68,10 +72,10 @@ export class FeaturesController {
   async create(
     @Param('appId') appId: string,
     @Body() createFeatureDto: CreateFeatureDto,
-  ): Promise<{ data: Feature }> {
-    return {
-      data: await this.featuresService.create(appId, createFeatureDto),
-    };
+  ): Promise<FeatureSingleResponse> {
+    return new FeatureSingleResponse(
+      await this.featuresService.create(appId, createFeatureDto),
+    );
   }
 
   @Get(':id')
@@ -87,10 +91,10 @@ export class FeaturesController {
   async findOne(
     @Param('appId') appId: string,
     @Param('id') id: string,
-  ): Promise<{ data: Feature }> {
-    return {
-      data: await this.featuresService.findOne(appId, id),
-    };
+  ): Promise<FeatureSingleResponse> {
+    return new FeatureSingleResponse(
+      await this.featuresService.findOne(appId, id),
+    );
   }
 
   @Put(':id')
@@ -108,10 +112,10 @@ export class FeaturesController {
     @Param('appId') appId: string,
     @Param('id') id: string,
     @Body() updateFeatureDto: UpdateFeatureDto,
-  ): Promise<{ data: Feature }> {
-    return {
-      data: await this.featuresService.update(appId, id, updateFeatureDto),
-    };
+  ): Promise<FeatureSingleResponse> {
+    return new FeatureSingleResponse(
+      await this.featuresService.update(appId, id, updateFeatureDto),
+    );
   }
 
   @Post(':id/enable')
@@ -128,10 +132,10 @@ export class FeaturesController {
   async enable(
     @Param('appId') appId: string,
     @Param('id') id: string,
-  ): Promise<{ data: Feature }> {
-    return {
-      data: await this.featuresService.enable(appId, id),
-    };
+  ): Promise<FeatureSingleResponse> {
+    return new FeatureSingleResponse(
+      await this.featuresService.enable(appId, id),
+    );
   }
 
   @Post(':id/disable')
@@ -148,10 +152,10 @@ export class FeaturesController {
   async disable(
     @Param('appId') appId: string,
     @Param('id') id: string,
-  ): Promise<{ data: Feature }> {
-    return {
-      data: await this.featuresService.disable(appId, id),
-    };
+  ): Promise<FeatureSingleResponse> {
+    return new FeatureSingleResponse(
+      await this.featuresService.disable(appId, id),
+    );
   }
 
   @Delete(':id')
@@ -168,9 +172,9 @@ export class FeaturesController {
   async remove(
     @Param('appId') appId: string,
     @Param('id') id: string,
-  ): Promise<{ data: Feature }> {
-    return {
-      data: await this.featuresService.remove(appId, id),
-    };
+  ): Promise<FeatureSingleResponse> {
+    return new FeatureSingleResponse(
+      await this.featuresService.remove(appId, id),
+    );
   }
 }
