@@ -60,12 +60,6 @@ export class FeaturesService {
       return false;
     }
 
-    const value = await this.etcdClient.get(`${appId}/${name}`).string();
-
-    if (!value) {
-      return false;
-    }
-
     return true;
   }
 

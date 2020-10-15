@@ -1,10 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { ApplicationsService } from '../applications/applications.service';
 import { ETCD_CONNECTION } from '../etcd/etcd.constants';
 
 import { FindFeaturesDto } from './dto/find-features.dto';
+import { CreateFeatureDto } from './dto/create-feature.dto';
 
 import { FeaturesService } from './features.service';
 import { Feature } from './feature.entity';
@@ -26,6 +28,8 @@ const query = {
   getManyAndCount: jest.fn().mockReturnValue([resultArr, 10]),
 };
 
+const putValue = jest.fn().mockResolvedValue(true);
+
 const etcd = {
   getAll: jest.fn().mockReturnValue({
     prefix: jest.fn().mockReturnValue({
@@ -35,7 +39,7 @@ const etcd = {
     }),
   }),
   put: jest.fn().mockReturnValue({
-    value: jest.fn().mockResolvedValue(true),
+    value: putValue,
   }),
   get: jest.fn().mockReturnValue({
     string: jest.fn().mockResolvedValue('1'),
@@ -48,6 +52,7 @@ const etcd = {
 describe('FeaturesService', () => {
   let service: FeaturesService;
   let applicationsService: ApplicationsService;
+  let repo: Repository<Feature>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -57,6 +62,11 @@ describe('FeaturesService', () => {
           provide: getRepositoryToken(Feature),
           useValue: {
             createQueryBuilder: jest.fn().mockReturnValue(query),
+            findOne: jest.fn().mockResolvedValue(feature),
+            create: jest.fn().mockReturnValue(feature),
+            save: jest.fn(),
+            update: jest.fn().mockResolvedValue(true),
+            delete: jest.fn().mockResolvedValue(true),
           },
         },
         {
@@ -76,6 +86,82 @@ describe('FeaturesService', () => {
 
     service = module.get<FeaturesService>(FeaturesService);
     applicationsService = module.get<ApplicationsService>(ApplicationsService);
+    repo = module.get<Repository<Feature>>(getRepositoryToken(Feature));
+  });
+
+  describe('create', () => {
+    it('should successfully create a feature', async () => {
+      jest.spyOn(service, 'isFeatureExists').mockResolvedValueOnce(false);
+      await expect(
+        service.create('appId', {
+          name: 'Test Entity 1',
+          description: 'Test Desc 1',
+        }),
+      ).resolves.toEqual({
+        ...feature,
+        isEnabled: false,
+      });
+
+      expect(repo.create).toBeCalledTimes(1);
+      expect(repo.create).toBeCalledWith({
+        name: 'Test Entity 1',
+        description: 'Test Desc 1',
+        applicationId: 'appId',
+      });
+      expect(repo.save).toBeCalledTimes(1);
+    });
+
+    it('should throw an error if application does not exist', async () => {
+      jest
+        .spyOn(applicationsService, 'isApplicationExists')
+        .mockResolvedValueOnce(false);
+
+      await expect(
+        service.create('appId', {
+          name: 'Test Entity 1',
+          description: 'Test Desc 1',
+        }),
+      ).rejects.toThrow('Application does not exist');
+    });
+
+    it('should throw an error if feature already exists', async () => {
+      jest
+        .spyOn(applicationsService, 'isApplicationExists')
+        .mockResolvedValueOnce(true);
+
+      await expect(
+        service.create('appId', {
+          name: 'Test Entity 1',
+          description: 'Test Desc 1',
+        }),
+      ).rejects.toThrow('Feature already exists');
+    });
+  });
+
+  describe('isFeatureExists', () => {
+    it('should return false if feature with the given name does not exist', async () => {
+      const repoSpy = jest.spyOn(repo, 'findOne').mockResolvedValueOnce(null);
+
+      await expect(service.isFeatureExists('appId', 'someName')).resolves.toBe(
+        false,
+      );
+
+      expect(repoSpy).toBeCalledTimes(1);
+      expect(repoSpy).toBeCalledWith({ name: 'someName' });
+    });
+
+    it('should return true if feature with the given name exists', async () => {
+      const repoSpy = jest
+        .spyOn(repo, 'findOne')
+        .mockResolvedValueOnce(<Feature>feature);
+
+      await expect(service.isFeatureExists('appId', 'someName')).resolves.toBe(
+        true,
+      );
+
+      expect(repoSpy).toBeCalledTimes(1);
+      expect(repoSpy).toBeCalledWith({ name: 'someName' });
+    });
   });
 
   describe('find', () => {
