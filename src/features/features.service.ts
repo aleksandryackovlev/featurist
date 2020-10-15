@@ -86,7 +86,7 @@ export class FeaturesService {
     } = findFeaturesDto;
 
     if (!(await this.applicationsService.isApplicationExists(appId))) {
-      throw new NotFoundException();
+      throw new NotFoundException('Application not found');
     }
 
     const query = this.repository.createQueryBuilder('feature');
