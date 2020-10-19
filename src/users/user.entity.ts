@@ -15,7 +15,7 @@ export class User extends CrudEntity {
   })
   @ApiProperty(<ApiPropertyOptions>{
     description: 'The username of the user',
-    'x-faker': 'internet.username',
+    'x-faker': 'internet.userName',
   })
   username: string;
 

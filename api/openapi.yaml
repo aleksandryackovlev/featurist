@@ -41,7 +41,7 @@ components:
         username:
           type: string
           description: The username of the user
-          x-faker: internet.username
+          x-faker: internet.userName
         isActive:
           type: boolean
           description: Is user active
