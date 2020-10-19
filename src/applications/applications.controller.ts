@@ -110,7 +110,7 @@ export class ApplicationsController {
   @Delete(':id')
   @ApiOperation({
     summary: 'Delete the application',
-    operationId: 'removeApplication',
+    operationId: 'deleteApplication',
   })
   @ApiResponse({
     status: 200,

@@ -917,7 +917,7 @@ paths:
       security:
         - bearer: []
     delete:
-      operationId: removeApplication
+      operationId: deleteApplication
       summary: Delete the application
       parameters:
         - name: id
