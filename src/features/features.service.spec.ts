@@ -6,7 +6,6 @@ import { ApplicationsService } from '../applications/applications.service';
 import { ETCD_CONNECTION } from '../etcd/etcd.constants';
 
 import { FindFeaturesDto } from './dto/find-features.dto';
-import { CreateFeatureDto } from './dto/create-feature.dto';
 
 import { FeaturesService } from './features.service';
 import { Feature } from './feature.entity';
