@@ -125,6 +125,9 @@ components:
           type: string
           description: The id of the application the feature belongs to
           x-faker: random.uuid
+        isEnabled:
+          type: boolean
+          description: Is the feature enabled
       required:
         - id
         - createdAt
@@ -132,6 +135,7 @@ components:
         - name
         - description
         - applicationId
+        - isEnabled
     FeaturesListResponse:
       type: object
       properties:

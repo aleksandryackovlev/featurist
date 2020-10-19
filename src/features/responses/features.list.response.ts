@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Feature } from '../feature.entity';
+import { Feature } from '../interfaces/feature';
 
 export class FeaturesListResponse {
   constructor(data: Feature[], total: number) {
