@@ -1,10 +1,15 @@
-.PHONY: all clean install build start-prod-app start-dev-app start start-dev start
+DB_VOLUME = feature_service_db_volume
+DB_CONTAINER = feature_service_db_container
+ETCD_VOLUME = feature_service_etcd_volume
+ETCD_CONTAINER = feature_service_etcd_container
+
+.PHONY: all clean migrate fixture install build start-prod-app start-dev-app start start-dev start
 
 all: start
 
-start: | clean build start-prod-app
+start: | clean build migrate fixture start-prod-app
 
-start-dev: | clean install start-dev-app
+start-dev: | clean install migrate fixture start-dev-app
 
 start-prod-app:
 	NODE_ENV=production docker-compose -f tools/docker/docker-compose.yml --project-directory ./ up app-start
@@ -18,5 +23,14 @@ install:
 build:
 	NODE_ENV=production docker-compose -f tools/docker/docker-compose.yml --project-directory ./ run --rm app-build
 
+migrate:
+	docker-compose -f tools/docker/docker-compose.yml --project-directory ./ run --rm app-migrate
+
+fixture:
+	docker-compose -f tools/docker/docker-compose.yml --project-directory ./ run --rm app-fixture
+
 clean:
-	rm -rf dist
+	docker container rm -f -v $(DB_CONTAINER) 2> /dev/null || true
+	docker volume rm -f $(DB_VOLUME)
+	docker container rm -f -v $(ETCD_CONTAINER) 2> /dev/null || true
+	docker volume rm -f $(ETCD_VOLUME)

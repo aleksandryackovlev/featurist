@@ -32,9 +32,22 @@ services:
     depends_on:
       - etcd0
       - db
-    command: bash -c "third_party/wait-for-it.sh db:5432 -- yarn start:prod"
+    command: bash -c "third_party/wait-for-it.sh db:5432 -- ./deploy/scripts/start.sh"
     ports:
       - "3000:3000"
+
+  app-migrate:
+    << : *app_defaults
+    depends_on:
+      - db
+    command: bash -c "third_party/wait-for-it.sh db:5432 -- ./deploy/scripts/migrate.sh"
+
+  app-fixture:
+    << : *app_defaults
+    depends_on:
+      - etcd0
+      - db
+    command: bash -c "third_party/wait-for-it.sh db:5432 -- ./deploy/scripts/fixture.sh"
 
   app-dev:
     << : *app_defaults
@@ -47,6 +60,7 @@ services:
 
   etcd0:
     image: quay.io/coreos/etcd:v3.3.25
+    container_name: "${ETCD_CONTAINER:-feature_service_etcd_container}"
     command:
       - /usr/local/bin/etcd
       -  --name
@@ -62,7 +76,7 @@ services:
       - --listen-peer-urls
       - http://0.0.0.0:2380
       - --initial-cluster
-      - node1=http://etcd0:2380"
+      - etcd0=http://etcd0:2380
     ports:
       - "2379:2379"
       - "2380:2380"
@@ -71,6 +85,9 @@ services:
 
   db:
     image: postgres
+    container_name: "${DB_CONTAINER:-feature_service_db_container}"
+    depends_on:
+      - etcd0
     environment:
       POSTGRES_USER: features
       POSTGRES_PASSWORD: features
