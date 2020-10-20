@@ -1,0 +1,9 @@
+entity: Application
+parameters: {}
+items:
+  application1:
+    name: '{{lorem.slug}}'
+    description: '{{lorem.paragraph}}'
+  application2:
+    name: '{{lorem.slug}}'
+    description: '{{lorem.paragraph}}'

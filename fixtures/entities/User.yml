@@ -1,0 +1,13 @@
+entity: User
+parameters: {}
+items:
+  user1:
+    username: '{{internet.userName}}'
+    password: 'test'
+    __call:
+      hashPassword:
+  user2:
+    username: '{{internet.userName}}'
+    password: 'test'
+    __call:
+      hashPassword:

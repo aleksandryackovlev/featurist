@@ -1,0 +1,14 @@
+entity: Feature
+parameters: {}
+processor: ../processor/FeatureProcessor
+items:
+  feature{1..5}:
+    name: '{{lorem.slug}}'
+    description: '{{lorem.paragraph}}'
+    application: '@application1'
+    isEnabled: '{{random.boolean}}'
+  feature{6..10}:
+    name: '{{lorem.slug}}'
+    description: '{{lorem.paragraph}}'
+    application: '@application2'
+    isEnabled: '{{random.boolean}}'
