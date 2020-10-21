@@ -17,6 +17,7 @@ x-app-defaults: &app_defaults
     ETCD_PORT: 2379
     JWT_SECRET: secretKey
     JWT_EXPIRES_IN: 12h
+    CLIENT_URL: http://localhost:3000
 
 services:
   app-install:
