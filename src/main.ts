@@ -4,6 +4,21 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
 
+type VerifyOriginFunction = (
+  origin: string | undefined,
+  callback: (err: Error | null, allow?: boolean) => void,
+) => void;
+
+export const verifyOrigin: (
+  allowedOrigin: string,
+) => VerifyOriginFunction = allowedOrigin => (origin, done) => {
+  if (allowedOrigin === '*' || !origin || allowedOrigin === origin) {
+    return done(null, true);
+  }
+
+  return done(new Error('Not allowed by CORS'));
+};
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -18,6 +33,14 @@ async function bootstrap() {
   );
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  app.enableCors({
+    origin: verifyOrigin(process.env.CLIENT_URL || '*'),
+    maxAge: 31536000,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+  });
 
   const options = new DocumentBuilder()
     .setTitle('Feature toggle server')
