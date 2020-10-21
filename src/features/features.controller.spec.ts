@@ -96,12 +96,14 @@ describe('FeaturesController', () => {
       expect(
         await controller.update(appId, 'some-id-to-update', {
           description: 'Some desc',
+          isEnabled: false,
         }),
       ).toEqual({
         data: feature,
       });
       expect(serviceSpy).toBeCalledWith(appId, 'some-id-to-update', {
         description: 'Some desc',
+        isEnabled: false,
       });
     });
   });

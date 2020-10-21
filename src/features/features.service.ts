@@ -220,7 +220,13 @@ export class FeaturesService {
   ): Promise<IFeature> {
     const feature = await this.findOne(appId, featureId);
 
-    await this.repository.update(featureId, updateFeatureDto);
+    const { isEnabled, ...updateDto } = updateFeatureDto;
+
+    await this.repository.update(featureId, updateDto);
+
+    await this.etcdClient
+      .put(`${appId}/${feature.name}`)
+      .value(isEnabled ? '1' : '0');
 
     return { ...feature, ...updateFeatureDto };
   }

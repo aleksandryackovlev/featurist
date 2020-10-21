@@ -179,8 +179,13 @@ components:
           type: string
           example: Feature description
           description: The description of the feature
+        description:
+          type: boolean
+          example: Is feature enabled
+          description: Is feature enabled
       required:
         - description
+        - isEnabled
     Application:
       type: object
       properties:

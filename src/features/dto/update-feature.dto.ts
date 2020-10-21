@@ -1,4 +1,5 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsString, IsNotEmpty, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateFeatureDto {
@@ -9,4 +10,13 @@ export class UpdateFeatureDto {
     description: 'The description of the feature',
   })
   readonly description: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  @Type(() => Boolean)
+  @ApiProperty({
+    example: 'Is feature enabled',
+    description: 'Is feature enabled',
+  })
+  readonly isEnabled: boolean;
 }
