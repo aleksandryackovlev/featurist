@@ -2,6 +2,8 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
+import * as helmet from 'helmet';
+
 import { AppModule } from './app.module';
 
 type VerifyOriginFunction = (
@@ -33,6 +35,8 @@ async function bootstrap() {
   );
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  app.use(helmet());
 
   app.enableCors({
     origin: verifyOrigin(process.env.CLIENT_URL || '*'),
