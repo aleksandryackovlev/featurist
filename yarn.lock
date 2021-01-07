@@ -5986,10 +5986,10 @@ neo-async@^2.5.0, neo-async@^2.6.1:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-nestjs-etcd@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/nestjs-etcd/-/nestjs-etcd-0.1.1.tgz#43382af1d9be6c7bba7ed519dc69baf38c0b9320"
-  integrity sha512-aWI0xIba0vXePzwoX764+V2BXwLfV5skRz1yS1deZDOdaQ7PAok6G2BBJ3UW0HoK2ZsFM3p05VFF14+4N0561A==
+nestjs-etcd@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/nestjs-etcd/-/nestjs-etcd-0.2.0.tgz#f6bf2dd9ee7188e51493fa2e3e5a47fb9ec6cf0e"
+  integrity sha512-I5tekNGFJ97auyHeCrnCN38D5AkaxxUAx3PlaZA0EOO/BTyNfyw9Fzqs4McCoUakT/sVVwdGELulcofRUzaFpw==
   dependencies:
     etcd3 "^1.1.0"
 
