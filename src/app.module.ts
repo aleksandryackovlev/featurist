@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { EtcdModule, EtcdModuleOptions } from 'nestjs-etcd';
 
 import { UsersModule } from './users/users.module';
-import { EtcdModule } from './etcd/etcd.module';
 import { FeaturesModule } from './features/features.module';
 import { ApplicationsModule } from './applications/applications.module';
 import { AuthModule } from './auth/auth.module';
@@ -33,8 +33,15 @@ import config from './config';
         },
       inject: [ConfigService],
     }),
-    EtcdModule.forRoot({
-      hosts: `http://${process.env.ETCD_HOST}:${process.env.ETCD_PORT}`,
+    EtcdModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) =>
+        <EtcdModuleOptions>{
+          hosts: `http://${configService.get('etcd.host')}:${configService.get(
+            'etcd.port',
+          )}`,
+        },
+      inject: [ConfigService],
     }),
     UsersModule,
     FeaturesModule,
