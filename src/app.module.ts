@@ -40,6 +40,7 @@ import config from './config';
           hosts: `http://${configService.get('etcd.host')}:${configService.get(
             'etcd.port',
           )}`,
+          namespace: configService.get('etcd.namespace'),
         },
       inject: [ConfigService],
     }),

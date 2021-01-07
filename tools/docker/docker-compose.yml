@@ -15,6 +15,7 @@ x-app-defaults: &app_defaults
     DB_SCHEMA: public
     ETCD_HOST: etcd0
     ETCD_PORT: 2379
+    ETCD_NAMESPACE: featurist/
     JWT_SECRET: secretKey
     JWT_EXPIRES_IN: 12h
     CLIENT_URL: http://localhost:3000

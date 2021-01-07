@@ -12,6 +12,7 @@ export default () => ({
   etcd: {
     host: process.env.ETCD_HOST,
     port: parseInt(process.env.ETCD_PORT, 10),
+    namespace: process.env.ETCD_NAMESPACE || 'featurist',
   },
   jwt: {
     secret: process.env.JWT_SECRET,
