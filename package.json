@@ -40,6 +40,7 @@
     "cockatiel": "1.0.0",
     "etcd3": "^1.0.1",
     "helmet": "^4.1.1",
+    "nestjs-etcd": "^0.1.1",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
@@ -82,7 +83,6 @@
     "typescript": "^3.7.4"
   },
   "resolutions": {
-    "cockatiel": "1.0.0",
     "@types/express-serve-static-core": "4.17.13"
   },
   "jest": {
