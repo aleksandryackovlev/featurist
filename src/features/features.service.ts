@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Etcd3, InjectClient } from 'nestjs-etcd';
 
 import { ApplicationsService } from '../applications/applications.service';
 
@@ -14,12 +15,10 @@ import { CreateFeatureDto } from './dto/create-feature.dto';
 import { UpdateFeatureDto } from './dto/update-feature.dto';
 import { FindFeaturesDto } from './dto/find-features.dto';
 
-import { Etcd3, EtcdClient } from '../etcd';
-
 @Injectable()
 export class FeaturesService {
   constructor(
-    @EtcdClient()
+    @InjectClient()
     private readonly etcdClient: Etcd3,
     @InjectRepository(Feature)
     private readonly repository: Repository<Feature>,

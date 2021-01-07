@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Etcd3 } from 'etcd3';
 
 import { ApplicationsService } from '../applications/applications.service';
-import { ETCD_CONNECTION } from '../etcd/etcd.constants';
 
 import { FindFeaturesDto } from './dto/find-features.dto';
 
@@ -75,8 +75,8 @@ describe('FeaturesService', () => {
           },
         },
         {
-          provide: ETCD_CONNECTION,
-          useValue: etcd,
+          provide: Etcd3,
+          useValue: <Etcd3>(<unknown>etcd),
         },
       ],
     }).compile();
