@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Etcd3 } from 'etcd3';
+import { Etcd3 } from 'nestjs-etcd';
 
 import { ApplicationsService } from '../applications/applications.service';
 
