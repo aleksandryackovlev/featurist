@@ -7,6 +7,7 @@ import { FindUsersDto } from './dto/find-users.dto';
 
 export class UsersService extends CrudService({
   Entity: User,
+  name: 'user',
   CreateDto: CreateUserDto,
   UpdateDto: UpdateUserDto,
 }) {
