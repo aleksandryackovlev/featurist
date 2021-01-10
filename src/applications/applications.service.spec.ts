@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { FindApplicationsDto } from './dto/find-applications.dto';
+import { IFindEntitiesDto as FindDtoType } from '../crud/interfaces';
 
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
@@ -70,7 +70,7 @@ describe('ApplicationsService', () => {
 
   describe('find', () => {
     it('should query the repository with the default params if no args are given', async () => {
-      await expect(service.find(<FindApplicationsDto>{})).resolves.toEqual({
+      await expect(service.find(<FindDtoType>{})).resolves.toEqual({
         data: resultArr,
         total: 1,
       });
@@ -90,7 +90,7 @@ describe('ApplicationsService', () => {
 
     it('should be able to filter applications by the creation date range', async () => {
       await expect(
-        service.find(<FindApplicationsDto>{
+        service.find(<FindDtoType>{
           createdFrom: new Date('2020-09-09'),
           createdTo: new Date('2020-09-14'),
         }),
@@ -118,7 +118,7 @@ describe('ApplicationsService', () => {
 
     it('should be able to filter applications by the update date range', async () => {
       await expect(
-        service.find(<FindApplicationsDto>{
+        service.find(<FindDtoType>{
           updatedFrom: new Date('2020-09-09'),
           updatedTo: new Date('2020-09-14'),
         }),
@@ -146,7 +146,7 @@ describe('ApplicationsService', () => {
 
     it('should be able to filter applications by substring of the name', async () => {
       await expect(
-        service.find(<FindApplicationsDto>{ search: 'some name' }),
+        service.find(<FindDtoType>{ search: 'some name' }),
       ).resolves.toEqual({
         data: resultArr,
         total: 1,
@@ -160,7 +160,7 @@ describe('ApplicationsService', () => {
 
     it('should skip the given amount on entities if offset is set', async () => {
       await expect(
-        service.find(<FindApplicationsDto>{ search: 'some name', offset: 300 }),
+        service.find(<FindDtoType>{ search: 'some name', offset: 300 }),
       ).resolves.toEqual({
         data: resultArr,
         total: 1,
@@ -172,7 +172,7 @@ describe('ApplicationsService', () => {
 
     it('should sort entities by given params', async () => {
       await expect(
-        service.find(<FindApplicationsDto>{
+        service.find(<FindDtoType>{
           sortBy: 'name',
           sortDirection: 'asc',
         }),
@@ -187,7 +187,7 @@ describe('ApplicationsService', () => {
 
     it('should return the given amount of entities if limit is set', async () => {
       await expect(
-        service.find(<FindApplicationsDto>{
+        service.find(<FindDtoType>{
           limit: 200,
           sortBy: 'name',
           sortDirection: 'asc',

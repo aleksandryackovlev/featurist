@@ -1,11 +1,9 @@
 import { CrudService } from '../crud/crud.service';
-import { CrudFindEntitiesDto } from '../crud/dto/find-entities.dto';
 
 import { Application } from './application.entity';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
-
-class FindApplicationsDto extends CrudFindEntitiesDto() {}
+import { FindApplicationsDto } from './dto/find-applications.dto';
 
 export class ApplicationsService extends CrudService({
   name: 'application',
