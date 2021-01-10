@@ -20,12 +20,14 @@ export const CrudService = <
 >({
   Entity,
   name,
+  searchBy = 'name',
   CreateDto,
   UpdateDto,
   FindDto = FindEntitiesDto,
 }: {
   Entity: Type<T>;
   name: string;
+  searchBy?: string;
   CreateDto: Type<CreateDtoType>;
   UpdateDto: Type<UpdateDtoType>;
   FindDto?: Type<FindDtoType>;
@@ -86,7 +88,7 @@ export const CrudService = <
       }
 
       if (search) {
-        query[method](`${name}.name LIKE :search`, {
+        query[method](`${name}.${searchBy} LIKE :search`, {
           search: `%${search}%`,
         });
 
