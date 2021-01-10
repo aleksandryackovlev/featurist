@@ -7,14 +7,10 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, EntitySchema, DeepPartial } from 'typeorm';
 
-export interface ICrudService<T> {
-  readonly repository: Repository<T>;
-  find(findDto: any): Promise<{ data: T[]; total: number }>; // any is because of https://github.com/microsoft/TypeScript/issues/30071
-  findOne(id: string): Promise<T>;
-  remove(id: string): Promise<T>;
-  create(createDto: DeepPartial<T>): Promise<T>;
-  update(id: string, updateDto: DeepPartial<T>): Promise<T>;
-}
+import { CrudFindEntitiesDto } from './dto/find-entities.dto';
+import { ICrudService, IFindEntitiesDto as FindDtoType } from './interfaces';
+
+const FindEntitiesDto = CrudFindEntitiesDto();
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export const CrudService = <
@@ -23,20 +19,93 @@ export const CrudService = <
   UpdateDtoType = DeepPartial<T>
 >({
   Entity,
+  name,
   CreateDto,
   UpdateDto,
+  FindDto = FindEntitiesDto,
 }: {
   Entity: Type<T>;
+  name: string;
   CreateDto: Type<CreateDtoType>;
   UpdateDto: Type<UpdateDtoType>;
-}): new () => ICrudService<T> => {
+  FindDto?: Type<FindDtoType>;
+}): new () => ICrudService<T, FindDtoType> => {
   @Injectable()
   class CrudBaseService {
     @InjectRepository(<EntitySchema>(<unknown>Entity))
     readonly repository: Repository<T>;
 
-    async find(): Promise<{ data: T[]; total: number }> {
-      const [data, total] = await this.repository.findAndCount();
+    async find(
+      findEntitiesDto: FindDtoType,
+    ): Promise<{ data: T[]; total: number }> {
+      const {
+        createdFrom,
+        createdTo,
+        updatedFrom,
+        updatedTo,
+        search,
+        sortBy = 'createdAt',
+        sortDirection = 'desc',
+        offset,
+        limit = 10,
+      } = findEntitiesDto;
+
+      const query = this.repository.createQueryBuilder(name);
+      let method: 'where' | 'andWhere' = 'where';
+
+      if (createdFrom) {
+        query[method](`CAST (${name}.createdAt AS DATE) >= :createdFrom`, {
+          createdFrom,
+        });
+
+        method = 'andWhere';
+      }
+
+      if (createdTo) {
+        query[method](`CAST (${name}.createdAt AS DATE) <= :createdTo`, {
+          createdTo,
+        });
+
+        method = 'andWhere';
+      }
+
+      if (updatedFrom) {
+        query[method](`CAST (${name}.updatedAt AS DATE) >= :updatedFrom`, {
+          updatedFrom,
+        });
+
+        method = 'andWhere';
+      }
+
+      if (updatedTo) {
+        query[method](`CAST (${name}.updatedAt AS DATE) <= :updatedTo`, {
+          updatedTo,
+        });
+
+        method = 'andWhere';
+      }
+
+      if (search) {
+        query[method](`${name}.name LIKE :search`, {
+          search: `%${search}%`,
+        });
+
+        method = 'andWhere';
+      }
+
+      if (offset) {
+        query.offset(offset);
+      }
+
+      query.orderBy(
+        `${name}.${sortBy}`,
+        <'ASC' | 'DESC'>sortDirection.toUpperCase(),
+      );
+
+      query.limit(limit);
+
+      const [data, total] = await query.getManyAndCount();
+
       return {
         total,
         data,
