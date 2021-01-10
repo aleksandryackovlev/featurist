@@ -12,10 +12,12 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
+import { IFindEntitiesDto } from '../interfaces';
+
 export const CrudFindEntitiesDto = (
   sortFields = ['id', 'name', 'createdAt', 'updatedAt'],
-) => {
-  const FindEntitiesDto = class FindEntitiesDto {
+): new () => IFindEntitiesDto => {
+  class FindEntitiesDto {
     @IsOptional()
     @IsInt()
     @Min(1)
@@ -128,7 +130,7 @@ export const CrudFindEntitiesDto = (
       enum: ['asc', 'desc'],
     })
     sortDirection: string;
-  };
+  }
 
   return FindEntitiesDto;
 };
