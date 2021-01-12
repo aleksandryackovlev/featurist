@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { FeaturesModule } from './features/features.module';
 import { ApplicationsModule } from './applications/applications.module';
 import { AuthModule } from './auth/auth.module';
+import { CaslModule } from './casl/casl.module';
 
 import config from './config';
 
@@ -48,6 +49,7 @@ import config from './config';
     FeaturesModule,
     ApplicationsModule,
     AuthModule,
+    CaslModule,
   ],
   providers: [],
 })
