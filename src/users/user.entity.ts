@@ -1,8 +1,9 @@
-import { Entity, Column, BeforeInsert } from 'typeorm';
+import { Entity, Column, BeforeInsert, ManyToOne, JoinColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 import * as bcrypt from 'bcrypt';
 
+import { Role } from '../roles/role.entity';
 import { CrudEntity } from '../crud/crud.entity';
 
 @Entity()
@@ -31,6 +32,22 @@ export class User extends CrudEntity {
     description: 'Is user active',
   })
   isActive: boolean;
+
+  @Column({
+    type: 'uuid',
+    name: 'role_id',
+  })
+  @ApiProperty(<ApiPropertyOptions>{
+    description: 'The id of the role the user belongs to',
+    'x-faker': 'random.uuid',
+  })
+  roleId: string;
+
+  @ManyToOne(() => Role, (role) => role.users, {
+    nullable: false,
+  })
+  @JoinColumn([{ name: 'role_id', referencedColumnName: 'id' }])
+  role: Role;
 
   @BeforeInsert()
   async hashPassword() {
