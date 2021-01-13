@@ -8,6 +8,7 @@ import { FeaturesModule } from './features/features.module';
 import { ApplicationsModule } from './applications/applications.module';
 import { AuthModule } from './auth/auth.module';
 import { CaslModule } from './casl/casl.module';
+import { RolesModule } from './roles/roles.module';
 
 import config from './config';
 
@@ -29,7 +30,7 @@ import config from './config';
           schema: configService.get('db.schema'),
           ssl: configService.get<boolean>('db.ssl'),
           entities: ['dist/**/*.entity{.ts,.js}'],
-          synchronize: false,
+          synchronize: true,
           logging: process.env.NODE_ENV === 'development',
         },
       inject: [ConfigService],
@@ -50,6 +51,7 @@ import config from './config';
     ApplicationsModule,
     AuthModule,
     CaslModule,
+    RolesModule,
   ],
   providers: [],
 })
