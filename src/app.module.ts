@@ -30,7 +30,7 @@ import config from './config';
           schema: configService.get('db.schema'),
           ssl: configService.get<boolean>('db.ssl'),
           entities: ['dist/**/*.entity{.ts,.js}'],
-          synchronize: true,
+          synchronize: false,
           logging: process.env.NODE_ENV === 'development',
         },
       inject: [ConfigService],
