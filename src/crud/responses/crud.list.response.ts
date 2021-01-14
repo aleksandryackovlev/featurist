@@ -1,6 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export const CrudListResponse = <T extends unknown>(Entity: T) => {
+export const CrudListResponse = <T extends unknown>(
+  Entity: T,
+): new (data: T[], total: number) => {
+  total: number;
+  data: T[];
+} => {
   class CrudListResponseBase {
     constructor(data: T[], total: number) {
       this.data = data;
