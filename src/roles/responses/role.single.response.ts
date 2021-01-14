@@ -1,14 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { CrudSingleResponse } from '../../crud/responses/crud.single.response';
 
 import { Role } from '../role.entity';
 
-export class RoleSingleResponse {
-  constructor(data: Role) {
-    this.data = data;
-  }
-
-  @ApiProperty({
-    type: Role,
-  })
-  data: Role;
-}
+export class RoleSingleResponse extends CrudSingleResponse(Role) {}

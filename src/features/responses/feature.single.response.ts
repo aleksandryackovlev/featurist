@@ -1,14 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { CrudSingleResponse } from '../../crud/responses/crud.single.response';
 
 import { Feature } from '../interfaces/feature';
 
-export class FeatureSingleResponse {
-  constructor(data: Feature) {
-    this.data = data;
-  }
-
-  @ApiProperty({
-    type: Feature,
-  })
-  data: Feature;
-}
+export class FeatureSingleResponse extends CrudSingleResponse(Feature) {}

@@ -1,16 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { CrudSingleResponse } from '../../crud/responses/crud.single.response';
 
 import { User } from '../user.entity';
 
-export class UserSingleResponse {
-  constructor(data: User) {
-    this.data = data;
-  }
-
-  @ApiProperty({
-    type: User,
-  })
-  @Type(() => User)
-  data: User;
-}
+export class UserSingleResponse extends CrudSingleResponse(User) {}

@@ -1,22 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { CrudListResponse } from '../../crud/responses/crud.list.response';
 
 import { Application } from '../application.entity';
 
-export class ApplicationsListResponse {
-  constructor(data: Application[], total: number) {
-    this.data = data;
-    this.total = total;
-  }
-
-  @ApiProperty({
-    example: 10,
-    description: 'The total amount of entities',
-  })
-  total: number;
-
-  @ApiProperty({
-    description: 'The list of applications',
-    type: () => [Application],
-  })
-  data: Application[];
-}
+export class ApplicationsListResponse extends CrudListResponse(Application) {}
