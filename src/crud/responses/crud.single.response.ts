@@ -1,7 +1,9 @@
+import { Type } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type as TypeTransform } from 'class-transformer';
 
 export const CrudSingleResponse = <T extends unknown>(
-  Entity: T,
+  Entity: Type<T>,
 ): new (data: T) => {
   data: T;
 } => {
@@ -13,6 +15,7 @@ export const CrudSingleResponse = <T extends unknown>(
     @ApiProperty({
       type: Entity,
     })
+    @TypeTransform(() => Entity)
     data: T;
   }
 

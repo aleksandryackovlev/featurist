@@ -1,7 +1,9 @@
+import { Type } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type as TypeTransform } from 'class-transformer';
 
 export const CrudListResponse = <T extends unknown>(
-  Entity: T,
+  Entity: Type<T>,
 ): new (data: T[], total: number) => {
   total: number;
   data: T[];
@@ -22,6 +24,7 @@ export const CrudListResponse = <T extends unknown>(
       description: 'The list of entitites',
       type: () => [Entity],
     })
+    @TypeTransform(() => Entity)
     data: T[];
   }
 
