@@ -6,8 +6,10 @@ items:
     password: 'test'
     __call:
       hashPassword:
+    role: '@role'
   user2:
     username: '{{internet.userName}}'
     password: 'test'
     __call:
       hashPassword:
+    role: '@role'

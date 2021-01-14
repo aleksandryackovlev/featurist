@@ -1,0 +1,6 @@
+entity: Role
+parameters: {}
+items:
+  role:
+    name: 'developer'
+    description: '{{lorem.paragraph}}'
