@@ -45,6 +45,7 @@ export class User extends CrudEntity {
 
   @ManyToOne(() => Role, (role) => role.users, {
     nullable: false,
+    eager: true,
   })
   @JoinColumn([{ name: 'role_id', referencedColumnName: 'id' }])
   role: Role;
