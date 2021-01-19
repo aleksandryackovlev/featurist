@@ -1,6 +1,9 @@
 entity: Role
 parameters: {}
 items:
-  role:
+  admin:
+    name: 'admin'
+    description: '{{lorem.paragraph}}'
+  developer:
     name: 'developer'
     description: '{{lorem.paragraph}}'

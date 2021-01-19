@@ -1,15 +1,15 @@
 entity: User
 parameters: {}
 items:
-  user1:
-    username: '{{internet.userName}}'
+  admin:
+    username: 'admin'
     password: 'test'
     __call:
       hashPassword:
-    role: '@role'
-  user2:
-    username: '{{internet.userName}}'
+    role: '@admin'
+  developer:
+    username: 'developer'
     password: 'test'
     __call:
       hashPassword:
-    role: '@role'
+    role: '@developer'
