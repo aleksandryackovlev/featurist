@@ -9,6 +9,7 @@ import { ApplicationsModule } from './applications/applications.module';
 import { AuthModule } from './auth/auth.module';
 import { CaslModule } from './casl/casl.module';
 import { RolesModule } from './roles/roles.module';
+import { PermissionsModule } from './permissions/permissions.module';
 
 import config from './config';
 
@@ -52,6 +53,7 @@ import config from './config';
     AuthModule,
     CaslModule,
     RolesModule,
+    PermissionsModule,
   ],
   providers: [],
 })
