@@ -7,7 +7,6 @@ import { UsersModule } from './users/users.module';
 import { FeaturesModule } from './features/features.module';
 import { ApplicationsModule } from './applications/applications.module';
 import { AuthModule } from './auth/auth.module';
-import { CaslModule } from './casl/casl.module';
 import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
 
@@ -51,7 +50,6 @@ import config from './config';
     FeaturesModule,
     ApplicationsModule,
     AuthModule,
-    CaslModule,
     RolesModule,
     PermissionsModule,
   ],
