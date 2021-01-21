@@ -3,6 +3,7 @@ import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 
 import { CrudEntity } from '../crud/crud.entity';
 import { User } from '../users/user.entity';
+import { Permission } from '../permissions/permission.entity';
 
 @Entity()
 export class Role extends CrudEntity {
@@ -20,6 +21,11 @@ export class Role extends CrudEntity {
     onDelete: 'RESTRICT',
   })
   users: User[];
+
+  @OneToMany(() => Permission, (permission) => permission.role, {
+    onDelete: 'RESTRICT',
+  })
+  permissions: Permission[];
 
   @Column('text')
   @ApiProperty(<ApiPropertyOptions>{
