@@ -1,0 +1,15 @@
+entity: Permission
+parameters: {}
+items:
+  adminManageAll:
+    action: 'manage'
+    subject: 'all'
+    role: '@admin'
+  developerReadApplication:
+    action: 'read'
+    subject: 'Application'
+    role: '@developer'
+  developerManageFeature:
+    action: 'manage'
+    subject: 'Feature'
+    role: '@developer'
