@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Ability } from '@casl/ability';
 
+import { User } from '../users/user.entity';
+import { Permission } from './permission.entity';
+import { PermissionsService } from './permissions.service';
+
 export type Action = 'manage' | 'create' | 'read' | 'update' | 'delete';
 
 export type Subjects =
@@ -18,10 +22,11 @@ export class PermissionsAbilityFactory {
   constructor(private readonly service: PermissionsService) {}
 
   async createForUser(user: User) {
-    const permissions: Permission[] = await this.service.getPermissionsByRoleId(
-      user.roleId,
-    );
+    const permissions: Pick<
+      Permission,
+      'action' | 'subject'
+    >[] = await this.service.getPermissionsByRoleId(user.roleId);
 
-    return new Ability<AppAbilities>(JSON.stringify(permissions));
+    return new Ability(permissions);
   }
 }
