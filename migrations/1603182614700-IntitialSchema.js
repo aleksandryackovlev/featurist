@@ -165,6 +165,46 @@ class IntitialSchema1603182614700 {
       true,
     );
 
+    await queryRunner.createTable(
+      new Table({
+        name: 'permission',
+        columns: [
+          {
+            name: 'id',
+            type: 'uuid',
+            isGenerated: true,
+            generationStrategy: 'uuid',
+            isPrimary: true,
+          },
+          {
+            name: 'created_at',
+            type: 'timestamp',
+            default: 'now()',
+          },
+          {
+            name: 'updated_at',
+            type: 'timestamp',
+            default: 'now()',
+          },
+          {
+            name: 'action',
+            type: 'varchar',
+            length: 150,
+          },
+          {
+            name: 'subject',
+            type: 'varchar',
+            length: 150,
+          },
+          {
+            name: 'role_id',
+            type: 'uuid',
+          },
+        ],
+      }),
+      true,
+    );
+
     await queryRunner.createForeignKey(
       'feature',
       new TableForeignKey({
@@ -186,6 +226,17 @@ class IntitialSchema1603182614700 {
         onUpdate: 'NO ACTION',
       }),
     );
+
+    await queryRunner.createForeignKey(
+      'permission',
+      new TableForeignKey({
+        columnNames: ['role_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'role',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
+      }),
+    );
   }
 
   async down(queryRunner) {
@@ -196,7 +247,11 @@ class IntitialSchema1603182614700 {
     const userTable = await queryRunner.getTable('user');
     const userForeignKey = userTable.foreignKeys.find(fk => fk.columnNames.indexOf('role_id') !== -1);
 
+    const permissionTable = await queryRunner.getTable('permission');
+    const permissionForeignKey = permissionTable.foreignKeys.find(fk => fk.columnNames.indexOf('role_id') !== -1);
+
     await queryRunner.dropForeignKey('user', userForeignKey);
+    await queryRunner.dropForeignKey('permission', permissionForeignKey);
     await queryRunner.dropForeignKey('feature', featureForeignKey);
     await queryRunner.dropIndex('feature', featureIndex);
 
@@ -204,6 +259,7 @@ class IntitialSchema1603182614700 {
     await queryRunner.dropTable('feature');
     await queryRunner.dropTable('role');
     await queryRunner.dropTable('user');
+    await queryRunner.dropTable('permission');
   }
 }
 
