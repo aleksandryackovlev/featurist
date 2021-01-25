@@ -1,15 +1,11 @@
 entity: User
 parameters: {}
 items:
-  admin:
+  user1:
     username: 'admin'
     password: 'test'
-    __call:
-      hashPassword:
     role: '@admin'
-  developer:
+  user2:
     username: 'developer'
     password: 'test'
-    __call:
-      hashPassword:
     role: '@developer'
