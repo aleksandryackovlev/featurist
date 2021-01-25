@@ -152,6 +152,10 @@ class IntitialSchema1603182614700 {
             isUnique: true,
           },
           {
+            name: 'password',
+            type: 'varchar',
+          },
+          {
             name: 'active',
             type: 'boolean',
             default: true,
