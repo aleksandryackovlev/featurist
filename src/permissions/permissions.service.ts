@@ -11,7 +11,14 @@ export class PermissionsService {
     private readonly repository: Repository<Permission>,
   ) {}
 
-  async getPermissionsByRoleId(id: string): Promise<Permissions> {
-    return this.repository.find({ roleId: id });
+  async getPermissionsByRoleId(
+    id: string,
+  ): Promise<Pick<Permission, 'action' | 'subject'>[]> {
+    return this.repository.find({
+      select: ['action', 'subject'],
+      where: {
+        roleId: id,
+      },
+    });
   }
 }
