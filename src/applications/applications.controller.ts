@@ -19,6 +19,10 @@ import {
 
 import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
 
+import { PoliciesGuard } from '../permissions/guards/permissions.policies.guard';
+import { CheckPolicies } from '../permissions/decorators/permissions.check-policies';
+import { AppAbility } from '../permissions/permissions-ability.factory';
+
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { FindApplicationsDto } from './dto/find-applications.dto';
@@ -46,6 +50,8 @@ export class ApplicationsController {
     type: ApplicationsListResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid search parameters' })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('read', 'Application'))
   async find(
     @Query() findApplicationsDto: FindApplicationsDto,
   ): Promise<ApplicationsListResponse> {
@@ -64,6 +70,8 @@ export class ApplicationsController {
     description: 'The application',
     type: ApplicationSingleResponse,
   })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('read', 'Application'))
   async findOne(@Param('id') id: string): Promise<ApplicationSingleResponse> {
     return new ApplicationSingleResponse(await this.service.findOne(id));
   }
@@ -79,6 +87,8 @@ export class ApplicationsController {
     type: ApplicationSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('create', 'Application'))
   async create(
     @Body() createApplicationDto: CreateApplicationDto,
   ): Promise<ApplicationSingleResponse> {
@@ -98,6 +108,8 @@ export class ApplicationsController {
     type: ApplicationSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('update', 'Application'))
   async update(
     @Param('id') id: string,
     @Body() updateApplicationDto: UpdateApplicationDto,
@@ -118,6 +130,8 @@ export class ApplicationsController {
     type: ApplicationSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('delete', 'Application'))
   async remove(@Param('id') id: string): Promise<ApplicationSingleResponse> {
     return new ApplicationSingleResponse(await this.service.remove(id));
   }
