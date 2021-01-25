@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Ability } from '@casl/ability';
+import { Ability, RawRuleOf } from '@casl/ability';
 
 import { User } from '../users/user.entity';
 import { Permission } from './permission.entity';
@@ -15,18 +15,21 @@ export type Subjects =
   | 'Permission'
   | 'all';
 
-export type AppAbility = Ability<[Action, Subjects]>;
+export type Abilities = [Action, Subjects];
+
+export type AppAbility = Ability<Abilities>;
 
 @Injectable()
 export class PermissionsAbilityFactory {
   constructor(private readonly service: PermissionsService) {}
 
   async createForUser(user: User) {
+    console.log(user);
     const permissions: Pick<
       Permission,
       'action' | 'subject'
     >[] = await this.service.getPermissionsByRoleId(user.roleId);
 
-    return new Ability(permissions);
+    return new Ability<Abilities>(permissions as RawRuleOf<AppAbility>[]);
   }
 }
