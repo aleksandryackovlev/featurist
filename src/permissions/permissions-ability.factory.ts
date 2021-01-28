@@ -24,7 +24,6 @@ export class PermissionsAbilityFactory {
   constructor(private readonly service: PermissionsService) {}
 
   async createForUser(user: User) {
-    console.log(user);
     const permissions: Pick<
       Permission,
       'action' | 'subject'
