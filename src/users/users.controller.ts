@@ -21,6 +21,10 @@ import {
 
 import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
 
+import { PoliciesGuard } from '../permissions/guards/permissions.policies.guard';
+import { CheckPolicies } from '../permissions/decorators/permissions.check-policies';
+import { AppAbility } from '../permissions/permissions-ability.factory';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FindUsersDto } from './dto/find-users.dto';
@@ -63,6 +67,8 @@ export class UsersController {
     type: UsersListResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid search parameters' })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('read', 'User'))
   async find(@Query() findUsersDto: FindUsersDto): Promise<UsersListResponse> {
     const { data, total } = await this.usersService.find(findUsersDto);
 
@@ -80,6 +86,8 @@ export class UsersController {
     type: UserSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('create', 'User'))
   async create(
     @Body() createUserDto: CreateUserDto,
   ): Promise<UserSingleResponse> {
@@ -98,6 +106,8 @@ export class UsersController {
     description: 'The user',
     type: UserSingleResponse,
   })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('read', 'User'))
   async findOne(@Param('id') id: string): Promise<UserSingleResponse> {
     return new UserSingleResponse(await this.usersService.findOne(id));
   }
@@ -113,6 +123,8 @@ export class UsersController {
     type: UserSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('update', 'User'))
   async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -133,6 +145,8 @@ export class UsersController {
     type: UserSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('delete', 'User'))
   async remove(@Param('id') id: string): Promise<UserSingleResponse> {
     return new UserSingleResponse(await this.usersService.remove(id));
   }
