@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Request } from 'express';
 
+import { PermissionsAbilityFactory } from '../permissions/permissions-ability.factory';
+
 import { FindUsersDto } from './dto/find-users.dto';
 
 import { User } from './user.entity';
@@ -13,6 +15,9 @@ user.username = 'username';
 user.id = 'id';
 
 const usersArr = [user];
+const ability = {
+  can: jest.fn().mockReturnValue(true),
+};
 
 const service = {
   find: jest.fn().mockResolvedValue({ data: usersArr, total: 10 }),
@@ -29,6 +34,14 @@ describe('UsersController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
       providers: [
+        {
+          provide: PermissionsAbilityFactory,
+          useValue: {
+            createForUser() {
+              return ability;
+            },
+          },
+        },
         {
           provide: UsersService,
           useValue: service,

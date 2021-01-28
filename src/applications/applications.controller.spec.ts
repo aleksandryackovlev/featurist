@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { PermissionsAbilityFactory } from '../permissions/permissions-ability.factory';
+
 import { ApplicationsController } from './applications.controller';
 import { ApplicationsService } from './applications.service';
 
@@ -16,6 +18,9 @@ const application = {
 };
 
 const applicationsArray: Application[] = [application];
+const ability = {
+  can: jest.fn().mockReturnValue(true),
+};
 
 describe('ApplicationsController', () => {
   let controller: ApplicationsController;
@@ -25,6 +30,14 @@ describe('ApplicationsController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ApplicationsController],
       providers: [
+        {
+          provide: PermissionsAbilityFactory,
+          useValue: {
+            createForUser() {
+              return ability;
+            },
+          },
+        },
         {
           provide: ApplicationsService,
           useValue: {
