@@ -19,6 +19,10 @@ import {
 
 import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
 
+import { PoliciesGuard } from '../permissions/guards/permissions.policies.guard';
+import { CheckPolicies } from '../permissions/decorators/permissions.check-policies';
+import { AppAbility } from '../permissions/permissions-ability.factory';
+
 import { CreateFeatureDto } from './dto/create-feature.dto';
 import { UpdateFeatureDto } from './dto/update-feature.dto';
 import { FindFeaturesDto } from './dto/find-features.dto';
@@ -46,6 +50,8 @@ export class FeaturesController {
     type: FeaturesListResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid search parameters' })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('read', 'Feature'))
   async find(
     @Param('appId') appId: string,
     @Query() findFeaturesDto: FindFeaturesDto,
@@ -69,6 +75,8 @@ export class FeaturesController {
     type: FeatureSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('create', 'Feature'))
   async create(
     @Param('appId') appId: string,
     @Body() createFeatureDto: CreateFeatureDto,
@@ -88,6 +96,8 @@ export class FeaturesController {
     description: 'The feature',
     type: FeatureSingleResponse,
   })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('read', 'Feature'))
   async findOne(
     @Param('appId') appId: string,
     @Param('id') id: string,
@@ -108,6 +118,8 @@ export class FeaturesController {
     type: FeatureSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('update', 'Feature'))
   async update(
     @Param('appId') appId: string,
     @Param('id') id: string,
@@ -129,6 +141,8 @@ export class FeaturesController {
     type: FeatureSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('update', 'Feature'))
   async enable(
     @Param('appId') appId: string,
     @Param('id') id: string,
@@ -149,6 +163,8 @@ export class FeaturesController {
     type: FeatureSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('update', 'Feature'))
   async disable(
     @Param('appId') appId: string,
     @Param('id') id: string,
@@ -169,6 +185,8 @@ export class FeaturesController {
     type: FeatureSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('delete', 'Feature'))
   async remove(
     @Param('appId') appId: string,
     @Param('id') id: string,
