@@ -5,15 +5,14 @@ import { User } from '../users/user.entity';
 import { Permission } from './permission.entity';
 import { PermissionsService } from './permissions.service';
 
-export type Action = 'manage' | 'create' | 'read' | 'update' | 'delete';
+export type Action = 'create' | 'read' | 'update' | 'delete';
 
 export type Subjects =
   | 'Application'
   | 'Feature'
   | 'User'
   | 'Role'
-  | 'Permission'
-  | 'all';
+  | 'Permission';
 
 export type Abilities = [Action, Subjects];
 

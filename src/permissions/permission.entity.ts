@@ -25,6 +25,15 @@ export class Permission extends CrudEntity {
   subject: string;
 
   @Column({
+    type: 'boolean',
+    name: 'is_allowed',
+  })
+  @ApiProperty(<ApiPropertyOptions>{
+    description: 'Is the action allowed with the subject',
+  })
+  isAllowed: boolean;
+
+  @Column({
     type: 'uuid',
     name: 'role_id',
   })

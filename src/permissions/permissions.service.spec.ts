@@ -47,6 +47,7 @@ describe('PermissionsService', () => {
         select: ['action', 'subject'],
         where: {
           roleId: 'some-role-id',
+          isAllowed: true,
         },
       });
     });

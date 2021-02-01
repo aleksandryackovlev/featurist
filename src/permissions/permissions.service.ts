@@ -18,6 +18,7 @@ export class PermissionsService {
       select: ['action', 'subject'],
       where: {
         roleId: id,
+        isAllowed: true,
       },
     });
   }
