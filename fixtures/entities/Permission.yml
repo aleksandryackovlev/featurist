@@ -4,209 +4,209 @@ items:
   adminCreateApplication:
     action: 'create'
     subject: 'Application'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
   adminReadApplication:
     action: 'read'
     subject: 'Application'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
   adminUpdateApplication:
     action: 'update'
     subject: 'Application'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
   adminDeleteApplication:
     action: 'delete'
     subject: 'Application'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
 
   adminCreateFeature:
     action: 'create'
     subject: 'Feature'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
   adminReadFeature:
     action: 'read'
     subject: 'Feature'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
   adminUpdateFeature:
     action: 'update'
     subject: 'Feature'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
   adminDeleteFeature:
     action: 'delete'
     subject: 'Feature'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
 
   adminCreateUser:
     action: 'create'
     subject: 'User'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
   adminReadUser:
     action: 'read'
     subject: 'User'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
   adminUpdateUser:
     action: 'update'
     subject: 'User'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
   adminDeleteUser:
     action: 'delete'
     subject: 'User'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
 
   adminCreateRole:
     action: 'create'
     subject: 'Role'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
   adminReadRole:
     action: 'read'
     subject: 'Role'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
   adminUpdateRole:
     action: 'update'
     subject: 'Role'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
   adminDeleteRole:
     action: 'delete'
     subject: 'Role'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
 
   adminCreatePermission:
     action: 'create'
     subject: 'Permission'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
   adminReadPermission:
     action: 'read'
     subject: 'Permission'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
   adminUpdatePermission:
     action: 'update'
     subject: 'Permission'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
   adminDeletePermission:
     action: 'delete'
     subject: 'Permission'
-    is_allowed: true
+    isAllowed: true
     role: '@admin'
 
   developerCreateApplication:
     action: 'create'
     subject: 'Application'
-    is_allowed: false
+    isAllowed: false
     role: '@developer'
   developerReadApplication:
     action: 'read'
     subject: 'Application'
-    is_allowed: true
+    isAllowed: true
     role: '@developer'
   developerUpdateApplication:
     action: 'update'
     subject: 'Application'
-    is_allowed: false
+    isAllowed: false
     role: '@developer'
   developerDeleteApplication:
     action: 'delete'
     subject: 'Application'
-    is_allowed: false
+    isAllowed: false
     role: '@developer'
 
   developerCreateFeature:
     action: 'create'
     subject: 'Feature'
-    is_allowed: true
+    isAllowed: true
     role: '@developer'
   developerReadFeature:
     action: 'read'
     subject: 'Feature'
-    is_allowed: true
+    isAllowed: true
     role: '@developer'
   developerUpdateFeature:
     action: 'update'
     subject: 'Feature'
-    is_allowed: true
+    isAllowed: true
     role: '@developer'
   developerDeleteFeature:
     action: 'delete'
     subject: 'Feature'
-    is_allowed: true
+    isAllowed: true
     role: '@developer'
 
   developerCreateUser:
     action: 'create'
     subject: 'User'
-    is_allowed: false
+    isAllowed: false
     role: '@developer'
   developerReadUser:
     action: 'read'
     subject: 'User'
-    is_allowed: false
+    isAllowed: false
     role: '@developer'
   developerUpdateUser:
     action: 'update'
     subject: 'User'
-    is_allowed: false
+    isAllowed: false
     role: '@developer'
   developerDeleteUser:
     action: 'delete'
     subject: 'User'
-    is_allowed: false
+    isAllowed: false
     role: '@developer'
 
   developerCreateRole:
     action: 'create'
     subject: 'Role'
-    is_allowed: false
+    isAllowed: false
     role: '@developer'
   developerReadRole:
     action: 'read'
     subject: 'Role'
-    is_allowed: false
+    isAllowed: false
     role: '@developer'
   developerUpdateRole:
     action: 'update'
     subject: 'Role'
-    is_allowed: false
+    isAllowed: false
     role: '@developer'
   developerDeleteRole:
     action: 'delete'
     subject: 'Role'
-    is_allowed: false
+    isAllowed: false
     role: '@developer'
 
   developerCreatePermission:
     action: 'create'
     subject: 'Permission'
-    is_allowed: false
+    isAllowed: false
     role: '@developer'
   developerReadPermission:
     action: 'read'
     subject: 'Permission'
-    is_allowed: false
+    isAllowed: false
     role: '@developer'
   developerUpdatePermission:
     action: 'update'
     subject: 'Permission'
-    is_allowed: false
+    isAllowed: false
     role: '@developer'
   developerDeletePermission:
     action: 'delete'
     subject: 'Permission'
-    is_allowed: false
+    isAllowed: false
     role: '@developer'
