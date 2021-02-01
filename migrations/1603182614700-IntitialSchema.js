@@ -201,6 +201,10 @@ class IntitialSchema1603182614700 {
             length: 150,
           },
           {
+            name: 'is_allowed',
+            type: 'boolean',
+          },
+          {
             name: 'role_id',
             type: 'uuid',
           },
