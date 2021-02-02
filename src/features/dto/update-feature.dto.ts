@@ -11,12 +11,8 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UpdateFeatureDto {
   @IsString()
   @IsNotEmpty()
-  @MinLength(3, {
-    message: 'Description should contain at least 3 symbols',
-  })
-  @MaxLength(1000, {
-    message: 'Description should contian no more than 1000 symbols',
-  })
+  @MinLength(3)
+  @MaxLength(1000)
   @ApiProperty({
     example: 'Feature description',
     description: 'The description of the feature',

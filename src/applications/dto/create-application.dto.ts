@@ -4,12 +4,8 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateApplicationDto {
   @IsNotEmpty()
   @IsString()
-  @MinLength(3, {
-    message: 'Name should contain at least 3 symbols',
-  })
-  @MaxLength(150, {
-    message: 'Name should contain no more than 150 symbols',
-  })
+  @MinLength(3)
+  @MaxLength(150)
   @ApiProperty({
     example: 'Application name',
     description: 'The name of a new application',

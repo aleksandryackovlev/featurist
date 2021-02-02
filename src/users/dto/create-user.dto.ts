@@ -10,12 +10,8 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
-  @MinLength(3, {
-    message: 'Username should contain at least 3 symbols',
-  })
-  @MaxLength(150, {
-    message: 'Username should contain no more than 150 symbols',
-  })
+  @MinLength(5)
+  @MaxLength(150)
   @Matches(/^[a-zA-Z][-._a-zA-Z\d]{3,}[a-zA-Z\d]$/)
   @ApiProperty({
     example: 'username',
@@ -25,9 +21,7 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
-  @MinLength(5, {
-    message: 'Password should contain at least 5 symbols',
-  })
+  @MinLength(5)
   @Matches(/^[A-Za-z\d@$!%*#?&]{5,}$/)
   @ApiProperty({
     example: 'somePassword',
