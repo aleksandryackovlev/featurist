@@ -39,9 +39,7 @@ import config from './config';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) =>
         <EtcdModuleOptions>{
-          hosts: `http://${configService.get('etcd.host')}:${configService.get(
-            'etcd.port',
-          )}`,
+          hosts: configService.get('etcd.hosts'),
           namespace: configService.get('etcd.namespace'),
         },
       inject: [ConfigService],

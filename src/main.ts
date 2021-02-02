@@ -11,9 +11,9 @@ type VerifyOriginFunction = (
   callback: (err: Error | null, allow?: boolean) => void,
 ) => void;
 
-export const verifyOrigin: (
-  allowedOrigin: string,
-) => VerifyOriginFunction = allowedOrigin => (origin, done) => {
+export const verifyOrigin: (allowedOrigin: string) => VerifyOriginFunction = (
+  allowedOrigin,
+) => (origin, done) => {
   if (allowedOrigin === '*' || !origin || allowedOrigin === origin) {
     return done(null, true);
   }
@@ -60,6 +60,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('openapi', app, document);
 
-  await app.listen(3000);
+  await app.listen(process.env.BACKEND_PORT || 3000);
 }
 bootstrap();

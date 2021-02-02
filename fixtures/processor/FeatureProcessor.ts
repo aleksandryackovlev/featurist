@@ -10,7 +10,7 @@ dotenv.config();
 export default class FeatureProcessor implements IProcessor<Feature> {
   async postProcess(name: string, feature: { [key: string]: any }): Promise<void> {
     const etcdClient = new Etcd3({
-      hosts: `http://${process.env.ETCD_HOST}:${process.env.ETCD_PORT}`,
+      hosts: JSON.parse(process.env.ETCD_HOSTS),
     });
 
     await etcdClient.put(`${feature.application.id}/${feature.name}`).value(Math.round(Math.random()) ? '1' : '0');

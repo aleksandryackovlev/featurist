@@ -7,14 +7,13 @@ x-app-defaults: &app_defaults
   working_dir: /usr/src/service/
   environment:
     NODE_ENV: "${NODE_ENV:-production}"
-    DB_HOST: db
-    DB_PORT: 5432
-    DB_DATABASE: features
-    DB_USERNAME: features
-    DB_PASSWORD: features
-    DB_SCHEMA: public
-    ETCD_HOST: etcd0
-    ETCD_PORT: 2379
+    DATABASE_HOST: db
+    DATABASE_PORT: 5432
+    DATABASE_NAME: features
+    DATABASE_USERNAME: features
+    DATABASE_PASSWORD: features
+    DATABASE_SCHEMA: public
+    ETCD_HOSTS: "[\"http://etcd0:2379\"]"
     ETCD_NAMESPACE: featurist/
     JWT_SECRET: secretKey
     JWT_EXPIRES_IN: 12h
