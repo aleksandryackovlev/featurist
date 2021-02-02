@@ -8,6 +8,7 @@ import {
   Put,
   Query,
   UseGuards,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 
 import {
@@ -53,7 +54,7 @@ export class FeaturesController {
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('read', 'Feature'))
   async find(
-    @Param('appId') appId: string,
+    @Param('appId', ParseUUIDPipe) appId: string,
     @Query() findFeaturesDto: FindFeaturesDto,
   ): Promise<FeaturesListResponse> {
     const { data, total } = await this.featuresService.find(
@@ -78,7 +79,7 @@ export class FeaturesController {
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('create', 'Feature'))
   async create(
-    @Param('appId') appId: string,
+    @Param('appId', ParseUUIDPipe) appId: string,
     @Body() createFeatureDto: CreateFeatureDto,
   ): Promise<FeatureSingleResponse> {
     return new FeatureSingleResponse(
@@ -99,8 +100,8 @@ export class FeaturesController {
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('read', 'Feature'))
   async findOne(
-    @Param('appId') appId: string,
-    @Param('id') id: string,
+    @Param('appId', ParseUUIDPipe) appId: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<FeatureSingleResponse> {
     return new FeatureSingleResponse(
       await this.featuresService.findOne(appId, id),
@@ -121,8 +122,8 @@ export class FeaturesController {
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('update', 'Feature'))
   async update(
-    @Param('appId') appId: string,
-    @Param('id') id: string,
+    @Param('appId', ParseUUIDPipe) appId: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateFeatureDto: UpdateFeatureDto,
   ): Promise<FeatureSingleResponse> {
     return new FeatureSingleResponse(
@@ -144,8 +145,8 @@ export class FeaturesController {
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('update', 'Feature'))
   async enable(
-    @Param('appId') appId: string,
-    @Param('id') id: string,
+    @Param('appId', ParseUUIDPipe) appId: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<FeatureSingleResponse> {
     return new FeatureSingleResponse(
       await this.featuresService.enable(appId, id),
@@ -166,8 +167,8 @@ export class FeaturesController {
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('update', 'Feature'))
   async disable(
-    @Param('appId') appId: string,
-    @Param('id') id: string,
+    @Param('appId', ParseUUIDPipe) appId: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<FeatureSingleResponse> {
     return new FeatureSingleResponse(
       await this.featuresService.disable(appId, id),
@@ -188,8 +189,8 @@ export class FeaturesController {
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('delete', 'Feature'))
   async remove(
-    @Param('appId') appId: string,
-    @Param('id') id: string,
+    @Param('appId', ParseUUIDPipe) appId: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<FeatureSingleResponse> {
     return new FeatureSingleResponse(
       await this.featuresService.remove(appId, id),

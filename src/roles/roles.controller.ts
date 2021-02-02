@@ -8,6 +8,7 @@ import {
   Query,
   Param,
   UseGuards,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 
 import {
@@ -70,7 +71,9 @@ export class RolesController {
   })
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('read', 'Role'))
-  async findOne(@Param('id') id: string): Promise<RoleSingleResponse> {
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<RoleSingleResponse> {
     return new RoleSingleResponse(await this.service.findOne(id));
   }
 
@@ -107,7 +110,7 @@ export class RolesController {
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('update', 'Role'))
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateRoleDto: UpdateRoleDto,
   ): Promise<RoleSingleResponse> {
     return new RoleSingleResponse(await this.service.update(id, updateRoleDto));
@@ -126,7 +129,9 @@ export class RolesController {
   @ApiResponse({ status: 400, description: 'Invalid id' })
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('delete', 'Role'))
-  async remove(@Param('id') id: string): Promise<RoleSingleResponse> {
+  async remove(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<RoleSingleResponse> {
     return new RoleSingleResponse(await this.service.remove(id));
   }
 }

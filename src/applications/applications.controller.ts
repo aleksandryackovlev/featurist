@@ -8,6 +8,7 @@ import {
   Query,
   Param,
   UseGuards,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 
 import {
@@ -72,7 +73,9 @@ export class ApplicationsController {
   })
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('read', 'Application'))
-  async findOne(@Param('id') id: string): Promise<ApplicationSingleResponse> {
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ApplicationSingleResponse> {
     return new ApplicationSingleResponse(await this.service.findOne(id));
   }
 
@@ -111,7 +114,7 @@ export class ApplicationsController {
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('update', 'Application'))
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateApplicationDto: UpdateApplicationDto,
   ): Promise<ApplicationSingleResponse> {
     return new ApplicationSingleResponse(
@@ -132,7 +135,9 @@ export class ApplicationsController {
   @ApiResponse({ status: 400, description: 'Invalid id' })
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('delete', 'Application'))
-  async remove(@Param('id') id: string): Promise<ApplicationSingleResponse> {
+  async remove(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ApplicationSingleResponse> {
     return new ApplicationSingleResponse(await this.service.remove(id));
   }
 }

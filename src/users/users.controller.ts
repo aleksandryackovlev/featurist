@@ -10,6 +10,7 @@ import {
   Post,
   Put,
   UseGuards,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 
 import {
@@ -108,7 +109,9 @@ export class UsersController {
   })
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('read', 'User'))
-  async findOne(@Param('id') id: string): Promise<UserSingleResponse> {
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<UserSingleResponse> {
     return new UserSingleResponse(await this.usersService.findOne(id));
   }
 
@@ -126,7 +129,7 @@ export class UsersController {
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('update', 'User'))
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserSingleResponse> {
     return new UserSingleResponse(
@@ -147,7 +150,9 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Invalid id' })
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('delete', 'User'))
-  async remove(@Param('id') id: string): Promise<UserSingleResponse> {
+  async remove(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<UserSingleResponse> {
     return new UserSingleResponse(await this.usersService.remove(id));
   }
 }
