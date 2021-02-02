@@ -72,7 +72,7 @@ describe('Applications', () => {
   });
 
   describe('GET /applications/:id', () => {
-    it('should throw an 403 if the current user is not allowed to read applications', () => {
+    it('should return 403 error if current user is not allowed to read applications', () => {
       return app
         .get(`/applications/${appsList[0].id}`)
         .set({
@@ -114,7 +114,7 @@ describe('Applications', () => {
         .expect(400);
     });
 
-    it('should return the requested application', () => {
+    it('should return the application with the given id', () => {
       return app
         .get(`/applications/${appsList[0].id}`)
         .set({
