@@ -1,13 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class Bcrypt {
-  compare(
-    data: any,
-    encrypted: string,
-    callback?: (err: Error, same: boolean) => void,
-  ): Promise<boolean> {
-    return bcrypt.compare(data, encrypted, callback);
+  compare(data: any, encrypted: string): Promise<boolean> {
+    return bcrypt.compare(data, encrypted);
   }
 }

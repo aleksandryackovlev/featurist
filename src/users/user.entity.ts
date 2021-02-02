@@ -1,7 +1,7 @@
 import { Entity, Column, BeforeInsert, ManyToOne, JoinColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 
 import { Role } from '../roles/role.entity';
 import { CrudEntity } from '../crud/crud.entity';
