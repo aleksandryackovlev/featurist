@@ -139,6 +139,8 @@ describe('Applications', () => {
           statusCode: 400,
           message: [
             'property test should not exist',
+            'name must be shorter than or equal to 150 characters',
+            'name must be longer than or equal to 3 characters',
             'name must be a string',
             'name should not be empty'
           ],
@@ -159,10 +161,14 @@ describe('Applications', () => {
         .expect({
           statusCode: 400,
           message: [
+            'name must be shorter than or equal to 150 characters',
+            'name must be longer than or equal to 3 characters',
             'name should not be empty',
             'name must be a string',
+            'description must be shorter than or equal to 1000 characters',
+            'description must be longer than or equal to 3 characters',
             'description should not be empty',
-            'description must be a string'
+            'description must be a string',
           ],
           error: 'Bad Request'
         })
