@@ -9,3 +9,7 @@ items:
     username: 'developer'
     password: 'test'
     role: '@developer'
+  user3:
+    username: 'manager'
+    password: 'test'
+    role: '@manager'

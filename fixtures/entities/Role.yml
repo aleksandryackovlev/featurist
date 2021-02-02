@@ -7,3 +7,6 @@ items:
   developer:
     name: 'developer'
     description: '{{lorem.paragraph}}'
+  manager:
+    name: 'manager'
+    description: '{{lorem.paragraph}}'

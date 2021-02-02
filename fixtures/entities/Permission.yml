@@ -210,3 +210,108 @@ items:
     subject: 'Permission'
     isAllowed: false
     role: '@developer'
+
+  managerCreateApplication:
+    action: 'create'
+    subject: 'Application'
+    isAllowed: false
+    role: '@manager'
+  managerReadApplication:
+    action: 'read'
+    subject: 'Application'
+    isAllowed: false
+    role: '@manager'
+  managerUpdateApplication:
+    action: 'update'
+    subject: 'Application'
+    isAllowed: false
+    role: '@manager'
+  managerDeleteApplication:
+    action: 'delete'
+    subject: 'Application'
+    isAllowed: false
+    role: '@manager'
+
+  managerCreateFeature:
+    action: 'create'
+    subject: 'Feature'
+    isAllowed: false
+    role: '@manager'
+  managerReadFeature:
+    action: 'read'
+    subject: 'Feature'
+    isAllowed: false
+    role: '@manager'
+  managerUpdateFeature:
+    action: 'update'
+    subject: 'Feature'
+    isAllowed: false
+    role: '@manager'
+  managerDeleteFeature:
+    action: 'delete'
+    subject: 'Feature'
+    isAllowed: false
+    role: '@manager'
+
+  managerCreateUser:
+    action: 'create'
+    subject: 'User'
+    isAllowed: false
+    role: '@manager'
+  managerReadUser:
+    action: 'read'
+    subject: 'User'
+    isAllowed: false
+    role: '@manager'
+  managerUpdateUser:
+    action: 'update'
+    subject: 'User'
+    isAllowed: false
+    role: '@manager'
+  managerDeleteUser:
+    action: 'delete'
+    subject: 'User'
+    isAllowed: false
+    role: '@manager'
+
+  managerCreateRole:
+    action: 'create'
+    subject: 'Role'
+    isAllowed: false
+    role: '@manager'
+  managerReadRole:
+    action: 'read'
+    subject: 'Role'
+    isAllowed: false
+    role: '@manager'
+  managerUpdateRole:
+    action: 'update'
+    subject: 'Role'
+    isAllowed: false
+    role: '@manager'
+  managerDeleteRole:
+    action: 'delete'
+    subject: 'Role'
+    isAllowed: false
+    role: '@manager'
+
+  managerCreatePermission:
+    action: 'create'
+    subject: 'Permission'
+    isAllowed: false
+    role: '@manager'
+  managerReadPermission:
+    action: 'read'
+    subject: 'Permission'
+    isAllowed: false
+    role: '@manager'
+  managerUpdatePermission:
+    action: 'update'
+    subject: 'Permission'
+    isAllowed: false
+    role: '@manager'
+  managerDeletePermission:
+    action: 'delete'
+    subject: 'Permission'
+    isAllowed: false
+    role: '@manager'
