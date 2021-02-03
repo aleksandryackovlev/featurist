@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Etcd3 } from 'nestjs-etcd';
 
 import { ApplicationsService } from '../applications/applications.service';
 
@@ -14,6 +13,7 @@ const feature = {
   id: '935a38e8-ec14-41b8-8066-2bc5c818577a',
   description: 'John Doe',
   name: 'feature_name',
+  isEnabled: true,
 };
 
 const resultArr = [feature];
@@ -25,27 +25,6 @@ const query = {
   limit: jest.fn(),
   orderBy: jest.fn(),
   getManyAndCount: jest.fn().mockReturnValue([resultArr, 10]),
-};
-
-const putValue = jest.fn().mockResolvedValue(true);
-
-const etcd = {
-  getAll: jest.fn().mockReturnValue({
-    prefix: jest.fn().mockReturnValue({
-      strings: jest.fn().mockResolvedValue({
-        'appId/feature_name': '1',
-      }),
-    }),
-  }),
-  put: jest.fn().mockReturnValue({
-    value: putValue,
-  }),
-  get: jest.fn().mockReturnValue({
-    string: jest.fn().mockResolvedValue('1'),
-  }),
-  delete: jest.fn().mockReturnValue({
-    key: jest.fn().mockResolvedValue(true),
-  }),
 };
 
 describe('FeaturesService', () => {
@@ -74,10 +53,6 @@ describe('FeaturesService', () => {
             isApplicationExists: jest.fn().mockResolvedValue(query),
           },
         },
-        {
-          provide: Etcd3,
-          useValue: <Etcd3>(<unknown>etcd),
-        },
       ],
     }).compile();
 
@@ -96,10 +71,7 @@ describe('FeaturesService', () => {
           name: 'Test Entity 1',
           description: 'Test Desc 1',
         }),
-      ).resolves.toEqual({
-        ...feature,
-        isEnabled: false,
-      });
+      ).resolves.toEqual(feature);
 
       expect(repo.create).toBeCalledTimes(1);
       expect(repo.create).toBeCalledWith({
@@ -167,12 +139,7 @@ describe('FeaturesService', () => {
     it('should query the repository with the default params if no args are given', async () => {
       await expect(service.find('appId', <FindFeaturesDto>{})).resolves.toEqual(
         {
-          data: [
-            {
-              ...feature,
-              isEnabled: true,
-            },
-          ],
+          data: [feature],
           total: 10,
         },
       );
@@ -210,12 +177,7 @@ describe('FeaturesService', () => {
           createdTo: new Date('2020-09-14'),
         }),
       ).resolves.toEqual({
-        data: [
-          {
-            ...feature,
-            isEnabled: true,
-          },
-        ],
+        data: [feature],
         total: 10,
       });
 
@@ -248,12 +210,7 @@ describe('FeaturesService', () => {
           updatedTo: new Date('2020-09-14'),
         }),
       ).resolves.toEqual({
-        data: [
-          {
-            ...feature,
-            isEnabled: true,
-          },
-        ],
+        data: [feature],
         total: 10,
       });
 
@@ -283,12 +240,7 @@ describe('FeaturesService', () => {
       await expect(
         service.find('appId', <FindFeaturesDto>{ search: 'some name' }),
       ).resolves.toEqual({
-        data: [
-          {
-            ...feature,
-            isEnabled: true,
-          },
-        ],
+        data: [feature],
         total: 10,
       });
 
@@ -305,12 +257,7 @@ describe('FeaturesService', () => {
           offset: 300,
         }),
       ).resolves.toEqual({
-        data: [
-          {
-            ...feature,
-            isEnabled: true,
-          },
-        ],
+        data: [feature],
         total: 10,
       });
 
@@ -325,12 +272,7 @@ describe('FeaturesService', () => {
           sortDirection: 'asc',
         }),
       ).resolves.toEqual({
-        data: [
-          {
-            ...feature,
-            isEnabled: true,
-          },
-        ],
+        data: [feature],
         total: 10,
       });
 
@@ -346,61 +288,12 @@ describe('FeaturesService', () => {
           sortDirection: 'asc',
         }),
       ).resolves.toEqual({
-        data: [
-          {
-            ...feature,
-            isEnabled: true,
-          },
-        ],
+        data: [feature],
         total: 10,
       });
 
       expect(query.limit).toBeCalledTimes(1);
       expect(query.limit).toBeCalledWith(200);
-    });
-
-    it('should return isEnabled = false for disabled features', async () => {
-      jest
-        .spyOn(etcd.getAll().prefix('appId'), 'strings')
-        .mockResolvedValueOnce({ 'appId/feature_name': '0' });
-
-      await expect(
-        service.find('appId', <FindFeaturesDto>{
-          limit: 200,
-          sortBy: 'name',
-          sortDirection: 'asc',
-        }),
-      ).resolves.toEqual({
-        data: [
-          {
-            ...feature,
-            isEnabled: false,
-          },
-        ],
-        total: 10,
-      });
-    });
-
-    it('should return isEnabled = false for features that are not saved in etcd', async () => {
-      jest
-        .spyOn(etcd.getAll().prefix('appId'), 'strings')
-        .mockResolvedValueOnce({ 'appId/feature_name1': '1' });
-
-      await expect(
-        service.find('appId', <FindFeaturesDto>{
-          limit: 200,
-          sortBy: 'name',
-          sortDirection: 'asc',
-        }),
-      ).resolves.toEqual({
-        data: [
-          {
-            ...feature,
-            isEnabled: false,
-          },
-        ],
-        total: 10,
-      });
     });
   });
 });

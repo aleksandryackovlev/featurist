@@ -27,6 +27,15 @@ export class Feature extends CrudEntity {
   description: string;
 
   @Column({
+    default: false,
+    name: 'is_enabled',
+  })
+  @ApiProperty({
+    description: 'Is feature enabled',
+  })
+  isEnabled: boolean;
+
+  @Column({
     type: 'uuid',
     name: 'application_id',
   })
@@ -36,13 +45,9 @@ export class Feature extends CrudEntity {
   })
   applicationId: string;
 
-  @ManyToOne(
-    () => Application,
-    application => application.features,
-    {
-      nullable: false,
-    },
-  )
+  @ManyToOne(() => Application, (application) => application.features, {
+    nullable: false,
+  })
   @JoinColumn([{ name: 'application_id', referencedColumnName: 'id' }])
   application: Application;
 }

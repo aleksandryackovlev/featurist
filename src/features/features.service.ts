@@ -5,12 +5,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Etcd3, InjectClient } from 'nestjs-etcd';
 
 import { ApplicationsService } from '../applications/applications.service';
 
 import { Feature } from './feature.entity';
-import { Feature as IFeature } from './interfaces/feature';
 import { CreateFeatureDto } from './dto/create-feature.dto';
 import { UpdateFeatureDto } from './dto/update-feature.dto';
 import { FindFeaturesDto } from './dto/find-features.dto';
@@ -18,8 +16,6 @@ import { FindFeaturesDto } from './dto/find-features.dto';
 @Injectable()
 export class FeaturesService {
   constructor(
-    @InjectClient()
-    private readonly etcdClient: Etcd3,
     @InjectRepository(Feature)
     private readonly repository: Repository<Feature>,
     private readonly applicationsService: ApplicationsService,
@@ -28,7 +24,7 @@ export class FeaturesService {
   async create(
     appId: string,
     createFeatureDto: CreateFeatureDto,
-  ): Promise<IFeature> {
+  ): Promise<Feature> {
     if (!(await this.applicationsService.isApplicationExists(appId))) {
       throw new BadRequestException('Application does not exist');
     }
@@ -42,14 +38,9 @@ export class FeaturesService {
       applicationId: appId,
     });
 
-    await this.etcdClient.put(`${appId}/${createFeatureDto.name}`).value('0');
-
     await this.repository.save(entity);
 
-    return {
-      ...entity,
-      isEnabled: false,
-    };
+    return entity;
   }
 
   async isFeatureExists(appId: string, name: string) {
@@ -65,7 +56,7 @@ export class FeaturesService {
   async find(
     appId: string,
     findFeaturesDto: FindFeaturesDto,
-  ): Promise<{ data: IFeature[]; total: number }> {
+  ): Promise<{ data: Feature[]; total: number }> {
     const {
       createdFrom,
       createdTo,
@@ -126,21 +117,13 @@ export class FeaturesService {
 
     const [features, total] = await query.getManyAndCount();
 
-    const featuresValues = await this.etcdClient
-      .getAll()
-      .prefix(`${appId}/`)
-      .strings();
-
     return {
-      data: features.map(feature => ({
-        ...feature,
-        isEnabled: featuresValues[`${appId}/${feature.name}`] === '1',
-      })),
+      data: features,
       total,
     };
   }
 
-  async findOne(appId: string, featureId: string): Promise<IFeature> {
+  async findOne(appId: string, featureId: string): Promise<Feature> {
     const feature = await this.repository.findOne({
       id: featureId,
       applicationId: appId,
@@ -150,17 +133,10 @@ export class FeaturesService {
       throw new NotFoundException();
     }
 
-    const value = await this.etcdClient
-      .get(`${appId}/${feature.name}`)
-      .string();
-
-    return {
-      ...feature,
-      isEnabled: !!value && value === '1',
-    };
+    return feature;
   }
 
-  async enable(appId: string, featureId: string): Promise<IFeature> {
+  async enable(appId: string, featureId: string): Promise<Feature> {
     const feature = await this.repository.findOne({
       id: featureId,
       applicationId: appId,
@@ -170,18 +146,14 @@ export class FeaturesService {
       throw new NotFoundException();
     }
 
-    await this.etcdClient.put(`${appId}/${feature.name}`).value('1');
-
+    feature.isEnabled = true;
     feature.updatedAt = new Date();
     await this.repository.save(feature);
 
-    return {
-      ...feature,
-      isEnabled: true,
-    };
+    return feature;
   }
 
-  async disable(appId: string, featureId: string): Promise<IFeature> {
+  async disable(appId: string, featureId: string): Promise<Feature> {
     const feature = await this.repository.findOne({
       id: featureId,
       applicationId: appId,
@@ -191,21 +163,15 @@ export class FeaturesService {
       throw new NotFoundException();
     }
 
-    await this.etcdClient.put(`${appId}/${feature.name}`).value('0');
-
+    feature.isEnabled = false;
     feature.updatedAt = new Date();
     await this.repository.save(feature);
 
-    return {
-      ...feature,
-      isEnabled: false,
-    };
+    return feature;
   }
 
-  async remove(appId: string, featureId: string): Promise<IFeature> {
+  async remove(appId: string, featureId: string): Promise<Feature> {
     const feature = await this.findOne(appId, featureId);
-
-    await this.etcdClient.delete().key(`${appId}/${feature.name}`);
 
     await this.repository.delete(feature.id);
 
@@ -216,16 +182,10 @@ export class FeaturesService {
     appId: string,
     featureId: string,
     updateFeatureDto: UpdateFeatureDto,
-  ): Promise<IFeature> {
+  ): Promise<Feature> {
     const feature = await this.findOne(appId, featureId);
 
-    const { isEnabled, ...updateDto } = updateFeatureDto;
-
-    await this.repository.update(featureId, updateDto);
-
-    await this.etcdClient
-      .put(`${appId}/${feature.name}`)
-      .value(isEnabled ? '1' : '0');
+    await this.repository.update(featureId, updateFeatureDto);
 
     return { ...feature, ...updateFeatureDto };
   }
