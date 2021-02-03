@@ -1,7 +1,5 @@
 DB_VOLUME = feature_service_db_volume
 DB_CONTAINER = feature_service_db_container
-ETCD_VOLUME = feature_service_etcd_volume
-ETCD_CONTAINER = feature_service_etcd_container
 
 .PHONY: all clean migrate fixture install build start-prod-app start-dev-app start start-dev start
 
@@ -32,5 +30,3 @@ fixture:
 clean:
 	docker container rm -f -v $(DB_CONTAINER) 2> /dev/null || true
 	docker volume rm -f $(DB_VOLUME)
-	docker container rm -f -v $(ETCD_CONTAINER) 2> /dev/null || true
-	docker volume rm -f $(ETCD_VOLUME)
