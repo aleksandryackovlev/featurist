@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { EtcdModule, EtcdModuleOptions } from 'nestjs-etcd';
 
 import { UsersModule } from './users/users.module';
 import { FeaturesModule } from './features/features.module';
@@ -32,15 +31,6 @@ import config from './config';
           entities: ['dist/**/*.entity{.ts,.js}'],
           synchronize: false,
           logging: process.env.NODE_ENV === 'development',
-        },
-      inject: [ConfigService],
-    }),
-    EtcdModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) =>
-        <EtcdModuleOptions>{
-          hosts: configService.get('etcd.hosts'),
-          namespace: configService.get('etcd.namespace'),
         },
       inject: [ConfigService],
     }),
