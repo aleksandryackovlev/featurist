@@ -41,6 +41,11 @@ class IntitialSchema1603182614700 {
             type: 'text',
           },
           {
+            name: 'is_enabled',
+            type: 'boolean',
+            default: false,
+          },
+          {
             name: 'application_id',
             type: 'uuid',
           },
