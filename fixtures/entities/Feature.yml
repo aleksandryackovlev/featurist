@@ -1,6 +1,5 @@
 entity: Feature
 parameters: {}
-processor: ../processor/FeatureProcessor
 items:
   feature{1..5}:
     name: '{{lorem.slug}}'
