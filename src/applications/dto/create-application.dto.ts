@@ -14,12 +14,8 @@ export class CreateApplicationDto {
 
   @IsNotEmpty()
   @IsString()
-  @MinLength(3, {
-    message: 'Description should contain at least 3 symbols',
-  })
-  @MaxLength(1000, {
-    message: 'Description should contian no more than 1000 symbols',
-  })
+  @MinLength(3)
+  @MaxLength(1000)
   @ApiProperty({
     example: 'Application description',
     description: 'The description of a new application',
