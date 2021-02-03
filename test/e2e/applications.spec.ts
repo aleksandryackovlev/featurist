@@ -148,6 +148,63 @@ describe('Applications', () => {
         })
         .expect(400);
     });
+
+    it('should throw an 400 if empty body is sent', () => {
+      return app
+        .post('/applications')
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 400,
+          message: [
+            'name must be shorter than or equal to 150 characters',
+            'name must be longer than or equal to 3 characters',
+            'name must be a string',
+            'name should not be empty',
+            'description must be shorter than or equal to 1000 characters',
+            'description must be longer than or equal to 3 characters',
+            'description must be a string',
+            'description should not be empty'
+          ],
+          error: 'Bad Request'
+        })
+        .expect(400);
+    });
+
+    it('should return 403 error if current user is not allowed to create applications', () => {
+      return app
+        .post('/applications')
+        .send({ description: 'Some description', name: 'test' })
+        .set({
+          Authorization: `Bearer ${restrictedUserToken}`
+        })
+        .expect({
+          statusCode: 403,
+          error: 'Forbidden',
+          message: 'Forbidden resource',
+        })
+        .expect(403);
+    });
+
+    it('should create a new application and return it', async () => {
+      const result = await app
+        .post('/applications')
+        .send({ description: 'Some description', name: 'test' })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        });
+
+      expect(result.status).toEqual(201);
+      expect(Object.keys(result.body.data).sort()).toEqual(Object.keys(appsList[0]).sort());
+      expect(result.body.data).toMatchObject({ description: 'Some description', name: 'test' });
+
+      await app
+        .delete(`/applications/${result.body.data.id}`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+    });
   });
 
   describe('PUT /applications/:id', () => {
