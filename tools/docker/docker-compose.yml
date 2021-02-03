@@ -66,21 +66,6 @@ services:
     volumes:
       - feature-db:/var/lib/postgresql/data
 
-  pgadmin:
-    image: dpage/pgadmin4
-    depends_on:
-      - db
-    ports:
-      - "8001:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@payday.ru
-      PGADMIN_DEFAULT_PASSWORD: test
-    volumes:
-      - ./develop/pgadmin/servers.json:/pgadmin4/servers.json
-      - pgadmin:/var/lib/pgadmin
-
 volumes:
   feature-db:
     name: "${DB_VOLUME:-feature_service_db_volume}"
-  pgadmin:
-    name: "${PGADMIN_VOLUME:-feaute_service_pgadmin_volume}"
