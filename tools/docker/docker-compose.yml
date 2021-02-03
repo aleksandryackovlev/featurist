@@ -57,7 +57,6 @@ services:
   db:
     image: postgres
     container_name: "${DB_CONTAINER:-feature_service_db_container}"
-    depends_on:
     environment:
       POSTGRES_USER: features
       POSTGRES_PASSWORD: features
