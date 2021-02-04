@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-  Type,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, Type } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, EntitySchema, DeepPartial } from 'typeorm';
 
@@ -126,7 +121,7 @@ export const CrudService = <
       const entity = await this.repository.findOne(id);
 
       if (!entity) {
-        throw new BadRequestException('Entity does not exist');
+        throw new NotFoundException('Entity does not exist');
       }
 
       await this.repository.update(id, updateDto);
@@ -148,7 +143,7 @@ export const CrudService = <
       const entity = await this.repository.findOne(id);
 
       if (!entity) {
-        throw new BadRequestException('Entity does not exist');
+        throw new NotFoundException('Entity does not exist');
       }
 
       await this.repository.delete(id);
