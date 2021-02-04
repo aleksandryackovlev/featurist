@@ -1,3 +1,5 @@
+import { NotFoundException, BadRequestException } from '@nestjs/common';
+
 import { CrudService } from '../crud/crud.service';
 
 import { Application } from './application.entity';
@@ -16,5 +18,25 @@ export class ApplicationsService extends CrudService({
     const entity = await this.repository.findOne(id);
 
     return !!entity;
+  }
+
+  async remove(id: string): Promise<Application> {
+    const result = await this.repository.findOne(id, {
+      relations: ['features'],
+    });
+
+    if (!result) {
+      throw new NotFoundException('Entity does not exist');
+    }
+
+    const { features, ...entity } = result;
+
+    if (features && features.length) {
+      throw new BadRequestException('Related entities should be deleted first');
+    }
+
+    await this.repository.delete(id);
+
+    return entity as Application;
   }
 }
