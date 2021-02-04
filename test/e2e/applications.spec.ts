@@ -4,7 +4,6 @@ const app = request('http://localhost:3000');
 
 describe('Applications', () => {
   let adminToken = '';
-  let developerToken = '';
   let restrictedUserToken = '';
 
   const appsList = [
@@ -25,20 +24,16 @@ describe('Applications', () => {
   ];
 
   beforeAll(async () => {
-    const [admin, developer, restrictedUser] = await Promise.all([
+    const [admin, restrictedUser] = await Promise.all([
       app
         .post('/auth/login')
         .send({ username: 'admin', password: 'test' }),
-      app
-        .post('/auth/login')
-        .send({ username: 'developer', password: 'test' }),
       app
         .post('/auth/login')
         .send({ username: 'manager', password: 'test' }),
     ]);
 
     adminToken = admin.body.data.access_token;
-    developerToken = developer.body.data.access_token;
     restrictedUserToken = restrictedUser.body.data.access_token;
   });
 
@@ -303,6 +298,82 @@ describe('Applications', () => {
         .set({
           Authorization: `Bearer ${adminToken}`
         })
+    });
+  });
+
+  describe('DELETE /applications/:id', () => {
+    it('should return 400 error if the given id is not a valid uuid', () => {
+      return app
+        .delete('/applications/app-1')
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: 'Validation failed (uuid  is expected)',
+        })
+        .expect(400);
+    });
+
+    it('should return 400 error if the api with the given id has features', () => {
+      return app
+        .delete(`/applications/${appsList[0].id}`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: 'Related entities should be deleted first',
+        })
+        .expect(400);
+    });
+
+    it('should return 403 error if current user is not allowed to edit applications', () => {
+      return app
+        .delete(`/applications/${appsList[0].id}`)
+        .set({
+          Authorization: `Bearer ${restrictedUserToken}`
+        })
+        .expect({
+          statusCode: 403,
+          error: 'Forbidden',
+          message: 'Forbidden resource',
+        })
+        .expect(403);
+    });
+
+    it('should return 404 error if an application with the given id does not exist', () => {
+      return app
+        .delete('/applications/c6101e77-9bb8-4756-9720-82656d1b92a5')
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 404,
+          error: 'Not Found',
+          message: 'Entity does not exist',
+        })
+        .expect(404);
+    });
+
+    it('should delete an application and return it', async () => {
+      const created = await app
+        .post('/applications')
+        .send({ description: 'Some description', name: 'test' })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        });
+
+      const result = await app
+        .delete(`/applications/${created.body.data.id}`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        });
+
+      expect(result.status).toEqual(200);
+      expect(result.body.data).toMatchObject(created.body.data);
     });
   });
 });
