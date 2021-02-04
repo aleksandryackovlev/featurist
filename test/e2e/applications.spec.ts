@@ -231,5 +231,78 @@ describe('Applications', () => {
         })
         .expect(400);
     });
+
+    it('should return 400 error if the given id is not a valid uuid', () => {
+      return app
+        .put('/applications/app-1')
+        .send({
+          name: 'app-name',
+          description: '<p>Test</p>',
+        })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: 'Validation failed (uuid  is expected)',
+        })
+        .expect(400);
+    });
+
+    it('should return 403 error if current user is not allowed to edit applications', () => {
+      return app
+        .put(`/applications/${appsList[0].id}`)
+        .send({ description: 'Some description', name: 'test' })
+        .set({
+          Authorization: `Bearer ${restrictedUserToken}`
+        })
+        .expect({
+          statusCode: 403,
+          error: 'Forbidden',
+          message: 'Forbidden resource',
+        })
+        .expect(403);
+    });
+
+    it('should return 404 error if an application with the given id does not exist', () => {
+      return app
+        .put('/applications/c6101e77-9bb8-4756-9720-82656d1b92a5')
+        .send({ description: 'Some description', name: 'test' })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 404,
+          error: 'Not Found',
+          message: 'Entity does not exist',
+        })
+        .expect(404);
+    });
+
+    it('should update an application and return it', async () => {
+      const created = await app
+        .post('/applications')
+        .send({ description: 'Some description', name: 'test' })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        });
+
+      const result = await app
+        .put(`/applications/${created.body.data.id}`)
+        .send({ description: 'Some new description', name: 'Some new name' })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        });
+
+      expect(result.status).toEqual(200);
+      expect(result.body.data).toMatchObject({ description: 'Some new description', name: 'Some new name' });
+
+      await app
+        .delete(`/applications/${created.body.data.id}`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+    });
   });
 });
