@@ -1,10 +1,13 @@
 # Feature toggle service
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/aacbe0c4d537ba4f5298/maintainability)](https://codeclimate.com/github/aleksandryackovlev/featurist/maintainability)
+[![Build Status](https://github.com/aleksandryackovlev/featurist/workflows/build/badge.svg)](https://github.com/aleksandryackovlev/featurist/actions)
+[![codecov](https://codecov.io/gh/aleksandryackovlev/featurist/branch/master/graph/badge.svg)](https://codecov.io/gh/aleksandryackovlev/featurist)
 ## Requirements
 node.js >= 12
+
 PostgreSQL >= 11
-etcd 3
+
 docker
 docker-compose
 make
