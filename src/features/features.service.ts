@@ -70,7 +70,7 @@ export class FeaturesService {
     } = findFeaturesDto;
 
     if (!(await this.applicationsService.isApplicationExists(appId))) {
-      throw new NotFoundException('Application not found');
+      throw new NotFoundException('Entity does not exist');
     }
 
     const query = this.repository.createQueryBuilder('feature');
@@ -130,7 +130,7 @@ export class FeaturesService {
     });
 
     if (!feature) {
-      throw new NotFoundException();
+      throw new NotFoundException('Entity does not exist');
     }
 
     return feature;
@@ -143,7 +143,7 @@ export class FeaturesService {
     });
 
     if (!feature) {
-      throw new NotFoundException();
+      throw new NotFoundException('Entity does not exist');
     }
 
     feature.isEnabled = true;
@@ -160,7 +160,7 @@ export class FeaturesService {
     });
 
     if (!feature) {
-      throw new NotFoundException();
+      throw new NotFoundException('Entity does not exist');
     }
 
     feature.isEnabled = false;
