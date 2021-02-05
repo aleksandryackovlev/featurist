@@ -237,4 +237,340 @@ describe('Features', () => {
         .expect(200);
     });
   });
+
+  describe('POST /applications/:appId/features', () => {
+    it('should throw an 400 if invalid body is sent', () => {
+      return app
+        .post(`/applications/${appsList[0].id}/features`)
+        .send({ description: 'Some description', name: 'test flag' })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 400,
+          message: [ 'name should contain only letters digits and -._ symbols' ],
+          error: 'Bad Request'
+        })
+        .expect(400);
+    });
+
+    it('should throw an 400 if empty body is sent', () => {
+      return app
+        .post(`/applications/${appsList[0].id}/features`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 400,
+          message: [
+            'name should contain only letters digits and -._ symbols',
+            'name must be shorter than or equal to 150 characters',
+            'name must be longer than or equal to 5 characters',
+            'name must be a string',
+            'name should not be empty',
+            'description must be shorter than or equal to 1000 characters',
+            'description must be longer than or equal to 3 characters',
+            'description must be a string',
+            'description should not be empty',
+          ],
+          error: 'Bad Request'
+        })
+        .expect(400);
+    });
+
+    it('should return 403 error if current user is not allowed to read applications', () => {
+      return app
+        .post(`/applications/${appsList[0].id}/features`)
+        .send({ description: 'Some description', name: 'test' })
+        .set({
+          Authorization: `Bearer ${restrictedUserToken}`
+        })
+        .expect({
+          statusCode: 403,
+          error: 'Forbidden',
+          message: 'Forbidden resource',
+        })
+        .expect(403);
+    });
+
+    it('should throw an 403 if the current user is not allowed to create features', () => {
+      return app
+        .post(`/applications/${appsList[0].id}/features`)
+        .send({ description: 'Some description', name: 'test' })
+        .set({
+          Authorization: `Bearer ${developerToken}`,
+        })
+        .expect({
+          statusCode: 403,
+          error: 'Forbidden',
+          message: 'Forbidden resource',
+        })
+        .expect(403);
+    });
+
+    it('should create a new application and return it', async () => {
+      const result = await app
+        .post(`/applications/${appsList[0].id}/features`)
+        .send({ description: 'Some description', name: 'test.feature_a' })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        });
+
+      expect(result.status).toEqual(201);
+      expect(Object.keys(result.body.data).sort()).toEqual(Object.keys(appsList[0].features[0]).sort());
+      expect(result.body.data).toMatchObject({ description: 'Some description', name: 'test.feature_a' });
+
+      await app
+        .delete(`/applications/${appsList[0].id}/features/${result.body.data.id}`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+    });
+  });
+
+  describe('PUT /applications/:id', () => {
+    it('should throw an 400 if invalid body is sent', () => {
+      return app
+        .put(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
+        .send({ name: 'test_feature_1' })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 400,
+          message: [
+            'property name should not exist',
+            'description must be shorter than or equal to 1000 characters',
+            'description must be longer than or equal to 3 characters',
+            'description should not be empty',
+            'description must be a string',
+            'isEnabled should not be empty',
+            'isEnabled must be a boolean value',
+          ],
+          error: 'Bad Request'
+        })
+        .expect(400);
+    });
+
+    it('should return 400 error if the given appId is not a valid uuid', () => {
+      return app
+        .put(`/applications/app-1/features/${appsList[0].features[0].id}`)
+        .send({ description: 'test_feature_1', isEnabled: true })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: 'Validation failed (uuid  is expected)',
+        })
+        .expect(400);
+    });
+
+    it('should return 400 error if the given feature id is not a valid uuid', () => {
+      return app
+        .put(`/applications/app-1/features/${appsList[0].features[0].id}`)
+        .send({ description: 'test_feature_1', isEnabled: true })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: 'Validation failed (uuid  is expected)',
+        })
+        .expect(400);
+    });
+
+    it('should return 403 error if current user is not allowed to read applications', () => {
+      return app
+        .put(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
+        .send({ description: 'test_feature_1', isEnabled: true })
+        .set({
+          Authorization: `Bearer ${restrictedUserToken}`
+        })
+        .expect({
+          statusCode: 403,
+          error: 'Forbidden',
+          message: 'Forbidden resource',
+        })
+        .expect(403);
+    });
+
+    it('should throw an 403 if the current user is not allowed to update features', () => {
+      return app
+        .put(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
+        .send({ description: 'test_feature_1', isEnabled: true })
+        .set({
+          Authorization: `Bearer ${developerToken}`,
+        })
+        .expect({
+          statusCode: 403,
+          error: 'Forbidden',
+          message: 'Forbidden resource',
+        })
+        .expect(403);
+    });
+
+    it('should return 404 error if an application with the given id does not exist', () => {
+      return app
+        .put(`/applications/c6101e77-9bb8-4756-9720-82656d1b92a5/features/${appsList[0].features[0].id}`)
+        .send({ description: 'test_feature_1', isEnabled: true })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 404,
+          error: 'Not Found',
+          message: 'Entity does not exist',
+        })
+        .expect(404);
+    });
+
+    it('should return 404 error if a feature with the given id does not exist', () => {
+      return app
+        .put(`/applications/${appsList[0].id}/features/c6101e77-9bb8-4756-9720-82656d1b92a5`)
+        .send({ description: 'test_feature_1', isEnabled: true })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 404,
+          error: 'Not Found',
+          message: 'Entity does not exist',
+        })
+        .expect(404);
+    });
+
+
+    it('should update an application and return it', async () => {
+
+      const created = await app
+        .post(`/applications/${appsList[0].id}/features`)
+        .send({ description: 'Some description', name: 'test_feature' })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        });
+
+      const result = await app
+        .put(`/applications/${appsList[0].id}/features/${created.body.data.id}`)
+        .send({ description: 'Some new description', isEnabled: false })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        });
+
+      expect(result.status).toEqual(200);
+      expect(result.body.data).toMatchObject({ description: 'Some new description', isEnabled: false });
+
+      await app
+        .delete(`/applications/${appsList[0].id}/features/${created.body.data.id}`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        });
+    });
+  });
+
+  describe('DELETE /applications/:appId/features/:id', () => {
+    it('should return 400 error if the given appId is not a valid uuid', () => {
+      return app
+        .delete(`/applications/app-1/features/${appsList[0].features[0].id}`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: 'Validation failed (uuid  is expected)',
+        })
+        .expect(400);
+    });
+
+    it('should return 400 error if the given feature id is not a valid uuid', () => {
+      return app
+        .delete(`/applications/${appsList[0].id}/features/app-1`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: 'Validation failed (uuid  is expected)',
+        })
+        .expect(400);
+    });
+
+    it('should return 403 error if current user is not allowed to read applications', () => {
+      return app
+        .delete(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
+        .set({
+          Authorization: `Bearer ${restrictedUserToken}`
+        })
+        .expect({
+          statusCode: 403,
+          error: 'Forbidden',
+          message: 'Forbidden resource',
+        })
+        .expect(403);
+    });
+
+    it('should throw an 403 if the current user is not allowed to delete features', () => {
+      return app
+        .delete(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
+        .set({
+          Authorization: `Bearer ${developerToken}`,
+        })
+        .expect({
+          statusCode: 403,
+          error: 'Forbidden',
+          message: 'Forbidden resource',
+        })
+        .expect(403);
+    });
+
+    it('should return 404 error if an application with the given id does not exist', () => {
+      return app
+        .delete(`/applications/c6101e77-9bb8-4756-9720-82656d1b92a5/features/${appsList[0].features[0].id}`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 404,
+          error: 'Not Found',
+          message: 'Entity does not exist',
+        })
+        .expect(404);
+    });
+
+    it('should return 404 error if a feature with the given id does not exist', () => {
+      return app
+        .delete(`/applications/${appsList[0].id}/features/c6101e77-9bb8-4756-9720-82656d1b92a5`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 404,
+          error: 'Not Found',
+          message: 'Entity does not exist',
+        })
+        .expect(404);
+    });
+
+    it('should delete a feature and return it', async () => {
+      const created = await app
+        .post(`/applications/${appsList[0].id}/features`)
+        .send({ description: 'Some description', name: 'test_feature' })
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        });
+
+      const result = await app
+        .delete(`/applications/${appsList[0].id}/features/${created.body.data.id}`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        });
+
+      expect(result.status).toEqual(200);
+      expect(result.body.data).toMatchObject(created.body.data);
+    });
+  });
 });
