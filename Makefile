@@ -7,10 +7,15 @@ all: start
 
 start: | clean build migrate fixture start-prod-app
 
+start-detached: | clean build migrate fixture start-prod-app-detached
+
 start-dev: | clean install migrate fixture start-dev-app
 
 start-prod-app:
 	NODE_ENV=production docker-compose -f tools/docker/docker-compose.yml --project-directory ./ up app-start
+
+start-prod-app-detached:
+	NODE_ENV=production docker-compose -f tools/docker/docker-compose.yml --project-directory ./ up -d app-start
 
 start-dev-app:
 	NODE_ENV=development docker-compose -f tools/docker/docker-compose.yml --project-directory ./ up app-dev

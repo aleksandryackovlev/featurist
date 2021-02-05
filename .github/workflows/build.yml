@@ -19,9 +19,9 @@ jobs:
         yarn test:cov
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
-    - name: Setup application
+    - name: Setup application for e2e tests
       run: |
-        make start
+        make start-detached
         ./third_party/wait-for-it.sh 0.0.0.0:3000
     - name: Run e2e tests
       run: |
