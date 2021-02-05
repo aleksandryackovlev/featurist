@@ -10,9 +10,11 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateFeatureDto {
   @IsNotEmpty()
   @IsString()
-  @MinLength(3)
+  @MinLength(5)
   @MaxLength(150)
-  @Matches(/^[a-zA-Z][-._a-zA-Z\d]{3,}[a-zA-Z\d]$/)
+  @Matches(/^[a-zA-Z][-._a-zA-Z\d]{3,}[a-zA-Z\d]$/, {
+    message: 'name should contain only letters digits and -._ symbols',
+  })
   @ApiProperty({
     example: 'Feature name',
     description: 'The name of a new feature',
