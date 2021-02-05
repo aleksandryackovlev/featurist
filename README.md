@@ -1,5 +1,6 @@
 # Feature toggle service
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/aacbe0c4d537ba4f5298/maintainability)](https://codeclimate.com/github/aleksandryackovlev/featurist/maintainability)
 ## Requirements
 node.js >= 12
 PostgreSQL >= 11
