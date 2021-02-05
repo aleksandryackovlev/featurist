@@ -139,4 +139,102 @@ describe('Features', () => {
         .expect(200);
     });
   });
+
+  describe('GET /applications/:appId/features/:id', () => {
+    it('should return 403 error if current user is not allowed to read applications', () => {
+      return app
+        .get(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
+        .set({
+          Authorization: `Bearer ${restrictedUserToken}`
+        })
+        .expect({
+          statusCode: 403,
+          error: 'Forbidden',
+          message: 'Forbidden resource',
+        })
+        .expect(403);
+    });
+
+    it('should throw an 403 if the current user is not allowed to read features', () => {
+      return app
+        .get(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
+        .set({
+          Authorization: `Bearer ${developerToken}`,
+        })
+        .expect({
+          statusCode: 403,
+          error: 'Forbidden',
+          message: 'Forbidden resource',
+        })
+        .expect(403);
+    });
+
+    it('should return 404 error if an application with the given id does not exist', () => {
+      return app
+        .get(`/applications/c6101e77-9bb8-4756-9720-82656d1b92a5/features/${appsList[0].features[0].id}`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 404,
+          error: 'Not Found',
+          message: 'Entity does not exist',
+        })
+        .expect(404);
+    });
+
+    it('should return 404 error if a feature with the given id does not exist', () => {
+      return app
+        .get(`/applications/${appsList[0].id}/features/c6101e77-9bb8-4756-9720-82656d1b92a5`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 404,
+          error: 'Not Found',
+          message: 'Entity does not exist',
+        })
+        .expect(404);
+    });
+
+    it('should return 400 error if the given appId is not a valid uuid', () => {
+      return app
+        .get(`/applications/some-id/features/${appsList[0].features[0].id}`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: 'Validation failed (uuid  is expected)',
+        })
+        .expect(400);
+    });
+
+    it('should return 400 error if the given feature id is not a valid uuid', () => {
+      return app
+        .get(`/applications/${appsList[0].id}/features/some-id`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: 'Validation failed (uuid  is expected)',
+        })
+        .expect(400);
+    });
+
+    it('should return the feature with the given id', () => {
+      return app
+        .get(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
+        .set({
+          Authorization: `Bearer ${adminToken}`
+        })
+        .expect({
+          data: appsList[0].features[0],
+        })
+        .expect(200);
+    });
+  });
 });
