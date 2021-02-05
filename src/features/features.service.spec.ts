@@ -166,7 +166,7 @@ describe('FeaturesService', () => {
         .mockResolvedValueOnce(false);
 
       await expect(service.find('appId', <FindFeaturesDto>{})).rejects.toThrow(
-        'Application not found',
+        'Entity does not exist',
       );
     });
 
