@@ -52,7 +52,10 @@ export class FeaturesController {
   })
   @ApiResponse({ status: 400, description: 'Invalid search parameters' })
   @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('read', 'Feature'))
+  @CheckPolicies(
+    (ability: AppAbility) =>
+      ability.can('read', 'Application') && ability.can('read', 'Feature'),
+  )
   async find(
     @Param('appId', ParseUUIDPipe) appId: string,
     @Query() findFeaturesDto: FindFeaturesDto,
@@ -77,7 +80,10 @@ export class FeaturesController {
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('create', 'Feature'))
+  @CheckPolicies(
+    (ability: AppAbility) =>
+      ability.can('read', 'Application') && ability.can('create', 'Feature'),
+  )
   async create(
     @Param('appId', ParseUUIDPipe) appId: string,
     @Body() createFeatureDto: CreateFeatureDto,
@@ -98,7 +104,10 @@ export class FeaturesController {
     type: FeatureSingleResponse,
   })
   @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('read', 'Feature'))
+  @CheckPolicies(
+    (ability: AppAbility) =>
+      ability.can('read', 'Application') && ability.can('read', 'Feature'),
+  )
   async findOne(
     @Param('appId', ParseUUIDPipe) appId: string,
     @Param('id', ParseUUIDPipe) id: string,
@@ -120,7 +129,10 @@ export class FeaturesController {
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('update', 'Feature'))
+  @CheckPolicies(
+    (ability: AppAbility) =>
+      ability.can('read', 'Application') && ability.can('update', 'Feature'),
+  )
   async update(
     @Param('appId', ParseUUIDPipe) appId: string,
     @Param('id', ParseUUIDPipe) id: string,
@@ -143,7 +155,10 @@ export class FeaturesController {
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
   @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('update', 'Feature'))
+  @CheckPolicies(
+    (ability: AppAbility) =>
+      ability.can('read', 'Application') && ability.can('update', 'Feature'),
+  )
   async enable(
     @Param('appId', ParseUUIDPipe) appId: string,
     @Param('id', ParseUUIDPipe) id: string,
@@ -165,7 +180,10 @@ export class FeaturesController {
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
   @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('update', 'Feature'))
+  @CheckPolicies(
+    (ability: AppAbility) =>
+      ability.can('read', 'Application') && ability.can('update', 'Feature'),
+  )
   async disable(
     @Param('appId', ParseUUIDPipe) appId: string,
     @Param('id', ParseUUIDPipe) id: string,
@@ -187,7 +205,10 @@ export class FeaturesController {
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
   @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('delete', 'Feature'))
+  @CheckPolicies(
+    (ability: AppAbility) =>
+      ability.can('read', 'Application') && ability.can('delete', 'Feature'),
+  )
   async remove(
     @Param('appId', ParseUUIDPipe) appId: string,
     @Param('id', ParseUUIDPipe) id: string,
