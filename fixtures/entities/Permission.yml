@@ -109,7 +109,7 @@ items:
   developerCreateApplication:
     action: 'create'
     subject: 'Application'
-    isAllowed: false
+    isAllowed: true
     role: '@developer'
   developerReadApplication:
     action: 'read'
@@ -119,33 +119,33 @@ items:
   developerUpdateApplication:
     action: 'update'
     subject: 'Application'
-    isAllowed: false
+    isAllowed: true
     role: '@developer'
   developerDeleteApplication:
     action: 'delete'
     subject: 'Application'
-    isAllowed: false
+    isAllowed: true
     role: '@developer'
 
   developerCreateFeature:
     action: 'create'
     subject: 'Feature'
-    isAllowed: true
+    isAllowed: false
     role: '@developer'
   developerReadFeature:
     action: 'read'
     subject: 'Feature'
-    isAllowed: true
+    isAllowed: false
     role: '@developer'
   developerUpdateFeature:
     action: 'update'
     subject: 'Feature'
-    isAllowed: true
+    isAllowed: false
     role: '@developer'
   developerDeleteFeature:
     action: 'delete'
     subject: 'Feature'
-    isAllowed: true
+    isAllowed: false
     role: '@developer'
 
   developerCreateUser:
@@ -235,22 +235,22 @@ items:
   managerCreateFeature:
     action: 'create'
     subject: 'Feature'
-    isAllowed: false
+    isAllowed: true
     role: '@manager'
   managerReadFeature:
     action: 'read'
     subject: 'Feature'
-    isAllowed: false
+    isAllowed: true
     role: '@manager'
   managerUpdateFeature:
     action: 'update'
     subject: 'Feature'
-    isAllowed: false
+    isAllowed: true
     role: '@manager'
   managerDeleteFeature:
     action: 'delete'
     subject: 'Feature'
-    isAllowed: false
+    isAllowed: true
     role: '@manager'
 
   managerCreateUser:
