@@ -1,8 +1,9 @@
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 
 import { CrudEntity } from '../crud/crud.entity';
 import { Feature } from '../features/feature.entity';
+import { User } from '../users/user.entity';
 
 @Entity()
 export class Application extends CrudEntity {
@@ -16,13 +17,9 @@ export class Application extends CrudEntity {
   })
   name: string;
 
-  @OneToMany(
-    () => Feature,
-    feature => feature.application,
-    {
-      onDelete: 'RESTRICT',
-    },
-  )
+  @OneToMany(() => Feature, (feature) => feature.application, {
+    onDelete: 'RESTRICT',
+  })
   features: Feature[];
 
   @Column('text')
@@ -31,4 +28,18 @@ export class Application extends CrudEntity {
     'x-faker': 'hacker.phrase',
   })
   description: string;
+
+  @ManyToMany(() => User)
+  @JoinTable({
+    name: 'application_users_user',
+    joinColumn: {
+      name: 'application_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+  })
+  users: User[];
 }

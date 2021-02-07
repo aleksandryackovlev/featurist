@@ -1,9 +1,17 @@
-import { Entity, Column, BeforeInsert, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  BeforeInsert,
+  ManyToOne,
+  JoinColumn,
+  ManyToMany,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 import * as bcrypt from 'bcryptjs';
 
 import { Role } from '../roles/role.entity';
+import { Application } from '../applications/application.entity';
 import { CrudEntity } from '../crud/crud.entity';
 
 @Entity()
@@ -49,6 +57,9 @@ export class User extends CrudEntity {
   })
   @JoinColumn([{ name: 'role_id', referencedColumnName: 'id' }])
   role: Role;
+
+  @ManyToMany(() => Application, (application) => application.users)
+  applications: Application[];
 
   @BeforeInsert()
   async hashPassword() {
