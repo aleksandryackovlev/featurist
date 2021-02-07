@@ -176,6 +176,23 @@ class IntitialSchema1603182614700 {
 
     await queryRunner.createTable(
       new Table({
+        name: 'application_users_user',
+        columns: [
+          {
+            name: 'application_id',
+            type: 'uuid',
+          },
+          {
+            name: 'user_id',
+            type: 'uuid',
+          },
+        ],
+      }),
+      true,
+    );
+
+    await queryRunner.createTable(
+      new Table({
         name: 'permission',
         columns: [
           {
@@ -230,6 +247,32 @@ class IntitialSchema1603182614700 {
     );
 
     await queryRunner.createForeignKey(
+      'application_users_user',
+      new TableForeignKey({
+        columnNames: ['application_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'application',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'application_users_user',
+      new TableForeignKey({
+        columnNames: ['user_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'user',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
+      }),
+    );
+
+    await queryRunner.createPrimaryKey('application_users_user', ['application_id', 'user_id']);
+    await queryRunner.createIndex("application_users_user", new TableIndex({ columnNames: ['application_id'] }));
+    await queryRunner.createIndex("application_users_user", new TableIndex({ columnNames: ['user_id'] }));
+
+    await queryRunner.createForeignKey(
       'user',
       new TableForeignKey({
         columnNames: ['role_id'],
@@ -263,16 +306,27 @@ class IntitialSchema1603182614700 {
     const permissionTable = await queryRunner.getTable('permission');
     const permissionForeignKey = permissionTable.foreignKeys.find(fk => fk.columnNames.indexOf('role_id') !== -1);
 
+    const applicaionUsersTable = await queryRunner.getTable('application_users_user');
+    const applicaionUsersApplicationIdForeignKey = applicaionUsersTable.foreignKeys.find(fk => fk.columnNames.indexOf('application_id') !== -1);
+    const applicaionUsersUserIdForeignKey = applicaionUsersTable.foreignKeys.find(fk => fk.columnNames.indexOf('user_id') !== -1);
+    const applicaionUsersApplicationIdIndex = applicaionUsersTable.indices.find(index => index.columnNames.indexOf('application_id') !== -1);
+    const applicaionUsersUserIdIndex = applicaionUsersTable.indices.find(index => index.columnNames.indexOf('user_id') !== -1);
+
     await queryRunner.dropForeignKey('user', userForeignKey);
     await queryRunner.dropForeignKey('permission', permissionForeignKey);
     await queryRunner.dropForeignKey('feature', featureForeignKey);
     await queryRunner.dropIndex('feature', featureIndex);
+    await queryRunner.dropForeignKey('application_users_user', applicaionUsersApplicationIdForeignKey);
+    await queryRunner.dropForeignKey('application_users_user', applicaionUsersUserIdForeignKey);
+    await queryRunner.dropIndex('application_users_user', applicaionUsersApplicationIdIndex);
+    await queryRunner.dropIndex('application_users_user', applicaionUsersUserIdIndex);
 
     await queryRunner.dropTable('application');
     await queryRunner.dropTable('feature');
     await queryRunner.dropTable('role');
     await queryRunner.dropTable('user');
     await queryRunner.dropTable('permission');
+    await queryRunner.dropTable('application_users_user');
   }
 }
 
