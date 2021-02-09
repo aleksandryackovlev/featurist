@@ -82,19 +82,6 @@ describe('FeaturesService', () => {
       expect(repo.save).toBeCalledTimes(1);
     });
 
-    it('should throw an error if application does not exist', async () => {
-      jest
-        .spyOn(applicationsService, 'isApplicationExists')
-        .mockResolvedValueOnce(false);
-
-      await expect(
-        service.create('appId', {
-          name: 'Test Entity 1',
-          description: 'Test Desc 1',
-        }),
-      ).rejects.toThrow('Application does not exist');
-    });
-
     it('should throw an error if feature already exists', async () => {
       jest
         .spyOn(applicationsService, 'isApplicationExists')
@@ -158,16 +145,6 @@ describe('FeaturesService', () => {
       expect(query.limit).toBeCalledWith(10);
 
       expect(query.getManyAndCount).toBeCalledTimes(1);
-    });
-
-    it('should throw an error if application does not exist', async () => {
-      jest
-        .spyOn(applicationsService, 'isApplicationExists')
-        .mockResolvedValueOnce(false);
-
-      await expect(service.find('appId', <FindFeaturesDto>{})).rejects.toThrow(
-        'Entity does not exist',
-      );
     });
 
     it('should be able to filter features by the creation date range', async () => {

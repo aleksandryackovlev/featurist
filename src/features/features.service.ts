@@ -6,8 +6,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { ApplicationsService } from '../applications/applications.service';
-
 import { Feature } from './feature.entity';
 import { CreateFeatureDto } from './dto/create-feature.dto';
 import { UpdateFeatureDto } from './dto/update-feature.dto';
@@ -18,17 +16,12 @@ export class FeaturesService {
   constructor(
     @InjectRepository(Feature)
     private readonly repository: Repository<Feature>,
-    private readonly applicationsService: ApplicationsService,
   ) {}
 
   async create(
     appId: string,
     createFeatureDto: CreateFeatureDto,
   ): Promise<Feature> {
-    if (!(await this.applicationsService.isApplicationExists(appId))) {
-      throw new BadRequestException('Application does not exist');
-    }
-
     if (await this.isFeatureExists(appId, createFeatureDto.name)) {
       throw new BadRequestException('Feature already exists');
     }
@@ -68,10 +61,6 @@ export class FeaturesService {
       offset,
       limit = 10,
     } = findFeaturesDto;
-
-    if (!(await this.applicationsService.isApplicationExists(appId))) {
-      throw new NotFoundException('Entity does not exist');
-    }
 
     const query = this.repository.createQueryBuilder('feature');
 
