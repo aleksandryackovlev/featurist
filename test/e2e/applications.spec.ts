@@ -50,15 +50,15 @@ describe('Applications', () => {
         .expect(403);
     });
 
-    it('should return a list of available applications', () => {
+    it('should return a list of available for user applications', () => {
       return app
         .get('/applications')
         .set({
           Authorization: `Bearer ${adminToken}`
         })
         .expect({
-          data: appsList,
-          total: appsList.length,
+          data: [appsList[0]],
+          total: 1,
         })
         .expect(200);
     });
