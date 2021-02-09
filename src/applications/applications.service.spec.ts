@@ -86,7 +86,7 @@ describe('ApplicationsService', () => {
         .spyOn(query, 'getOne')
         .mockResolvedValueOnce(<Application>{ name: 'name' });
 
-      expect(service.isApplicationExists('uid')).resolves.toEqual(false);
+      expect(service.isApplicationExists('uid')).resolves.toEqual(true);
       expect(query.where).toBeCalledTimes(1);
       expect(query.where).toBeCalledWith('application.id = :id', { id: 'uid' });
 
@@ -99,7 +99,7 @@ describe('ApplicationsService', () => {
         .mockResolvedValueOnce(<Application>{ name: 'name' });
 
       expect(service.isApplicationExists('uid', 'userId')).resolves.toEqual(
-        false,
+        true,
       );
       expect(query.innerJoin).toBeCalledTimes(1);
       expect(query.innerJoin).toBeCalledWith(
