@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Request } from 'express';
 
 import { PermissionsAbilityFactory } from '../permissions/permissions-ability.factory';
 
@@ -13,8 +14,16 @@ const application = {
   name: 'Test name',
   description: 'Test description',
   features: [],
+  users: [],
   createdAt: new Date(),
   updatedAt: new Date(),
+};
+
+const req = {
+  user: {
+    id: 'user-id',
+    username: 'username',
+  },
 };
 
 const applicationsArray: Application[] = [application];
@@ -61,7 +70,10 @@ describe('ApplicationsController', () => {
   describe('find', () => {
     it('should return an array of applications', async () => {
       expect(
-        await controller.find(<FindApplicationsDto>{ offset: 10, limit: 10 }),
+        await controller.find(
+          <FindApplicationsDto>{ offset: 10, limit: 10 },
+          <Request>(<unknown>req),
+        ),
       ).toEqual({
         data: applicationsArray,
         total: 10,
@@ -72,10 +84,12 @@ describe('ApplicationsController', () => {
   describe('findOne', () => {
     it('should return the application by id', async () => {
       const serviceSpy = jest.spyOn(service, 'findOne');
-      expect(await controller.findOne('some-id')).toEqual({
+      expect(
+        await controller.findOne('some-id', <Request>(<unknown>req)),
+      ).toEqual({
         data: application,
       });
-      expect(serviceSpy).toBeCalledWith('some-id');
+      expect(serviceSpy).toBeCalledWith('some-id', req.user.id);
     });
   });
 
@@ -83,15 +97,21 @@ describe('ApplicationsController', () => {
     it('should create an application', async () => {
       const serviceSpy = jest.spyOn(service, 'create');
       expect(
-        await controller.create({
+        await controller.create(
+          {
+            name: 'Some name',
+            description: 'Some desc',
+          },
+          <Request>(<unknown>req),
+        ),
+      ).toEqual({ data: application });
+      expect(serviceSpy).toBeCalledWith(
+        {
           name: 'Some name',
           description: 'Some desc',
-        }),
-      ).toEqual({ data: application });
-      expect(serviceSpy).toBeCalledWith({
-        name: 'Some name',
-        description: 'Some desc',
-      });
+        },
+        req.user,
+      );
     });
   });
 
@@ -99,25 +119,35 @@ describe('ApplicationsController', () => {
     it('should update an application', async () => {
       const serviceSpy = jest.spyOn(service, 'update');
       expect(
-        await controller.update('some-id-to-update', {
+        await controller.update(
+          'some-id-to-update',
+          {
+            name: 'Some new name',
+            description: 'Some desc',
+          },
+          <Request>(<unknown>req),
+        ),
+      ).toEqual({ data: application });
+      expect(serviceSpy).toBeCalledWith(
+        'some-id-to-update',
+        {
           name: 'Some new name',
           description: 'Some desc',
-        }),
-      ).toEqual({ data: application });
-      expect(serviceSpy).toBeCalledWith('some-id-to-update', {
-        name: 'Some new name',
-        description: 'Some desc',
-      });
+        },
+        req.user.id,
+      );
     });
   });
 
   describe('remove', () => {
     it('should an application by id', async () => {
       const serviceSpy = jest.spyOn(service, 'remove');
-      expect(await controller.remove('some-id-to-remove')).toEqual({
+      expect(
+        await controller.remove('some-id-to-remove', <Request>(<unknown>req)),
+      ).toEqual({
         data: application,
       });
-      expect(serviceSpy).toBeCalledWith('some-id-to-remove');
+      expect(serviceSpy).toBeCalledWith('some-id-to-remove', req.user.id);
     });
   });
 });

@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import {
   Controller,
   Get,
@@ -9,6 +10,7 @@ import {
   Param,
   UseGuards,
   ParseUUIDPipe,
+  Req,
 } from '@nestjs/common';
 
 import {
@@ -32,6 +34,7 @@ import { ApplicationsListResponse } from './responses/applications.list.response
 import { ApplicationSingleResponse } from './responses/application.single.response';
 
 import { ApplicationsService } from './applications.service';
+import { User } from '../users/user.entity';
 
 @ApiTags('Applications')
 @ApiBearerAuth()
@@ -55,8 +58,12 @@ export class ApplicationsController {
   @CheckPolicies((ability: AppAbility) => ability.can('read', 'Application'))
   async find(
     @Query() findApplicationsDto: FindApplicationsDto,
+    @Req() req: Request,
   ): Promise<ApplicationsListResponse> {
-    const { data, total } = await this.service.find(findApplicationsDto);
+    const { data, total } = await this.service.find(
+      findApplicationsDto,
+      (<User>req.user).id,
+    );
 
     return new ApplicationsListResponse(data, total);
   }
@@ -75,8 +82,11 @@ export class ApplicationsController {
   @CheckPolicies((ability: AppAbility) => ability.can('read', 'Application'))
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
+    @Req() req: Request,
   ): Promise<ApplicationSingleResponse> {
-    return new ApplicationSingleResponse(await this.service.findOne(id));
+    return new ApplicationSingleResponse(
+      await this.service.findOne(id, (<User>req.user).id),
+    );
   }
 
   @Post()
@@ -94,9 +104,10 @@ export class ApplicationsController {
   @CheckPolicies((ability: AppAbility) => ability.can('create', 'Application'))
   async create(
     @Body() createApplicationDto: CreateApplicationDto,
+    @Req() req: Request,
   ): Promise<ApplicationSingleResponse> {
     return new ApplicationSingleResponse(
-      await this.service.create(createApplicationDto),
+      await this.service.create(createApplicationDto, <User>req.user),
     );
   }
 
@@ -116,9 +127,10 @@ export class ApplicationsController {
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateApplicationDto: UpdateApplicationDto,
+    @Req() req: Request,
   ): Promise<ApplicationSingleResponse> {
     return new ApplicationSingleResponse(
-      await this.service.update(id, updateApplicationDto),
+      await this.service.update(id, updateApplicationDto, (<User>req.user).id),
     );
   }
 
@@ -137,7 +149,10 @@ export class ApplicationsController {
   @CheckPolicies((ability: AppAbility) => ability.can('delete', 'Application'))
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
+    @Req() req: Request,
   ): Promise<ApplicationSingleResponse> {
-    return new ApplicationSingleResponse(await this.service.remove(id));
+    return new ApplicationSingleResponse(
+      await this.service.remove(id, (<User>req.user).id),
+    );
   }
 }
