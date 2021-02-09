@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request } from 'express';
 import {
   Body,
@@ -54,7 +55,8 @@ export class UsersController {
     type: UserSingleResponse,
   })
   getCurrentUser(@Req() req: Request): { data: User } {
-    return new UserSingleResponse(<User>req.user);
+    const { password, ...currentUser } = <User>req.user;
+    return new UserSingleResponse(<User>currentUser);
   }
 
   @Get()
