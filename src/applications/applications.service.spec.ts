@@ -22,6 +22,8 @@ const query = {
   limit: jest.fn(),
   orderBy: jest.fn(),
   getManyAndCount: jest.fn().mockReturnValue([resultArr, 1]),
+  getOne: jest.fn().mockResolvedValue(app),
+  innerJoin: jest.fn(),
 };
 
 describe('ApplicationsService', () => {
@@ -50,21 +52,66 @@ describe('ApplicationsService', () => {
 
   describe('isApplicationExists', () => {
     it('should return false if an application with the given id does not exist', () => {
-      const repoSpy = jest.spyOn(repo, 'findOne').mockResolvedValueOnce(null);
+      jest.spyOn(query, 'getOne').mockResolvedValueOnce(null);
 
       expect(service.isApplicationExists('uid')).resolves.toEqual(false);
-      expect(repoSpy).toBeCalledTimes(1);
-      expect(repoSpy).toBeCalledWith('uid');
+      expect(query.where).toBeCalledTimes(1);
+      expect(query.where).toBeCalledWith('application.id = :id', { id: 'uid' });
+
+      expect(query.getOne).toBeCalledTimes(1);
     });
 
-    it('should return true if an application with the given id does not exist', async () => {
-      const repoSpy = jest
-        .spyOn(repo, 'findOne')
+    it('should return false if an application with the given id and userId does not exist', () => {
+      jest.spyOn(query, 'getOne').mockResolvedValueOnce(null);
+
+      expect(service.isApplicationExists('uid', 'userId')).resolves.toEqual(
+        false,
+      );
+
+      expect(query.innerJoin).toBeCalledTimes(1);
+      expect(query.innerJoin).toBeCalledWith(
+        'application.users',
+        'user',
+        'application_user.user_id = :userId',
+        { userId: 'userId' },
+      );
+      expect(query.where).toBeCalledTimes(1);
+      expect(query.where).toBeCalledWith('application.id = :id', { id: 'uid' });
+
+      expect(query.getOne).toBeCalledTimes(1);
+    });
+
+    it('should return true if an application with the given id exists', async () => {
+      jest
+        .spyOn(query, 'getOne')
         .mockResolvedValueOnce(<Application>{ name: 'name' });
 
-      await expect(service.isApplicationExists('uid')).resolves.toEqual(true);
-      expect(repoSpy).toBeCalledTimes(1);
-      expect(repoSpy).toBeCalledWith('uid');
+      expect(service.isApplicationExists('uid')).resolves.toEqual(false);
+      expect(query.where).toBeCalledTimes(1);
+      expect(query.where).toBeCalledWith('application.id = :id', { id: 'uid' });
+
+      expect(query.getOne).toBeCalledTimes(1);
+    });
+
+    it('should return true if an application with the given id and userId exists', async () => {
+      jest
+        .spyOn(query, 'getOne')
+        .mockResolvedValueOnce(<Application>{ name: 'name' });
+
+      expect(service.isApplicationExists('uid', 'userId')).resolves.toEqual(
+        false,
+      );
+      expect(query.innerJoin).toBeCalledTimes(1);
+      expect(query.innerJoin).toBeCalledWith(
+        'application.users',
+        'user',
+        'application_user.user_id = :userId',
+        { userId: 'userId' },
+      );
+      expect(query.where).toBeCalledTimes(1);
+      expect(query.where).toBeCalledWith('application.id = :id', { id: 'uid' });
+
+      expect(query.getOne).toBeCalledTimes(1);
     });
   });
 
