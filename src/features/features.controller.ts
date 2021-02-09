@@ -7,8 +7,10 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
   ParseUUIDPipe,
+  NotFoundException,
 } from '@nestjs/common';
 
 import {
@@ -24,6 +26,9 @@ import { PoliciesGuard } from '../permissions/guards/permissions.policies.guard'
 import { CheckPolicies } from '../permissions/decorators/permissions.check-policies';
 import { AppAbility } from '../permissions/permissions-ability.factory';
 
+import { ApplicationsService } from '../applications/applications.service';
+import { User } from '../users/user.entity';
+
 import { CreateFeatureDto } from './dto/create-feature.dto';
 import { UpdateFeatureDto } from './dto/update-feature.dto';
 import { FindFeaturesDto } from './dto/find-features.dto';
@@ -38,7 +43,10 @@ import { FeaturesService } from './features.service';
 @UseGuards(AuthJwtGuard)
 @Controller('applications/:appId/features')
 export class FeaturesController {
-  constructor(private readonly featuresService: FeaturesService) {}
+  constructor(
+    private readonly featuresService: FeaturesService,
+    private readonly applicationsService: ApplicationsService,
+  ) {}
 
   @Get()
   @ApiOperation({
@@ -59,7 +67,17 @@ export class FeaturesController {
   async find(
     @Param('appId', ParseUUIDPipe) appId: string,
     @Query() findFeaturesDto: FindFeaturesDto,
+    @Req() req,
   ): Promise<FeaturesListResponse> {
+    if (
+      !(await this.applicationsService.isApplicationExists(
+        appId,
+        (<User>req.user).id,
+      ))
+    ) {
+      throw new NotFoundException('Entity does not exist');
+    }
+
     const { data, total } = await this.featuresService.find(
       appId,
       findFeaturesDto,
@@ -87,7 +105,17 @@ export class FeaturesController {
   async create(
     @Param('appId', ParseUUIDPipe) appId: string,
     @Body() createFeatureDto: CreateFeatureDto,
+    @Req() req,
   ): Promise<FeatureSingleResponse> {
+    if (
+      !(await this.applicationsService.isApplicationExists(
+        appId,
+        (<User>req.user).id,
+      ))
+    ) {
+      throw new NotFoundException('Entity does not exist');
+    }
+
     return new FeatureSingleResponse(
       await this.featuresService.create(appId, createFeatureDto),
     );
@@ -111,7 +139,17 @@ export class FeaturesController {
   async findOne(
     @Param('appId', ParseUUIDPipe) appId: string,
     @Param('id', ParseUUIDPipe) id: string,
+    @Req() req,
   ): Promise<FeatureSingleResponse> {
+    if (
+      !(await this.applicationsService.isApplicationExists(
+        appId,
+        (<User>req.user).id,
+      ))
+    ) {
+      throw new NotFoundException('Entity does not exist');
+    }
+
     return new FeatureSingleResponse(
       await this.featuresService.findOne(appId, id),
     );
@@ -137,7 +175,17 @@ export class FeaturesController {
     @Param('appId', ParseUUIDPipe) appId: string,
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateFeatureDto: UpdateFeatureDto,
+    @Req() req,
   ): Promise<FeatureSingleResponse> {
+    if (
+      !(await this.applicationsService.isApplicationExists(
+        appId,
+        (<User>req.user).id,
+      ))
+    ) {
+      throw new NotFoundException('Entity does not exist');
+    }
+
     return new FeatureSingleResponse(
       await this.featuresService.update(appId, id, updateFeatureDto),
     );
@@ -162,7 +210,17 @@ export class FeaturesController {
   async enable(
     @Param('appId', ParseUUIDPipe) appId: string,
     @Param('id', ParseUUIDPipe) id: string,
+    @Req() req,
   ): Promise<FeatureSingleResponse> {
+    if (
+      !(await this.applicationsService.isApplicationExists(
+        appId,
+        (<User>req.user).id,
+      ))
+    ) {
+      throw new NotFoundException('Entity does not exist');
+    }
+
     return new FeatureSingleResponse(
       await this.featuresService.enable(appId, id),
     );
@@ -187,7 +245,17 @@ export class FeaturesController {
   async disable(
     @Param('appId', ParseUUIDPipe) appId: string,
     @Param('id', ParseUUIDPipe) id: string,
+    @Req() req,
   ): Promise<FeatureSingleResponse> {
+    if (
+      !(await this.applicationsService.isApplicationExists(
+        appId,
+        (<User>req.user).id,
+      ))
+    ) {
+      throw new NotFoundException('Entity does not exist');
+    }
+
     return new FeatureSingleResponse(
       await this.featuresService.disable(appId, id),
     );
@@ -212,7 +280,17 @@ export class FeaturesController {
   async remove(
     @Param('appId', ParseUUIDPipe) appId: string,
     @Param('id', ParseUUIDPipe) id: string,
+    @Req() req,
   ): Promise<FeatureSingleResponse> {
+    if (
+      !(await this.applicationsService.isApplicationExists(
+        appId,
+        (<User>req.user).id,
+      ))
+    ) {
+      throw new NotFoundException('Entity does not exist');
+    }
+
     return new FeatureSingleResponse(
       await this.featuresService.remove(appId, id),
     );
