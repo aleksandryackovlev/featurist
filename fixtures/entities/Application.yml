@@ -1,21 +1,11 @@
 entity: Application
 parameters: {}
 items:
-  application1:
-    id: 'c6101e77-9bb8-4756-9720-82677d1b92a5'
-    name: 'application_1'
-    description: '<p>Enim qui odit voluptates labore et omnis nisi veritatis. Odit aut et. Incidunt fugiat minima ea. Atque quia quam sed voluptatem.</p>'
-    createdAt: '2021-02-02T13:52:51.084Z'
-    updatedAt: '2021-02-02T13:52:51.084Z'
+  application{1..2}:
+    id: '{{random.uuid}}'
+    name: 'application_($current)'
+    description: '<p>{{lorem.paragraph}}</p>'
+    createdAt: '{{date.past}}'
+    updatedAt: '{{date.recent}}'
     users:
-      - '@user1'
-      - '@user2'
-  application2:
-    id: '71c02296-5418-4cdd-ace3-3886ae6cdcb3'
-    name: 'application_2'
-    description: '<p>Quo minima recusandae minus error qui quod nihil et doloribus. Aspernatur aut sed expedita quis consectetur eveniet. Vitae aperiam quibusdam ab in est est illo. Ut tempora laudantium consequatur quasi eaque aliquam. Voluptate incidunt vitae alias facilis sit quia. Delectus ipsum qui molestiae rem quia eum aliquam.</p>'
-    createdAt: '2021-01-02T13:52:51.065Z'
-    updatedAt: '2021-01-02T13:52:51.065Z'
-    users:
-      - '@user3'
-      - '@user2'
+      - '@user($current)'

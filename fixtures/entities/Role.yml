@@ -2,11 +2,20 @@ entity: Role
 parameters: {}
 items:
   admin:
+    id: '{{random.uuid}}'
     name: 'admin'
-    description: '{{lorem.paragraph}}'
+    description: '<p>{{lorem.paragraph}}</p>'
+    createdAt: '{{date.past}}'
+    updatedAt: '{{date.recent}}'
   developer:
+    id: '{{random.uuid}}'
     name: 'developer'
-    description: '{{lorem.paragraph}}'
+    description: '<p>{{lorem.paragraph}}</p>'
+    createdAt: '{{date.past}}'
+    updatedAt: '{{date.recent}}'
   manager:
+    id: '{{random.uuid}}'
     name: 'manager'
-    description: '{{lorem.paragraph}}'
+    description: '<p>{{lorem.paragraph}}</p>'
+    createdAt: '{{date.past}}'
+    updatedAt: '{{date.recent}}'

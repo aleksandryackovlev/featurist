@@ -2,14 +2,23 @@ entity: User
 parameters: {}
 items:
   user1:
+    id: '{{random.uuid}}'
     username: 'admin'
     password: 'test'
+    createdAt: '{{date.past}}'
+    updatedAt: '{{date.recent}}'
     role: '@admin'
   user2:
+    id: '{{random.uuid}}'
     username: 'developer'
     password: 'test'
+    createdAt: '{{date.past}}'
+    updatedAt: '{{date.recent}}'
     role: '@developer'
   user3:
+    id: '{{random.uuid}}'
     username: 'manager'
     password: 'test'
+    createdAt: '{{date.past}}'
+    updatedAt: '{{date.recent}}'
     role: '@manager'

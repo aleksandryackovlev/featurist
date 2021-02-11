@@ -1,32 +1,20 @@
 entity: Feature
 parameters: {}
 items:
-  feature1:
-    id: 'c78438ad-6664-463c-8839-ccf1d02cdddd'
-    createdAt: '2021-01-04T13:27:42.888Z'
-    updatedAt: '2021-01-04T13:27:42.888Z'
-    name: 'architecto-est-consequatur'
-    description: 'Esse iusto tenetur quis non atque qui molestiae sed. Enim architecto aperiam magnam nulla. Eveniet assumenda ut. Soluta cumque impedit dolore nihil perspiciatis officiis voluptas similique nihil.'
-    isEnabled: true
+  feature{1..5}:
+    id: '{{random.uuid}}'
+    name: 'feature_($current)'
+    description: '<p>{{lorem.paragraph}}</p>'
+    createdAt: '{{date.past}}'
+    updatedAt: '{{date.recent}}'
     application: '@application1'
-  feature2:
-    id: 'ce653ea2-cd0d-452a-99da-b906c8d9b90a'
-    createdAt: '2021-01-17T13:27:42.877Z'
-    updatedAt: '2021-01-17T13:27:42.877Z'
-    name: 'recusandae-natus-nisi'
-    description: 'Incidunt et rerum esse et soluta quisquam quia. Non itaque ut est reiciendis aut voluptatem. Hic ut error porro eum natus.'
-    isEnabled: true
-    application: '@application1'
-  feature3:
-    id: '14d1e30a-e9c3-48cf-a0b8-82fd52ab4ebf'
-    createdAt: '2021-02-04T13:27:42.870Z'
-    updatedAt: '2021-02-04T13:27:42.870Z'
-    name: 'magnam-cumque-nulla'
-    description: 'Facere iste alias ut eveniet autem voluptate. Qui est aut. At ut harum ut.'
-    isEnabled: false
-    application: '@application1'
-  feature{4..10}:
-    name: '{{lorem.slug}}'
-    description: '{{lorem.paragraph}}'
+    isEnabled: '{{random.boolean}}'
+
+  feature{6..10}:
+    id: '{{random.uuid}}'
+    name: 'feature_($current)'
+    description: '<p>{{lorem.paragraph}}</p>'
+    createdAt: '{{date.past}}'
+    updatedAt: '{{date.recent}}'
     application: '@application2'
     isEnabled: '{{random.boolean}}'
