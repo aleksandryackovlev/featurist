@@ -29,7 +29,7 @@ export class Application extends CrudEntity {
   })
   description: string;
 
-  @ManyToMany(() => User)
+  @ManyToMany(() => User, (user) => user.applications)
   @JoinTable({
     name: 'application_users_user',
     joinColumn: {
