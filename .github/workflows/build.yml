@@ -24,6 +24,13 @@ jobs:
         make start-detached
         ./third_party/wait-for-it.sh 0.0.0.0:3000
     - name: Run e2e tests
+      env:
+        DATABASE_HOST: localhost
+        DATABASE_PORT: 6000
+        DATABASE_NAME: features
+        DATABASE_USERNAME: features
+        DATABASE_PASSWORD: features
+        DATABASE_SCHEMA: public
       run: |
         yarn install --frozen-lockfile
         yarn test:e2e
