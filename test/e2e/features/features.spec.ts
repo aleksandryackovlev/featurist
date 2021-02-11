@@ -1,10 +1,4 @@
-import app from '../request';
-
 describe('Features', () => {
-  let adminToken = '';
-  let developerToken = '';
-  let restrictedUserToken = '';
-
   const appsList = [
     {
       id: 'c6101e77-9bb8-4756-9720-82677d1b92a5',
@@ -57,24 +51,12 @@ describe('Features', () => {
     },
   ];
 
-  beforeAll(async () => {
-    const [admin, developer, restrictedUser] = await Promise.all([
-      app.post('/auth/login').send({ username: 'admin', password: 'test' }),
-      app.post('/auth/login').send({ username: 'developer', password: 'test' }),
-      app.post('/auth/login').send({ username: 'manager', password: 'test' }),
-    ]);
-
-    adminToken = admin.body.data.access_token;
-    restrictedUserToken = restrictedUser.body.data.access_token;
-    developerToken = developer.body.data.access_token;
-  });
-
   describe('GET /applications/:appId/features', () => {
-    it('should throw an 400 if appId is not a valid uuid', () => {
+    it.only('should throw an 400 if appId is not a valid uuid', () => {
       return app
         .get('/applications/some-id/features')
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -88,7 +70,7 @@ describe('Features', () => {
       return app
         .get(`/applications/${appsList[0].id}/features`)
         .set({
-          Authorization: `Bearer ${restrictedUserToken}`,
+          Authorization: `Bearer ${credentials.restrictedUserToken}`,
         })
         .expect({
           statusCode: 403,
@@ -102,7 +84,7 @@ describe('Features', () => {
       return app
         .get(`/applications/${appsList[0].id}/features`)
         .set({
-          Authorization: `Bearer ${developerToken}`,
+          Authorization: `Bearer ${credentials.developerToken}`,
         })
         .expect({
           statusCode: 403,
@@ -116,7 +98,7 @@ describe('Features', () => {
       return app
         .get('/applications/c6101e77-9bb8-4756-9720-82656d1b92a5/features')
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 404,
@@ -130,7 +112,7 @@ describe('Features', () => {
       return app
         .get(`/applications/${appsList[0].id}/features`)
         .set({
-          Authorization: `Bearer ${adminToken}`,
+          Authorization: `Bearer ${credentials.adminToken}`,
         })
         .expect({
           data: appsList[0].features.sort((first, second) => first.updatedAt > second.updatedAt ? -1 : 1),
@@ -145,7 +127,7 @@ describe('Features', () => {
       return app
         .get(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
         .set({
-          Authorization: `Bearer ${restrictedUserToken}`
+          Authorization: `Bearer ${credentials.restrictedUserToken}`
         })
         .expect({
           statusCode: 403,
@@ -159,7 +141,7 @@ describe('Features', () => {
       return app
         .get(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
         .set({
-          Authorization: `Bearer ${developerToken}`,
+          Authorization: `Bearer ${credentials.developerToken}`,
         })
         .expect({
           statusCode: 403,
@@ -173,7 +155,7 @@ describe('Features', () => {
       return app
         .get(`/applications/c6101e77-9bb8-4756-9720-82656d1b92a5/features/${appsList[0].features[0].id}`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 404,
@@ -187,7 +169,7 @@ describe('Features', () => {
       return app
         .get(`/applications/${appsList[0].id}/features/c6101e77-9bb8-4756-9720-82656d1b92a5`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 404,
@@ -201,7 +183,7 @@ describe('Features', () => {
       return app
         .get(`/applications/some-id/features/${appsList[0].features[0].id}`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -215,7 +197,7 @@ describe('Features', () => {
       return app
         .get(`/applications/${appsList[0].id}/features/some-id`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -229,7 +211,7 @@ describe('Features', () => {
       return app
         .get(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           data: appsList[0].features[0],
@@ -244,7 +226,7 @@ describe('Features', () => {
         .post(`/applications/${appsList[0].id}/features`)
         .send({ description: 'Some description', name: 'test flag' })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -258,7 +240,7 @@ describe('Features', () => {
       return app
         .post(`/applications/${appsList[0].id}/features`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -283,7 +265,7 @@ describe('Features', () => {
         .post(`/applications/${appsList[0].id}/features`)
         .send({ description: 'Some description', name: 'test' })
         .set({
-          Authorization: `Bearer ${restrictedUserToken}`
+          Authorization: `Bearer ${credentials.restrictedUserToken}`
         })
         .expect({
           statusCode: 403,
@@ -298,7 +280,7 @@ describe('Features', () => {
         .post(`/applications/${appsList[0].id}/features`)
         .send({ description: 'Some description', name: 'test' })
         .set({
-          Authorization: `Bearer ${developerToken}`,
+          Authorization: `Bearer ${credentials.developerToken}`,
         })
         .expect({
           statusCode: 403,
@@ -313,7 +295,7 @@ describe('Features', () => {
         .post(`/applications/${appsList[0].id}/features`)
         .send({ description: 'Some description', name: 'test.feature_a' })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
 
       expect(result.status).toEqual(201);
@@ -323,7 +305,7 @@ describe('Features', () => {
       await app
         .delete(`/applications/${appsList[0].id}/features/${result.body.data.id}`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
     });
   });
@@ -334,7 +316,7 @@ describe('Features', () => {
         .put(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
         .send({ name: 'test_feature_1' })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -357,7 +339,7 @@ describe('Features', () => {
         .put(`/applications/app-1/features/${appsList[0].features[0].id}`)
         .send({ description: 'test_feature_1', isEnabled: true })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -372,7 +354,7 @@ describe('Features', () => {
         .put(`/applications/app-1/features/${appsList[0].features[0].id}`)
         .send({ description: 'test_feature_1', isEnabled: true })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -387,7 +369,7 @@ describe('Features', () => {
         .put(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
         .send({ description: 'test_feature_1', isEnabled: true })
         .set({
-          Authorization: `Bearer ${restrictedUserToken}`
+          Authorization: `Bearer ${credentials.restrictedUserToken}`
         })
         .expect({
           statusCode: 403,
@@ -402,7 +384,7 @@ describe('Features', () => {
         .put(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
         .send({ description: 'test_feature_1', isEnabled: true })
         .set({
-          Authorization: `Bearer ${developerToken}`,
+          Authorization: `Bearer ${credentials.developerToken}`,
         })
         .expect({
           statusCode: 403,
@@ -417,7 +399,7 @@ describe('Features', () => {
         .put(`/applications/c6101e77-9bb8-4756-9720-82656d1b92a5/features/${appsList[0].features[0].id}`)
         .send({ description: 'test_feature_1', isEnabled: true })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 404,
@@ -432,7 +414,7 @@ describe('Features', () => {
         .put(`/applications/${appsList[0].id}/features/c6101e77-9bb8-4756-9720-82656d1b92a5`)
         .send({ description: 'test_feature_1', isEnabled: true })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 404,
@@ -449,14 +431,14 @@ describe('Features', () => {
         .post(`/applications/${appsList[0].id}/features`)
         .send({ description: 'Some description', name: 'test_feature' })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
 
       const result = await app
         .put(`/applications/${appsList[0].id}/features/${created.body.data.id}`)
         .send({ description: 'Some new description', isEnabled: false })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
 
       expect(result.status).toEqual(200);
@@ -465,7 +447,7 @@ describe('Features', () => {
       await app
         .delete(`/applications/${appsList[0].id}/features/${created.body.data.id}`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
     });
   });
@@ -475,7 +457,7 @@ describe('Features', () => {
       return app
         .post(`/applications/app-id/features/${appsList[0].features[0].id}/enable`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -489,7 +471,7 @@ describe('Features', () => {
       return app
         .post(`/applications/${appsList[0].id}/features/feature-id/enable`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -503,7 +485,7 @@ describe('Features', () => {
       await app
         .post(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}/enable`)
         .set({
-          Authorization: `Bearer ${restrictedUserToken}`
+          Authorization: `Bearer ${credentials.restrictedUserToken}`
         })
         .expect({
           statusCode: 403,
@@ -517,7 +499,7 @@ describe('Features', () => {
       return app
         .post(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}/enable`)
         .set({
-          Authorization: `Bearer ${developerToken}`,
+          Authorization: `Bearer ${credentials.developerToken}`,
         })
         .expect({
           statusCode: 403,
@@ -531,7 +513,7 @@ describe('Features', () => {
       return app
         .post(`/applications/c6101e77-9bb8-4756-9720-82656d1b92a5/features/${appsList[0].features[0].id}/enable`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 404,
@@ -545,7 +527,7 @@ describe('Features', () => {
       return app
         .post(`/applications/${appsList[0].id}/features/c6101e77-9bb8-4756-9720-82656d1b92a5/enable`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 404,
@@ -561,13 +543,13 @@ describe('Features', () => {
         .post(`/applications/${appsList[0].id}/features`)
         .send({ description: 'Some description', name: 'test_feature' })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
 
       const result = await app
         .post(`/applications/${appsList[0].id}/features/${created.body.data.id}/enable`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
 
       expect(result.status).toEqual(201);
@@ -576,7 +558,7 @@ describe('Features', () => {
       await app
         .delete(`/applications/${appsList[0].id}/features/${created.body.data.id}`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
     });
   });
@@ -586,7 +568,7 @@ describe('Features', () => {
       return app
         .post(`/applications/app-id/features/${appsList[0].features[0].id}/disable`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -600,7 +582,7 @@ describe('Features', () => {
       return app
         .post(`/applications/${appsList[0].id}/features/feature-id/disable`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -614,7 +596,7 @@ describe('Features', () => {
       await app
         .post(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}/disable`)
         .set({
-          Authorization: `Bearer ${restrictedUserToken}`
+          Authorization: `Bearer ${credentials.restrictedUserToken}`
         })
         .expect({
           statusCode: 403,
@@ -628,7 +610,7 @@ describe('Features', () => {
       return app
         .post(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}/disable`)
         .set({
-          Authorization: `Bearer ${developerToken}`,
+          Authorization: `Bearer ${credentials.developerToken}`,
         })
         .expect({
           statusCode: 403,
@@ -642,7 +624,7 @@ describe('Features', () => {
       return app
         .post(`/applications/c6101e77-9bb8-4756-9720-82656d1b92a5/features/${appsList[0].features[0].id}/disable`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 404,
@@ -656,7 +638,7 @@ describe('Features', () => {
       return app
         .post(`/applications/${appsList[0].id}/features/c6101e77-9bb8-4756-9720-82656d1b92a5/disable`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 404,
@@ -672,13 +654,13 @@ describe('Features', () => {
         .post(`/applications/${appsList[0].id}/features`)
         .send({ description: 'Some description', name: 'test_feature' })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
 
       const result = await app
         .post(`/applications/${appsList[0].id}/features/${created.body.data.id}/disable`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
 
       expect(result.status).toEqual(201);
@@ -687,7 +669,7 @@ describe('Features', () => {
       await app
         .delete(`/applications/${appsList[0].id}/features/${created.body.data.id}`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
     });
   });
@@ -697,7 +679,7 @@ describe('Features', () => {
       return app
         .delete(`/applications/app-1/features/${appsList[0].features[0].id}`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -711,7 +693,7 @@ describe('Features', () => {
       return app
         .delete(`/applications/${appsList[0].id}/features/app-1`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -725,7 +707,7 @@ describe('Features', () => {
       return app
         .delete(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
         .set({
-          Authorization: `Bearer ${restrictedUserToken}`
+          Authorization: `Bearer ${credentials.restrictedUserToken}`
         })
         .expect({
           statusCode: 403,
@@ -739,7 +721,7 @@ describe('Features', () => {
       return app
         .delete(`/applications/${appsList[0].id}/features/${appsList[0].features[0].id}`)
         .set({
-          Authorization: `Bearer ${developerToken}`,
+          Authorization: `Bearer ${credentials.developerToken}`,
         })
         .expect({
           statusCode: 403,
@@ -753,7 +735,7 @@ describe('Features', () => {
       return app
         .delete(`/applications/c6101e77-9bb8-4756-9720-82656d1b92a5/features/${appsList[0].features[0].id}`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 404,
@@ -767,7 +749,7 @@ describe('Features', () => {
       return app
         .delete(`/applications/${appsList[0].id}/features/c6101e77-9bb8-4756-9720-82656d1b92a5`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 404,
@@ -782,13 +764,13 @@ describe('Features', () => {
         .post(`/applications/${appsList[0].id}/features`)
         .send({ description: 'Some description', name: 'test_feature' })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
 
       const result = await app
         .delete(`/applications/${appsList[0].id}/features/${created.body.data.id}`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
 
       expect(result.status).toEqual(200);

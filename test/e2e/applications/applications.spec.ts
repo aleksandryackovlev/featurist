@@ -1,9 +1,8 @@
-import app from '../request';
+declare const credentials: any;
+declare const app: any;
+declare const entities: any;
 
 describe('Applications', () => {
-  let adminToken = '';
-  let restrictedUserToken = '';
-
   const appsList = [
     {
       id: 'c6101e77-9bb8-4756-9720-82677d1b92a5',
@@ -21,26 +20,12 @@ describe('Applications', () => {
     }
   ];
 
-  beforeAll(async () => {
-    const [admin, restrictedUser] = await Promise.all([
-      app
-        .post('/auth/login')
-        .send({ username: 'admin', password: 'test' }),
-      app
-        .post('/auth/login')
-        .send({ username: 'manager', password: 'test' }),
-    ]);
-
-    adminToken = admin.body.data.access_token;
-    restrictedUserToken = restrictedUser.body.data.access_token;
-  });
-
   describe('GET /applications', () => {
     it('should throw an 403 if the current user is not allowed to read applications', () => {
       return app
         .get('/applications')
         .set({
-          Authorization: `Bearer ${restrictedUserToken}`
+          Authorization: `Bearer ${credentials.restrictedUserToken}`
         })
         .expect({
           statusCode: 403,
@@ -50,15 +35,20 @@ describe('Applications', () => {
         .expect(403);
     });
 
-    it('should return a list of available for user applications', () => {
+    it.only('should return a list of available for user applications', () => {
+      const expected = entities
+        .applications
+        .filter(({ users }) => users.some(({ username }) => username == 'admin'))
+        .map(({ users, ...rest }) => rest);
+
       return app
         .get('/applications')
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
-          data: [appsList[0]],
-          total: 1,
+          data: expected,
+          total: expected.length,
         })
         .expect(200);
     });
@@ -69,7 +59,7 @@ describe('Applications', () => {
       return app
         .get(`/applications/${appsList[0].id}`)
         .set({
-          Authorization: `Bearer ${restrictedUserToken}`
+          Authorization: `Bearer ${credentials.restrictedUserToken}`
         })
         .expect({
           statusCode: 403,
@@ -83,7 +73,7 @@ describe('Applications', () => {
       return app
         .get('/applications/c6101e77-9bb8-4756-9720-82656d1b92a5')
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 404,
@@ -97,7 +87,7 @@ describe('Applications', () => {
       return app
         .get('/applications/some-id')
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -111,7 +101,7 @@ describe('Applications', () => {
       return app
         .get(`/applications/${appsList[0].id}`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           data: appsList[0],
@@ -126,7 +116,7 @@ describe('Applications', () => {
         .post('/applications')
         .send({ description: 'Some description', test: 'test' })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -146,7 +136,7 @@ describe('Applications', () => {
       return app
         .post('/applications')
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -170,7 +160,7 @@ describe('Applications', () => {
         .post('/applications')
         .send({ description: 'Some description', name: 'test' })
         .set({
-          Authorization: `Bearer ${restrictedUserToken}`
+          Authorization: `Bearer ${credentials.restrictedUserToken}`
         })
         .expect({
           statusCode: 403,
@@ -185,7 +175,7 @@ describe('Applications', () => {
         .post('/applications')
         .send({ description: 'Some description', name: 'test' })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
 
       expect(result.status).toEqual(201);
@@ -195,7 +185,7 @@ describe('Applications', () => {
       await app
         .delete(`/applications/${result.body.data.id}`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
     });
   });
@@ -206,7 +196,7 @@ describe('Applications', () => {
         .put('/applications/app-1')
         .send({})
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -233,7 +223,7 @@ describe('Applications', () => {
           description: '<p>Test</p>',
         })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -248,7 +238,7 @@ describe('Applications', () => {
         .put(`/applications/${appsList[0].id}`)
         .send({ description: 'Some description', name: 'test' })
         .set({
-          Authorization: `Bearer ${restrictedUserToken}`
+          Authorization: `Bearer ${credentials.restrictedUserToken}`
         })
         .expect({
           statusCode: 403,
@@ -263,7 +253,7 @@ describe('Applications', () => {
         .put('/applications/c6101e77-9bb8-4756-9720-82656d1b92a5')
         .send({ description: 'Some description', name: 'test' })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 404,
@@ -278,14 +268,14 @@ describe('Applications', () => {
         .post('/applications')
         .send({ description: 'Some description', name: 'test' })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
 
       const result = await app
         .put(`/applications/${created.body.data.id}`)
         .send({ description: 'Some new description', name: 'Some new name' })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
 
       expect(result.status).toEqual(200);
@@ -294,7 +284,7 @@ describe('Applications', () => {
       await app
         .delete(`/applications/${created.body.data.id}`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
     });
   });
@@ -304,7 +294,7 @@ describe('Applications', () => {
       return app
         .delete('/applications/app-1')
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -318,7 +308,7 @@ describe('Applications', () => {
       return app
         .delete(`/applications/${appsList[0].id}`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 400,
@@ -332,7 +322,7 @@ describe('Applications', () => {
       return app
         .delete(`/applications/${appsList[0].id}`)
         .set({
-          Authorization: `Bearer ${restrictedUserToken}`
+          Authorization: `Bearer ${credentials.restrictedUserToken}`
         })
         .expect({
           statusCode: 403,
@@ -346,7 +336,7 @@ describe('Applications', () => {
       return app
         .delete('/applications/c6101e77-9bb8-4756-9720-82656d1b92a5')
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         })
         .expect({
           statusCode: 404,
@@ -361,13 +351,13 @@ describe('Applications', () => {
         .post('/applications')
         .send({ description: 'Some description', name: 'test' })
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
 
       const result = await app
         .delete(`/applications/${created.body.data.id}`)
         .set({
-          Authorization: `Bearer ${adminToken}`
+          Authorization: `Bearer ${credentials.adminToken}`
         });
 
       expect(result.status).toEqual(200);
