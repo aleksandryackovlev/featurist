@@ -31,6 +31,7 @@ jobs:
         DATABASE_USERNAME: features
         DATABASE_PASSWORD: features
         DATABASE_SCHEMA: public
+        TZ: Etc/UTC
       run: |
         yarn install --frozen-lockfile
         yarn test:e2e
