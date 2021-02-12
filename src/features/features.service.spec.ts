@@ -139,7 +139,7 @@ describe('FeaturesService', () => {
       expect(query.offset).toBeCalledTimes(0);
 
       expect(query.orderBy).toBeCalledTimes(1);
-      expect(query.orderBy).toBeCalledWith('feature.createdAt', 'DESC');
+      expect(query.orderBy).toBeCalledWith('feature.updatedAt', 'DESC');
 
       expect(query.limit).toBeCalledTimes(1);
       expect(query.limit).toBeCalledWith(10);
