@@ -1,11 +1,19 @@
 entity: Application
 parameters: {}
 items:
-  application{1..2}:
+  application1:
     id: '{{random.uuid}}'
-    name: 'application_($current)'
+    name: 'application_1'
     description: '<p>{{lorem.paragraph}}</p>'
     createdAt: '{{date.past}}'
     updatedAt: '{{date.recent}}'
     users:
-      - '@user($current)'
+      - '@user1'
+  application2:
+    id: '{{random.uuid}}'
+    name: 'application_2'
+    description: '<p>{{lorem.paragraph}}</p>'
+    createdAt: '{{date.past}}'
+    updatedAt: '{{date.recent}}'
+    users:
+      - '@user2'
