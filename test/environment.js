@@ -46,9 +46,9 @@ const loadEntities = async () => {
     }
 
     for (const entity of entityNames) {
-      entities[`${entity.toLowerCase()}s`] = await getRepository(entity).find({
+      entities[`${entity.toLowerCase()}s`] = JSON.parse(JSON.stringify(await getRepository(entity).find({
         relations: getRepository(entity).metadata.relations.map(({propertyName}) => propertyName)
-      });
+      })));
     }
 
     if (global.connection) {
