@@ -2,17 +2,19 @@ import { Type } from 'class-transformer';
 import {
   IsString,
   IsInt,
-  IsDate,
+  IsISO8601,
+  Matches,
   IsNotEmpty,
   IsOptional,
   IsIn,
   Min,
-  MaxDate,
 } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
 import { IFindEntitiesDto } from '../interfaces';
+
+import { MaxDate } from '../../utils/validators/max-date';
 
 export const CrudFindEntitiesDto = (
   sortFields = ['id', 'name', 'createdAt', 'updatedAt'],
@@ -57,8 +59,10 @@ export const CrudFindEntitiesDto = (
     readonly search: string;
 
     @IsOptional()
-    @IsDate()
-    @Type(() => Date)
+    @IsISO8601()
+    @Matches(/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/, {
+      message: 'createdFrom should in the YYYY-MM-DD format',
+    })
     @MaxDate(new Date(new Date().toISOString().split('T')[0]))
     @ApiProperty({
       example: '2020-09-09',
@@ -70,8 +74,10 @@ export const CrudFindEntitiesDto = (
     readonly createdFrom: Date;
 
     @IsOptional()
-    @IsDate()
-    @Type(() => Date)
+    @IsISO8601()
+    @Matches(/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/, {
+      message: 'createdTo should in the YYYY-MM-DD format',
+    })
     @MaxDate(new Date(new Date().toISOString().split('T')[0]))
     @ApiProperty({
       example: '2020-09-09',
@@ -83,8 +89,10 @@ export const CrudFindEntitiesDto = (
     readonly createdTo: Date;
 
     @IsOptional()
-    @IsDate()
-    @Type(() => Date)
+    @IsISO8601()
+    @Matches(/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/, {
+      message: 'updatedFrom should in the YYYY-MM-DD format',
+    })
     @MaxDate(new Date(new Date().toISOString().split('T')[0]))
     @ApiProperty({
       example: '2020-09-09',
@@ -96,8 +104,10 @@ export const CrudFindEntitiesDto = (
     readonly updatedFrom: Date;
 
     @IsOptional()
-    @IsDate()
-    @Type(() => Date)
+    @IsISO8601()
+    @Matches(/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/, {
+      message: 'updatedTo should in the YYYY-MM-DD format',
+    })
     @MaxDate(new Date(new Date().toISOString().split('T')[0]))
     @ApiProperty({
       example: '2020-09-09',
