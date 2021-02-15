@@ -69,12 +69,13 @@ describe('Applications', () => {
           Authorization: `Bearer ${credentials.adminToken}`,
         });
 
+      const today = new Date();
       expect(result.body).toEqual({
         error: 'Bad Request',
         message: [
           'createdFrom should in the YYYY-MM-DD format',
           'createdFrom must be a valid ISO 8601 date string',
-          'maximal allowed date for updatedFrom is Fri Feb 12 2021 00:00:00 GMT+0000 (Coordinated Universal Time)',
+          `maximal allowed date for updatedFrom is ${(new Date(new Date().toISOString().split('T')[0])).toString()}`,
           'updatedTo should in the YYYY-MM-DD format',
         ],
         statusCode: 400,
