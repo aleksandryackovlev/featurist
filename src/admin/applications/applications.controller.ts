@@ -39,7 +39,7 @@ import { User } from '../users/user.entity';
 @ApiTags('Applications')
 @ApiBearerAuth()
 @UseGuards(AuthJwtGuard)
-@Controller('applications')
+@Controller('admin/v1/applications')
 export class ApplicationsController {
   constructor(private readonly service: ApplicationsService) {}
 

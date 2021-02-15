@@ -41,7 +41,7 @@ import { FeaturesService } from './features.service';
 @ApiTags('Features')
 @ApiBearerAuth()
 @UseGuards(AuthJwtGuard)
-@Controller('applications/:appId/features')
+@Controller('admin/v1/applications/:appId/features')
 export class FeaturesController {
   constructor(
     private readonly featuresService: FeaturesService,

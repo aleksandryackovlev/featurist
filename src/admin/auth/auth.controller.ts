@@ -4,7 +4,7 @@ import { ApiExcludeEndpoint } from '@nestjs/swagger';
 import { AuthLocalGuard } from './guards/auth.local.guard';
 import { AuthService } from './auth.service';
 
-@Controller('auth')
+@Controller('admin/v1/auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
