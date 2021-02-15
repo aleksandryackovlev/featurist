@@ -1,10 +1,6 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
-const {
-  fixturesIterator,
-  Loader,
-  Parser,
-  Resolver,
-} = require('typeorm-fixtures-cli/dist');
+const { fixturesIterator, Loader, Resolver } = require('typeorm-fixtures-cli/dist');
 const {
   ConnectionOptionsReader,
   getConnectionManager,
@@ -74,7 +70,7 @@ class Environment extends NodeEnvironment {
     }
 
     if (!global.app) {
-      global.app = request('http://localhost:3000');
+      global.app = request('http://localhost:3000/admin/v1');
     }
 
     if (!global.credentials) {
