@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { UsersModule } from './users/users.module';
-import { FeaturesModule } from './features/features.module';
-import { ApplicationsModule } from './applications/applications.module';
-import { AuthModule } from './auth/auth.module';
-import { RolesModule } from './roles/roles.module';
-import { PermissionsModule } from './permissions/permissions.module';
+import { UsersModule } from './admin/users/users.module';
+import { FeaturesModule } from './admin/features/features.module';
+import { ApplicationsModule } from './admin/applications/applications.module';
+import { AuthModule } from './admin/auth/auth.module';
+import { RolesModule } from './admin/roles/roles.module';
+import { PermissionsModule } from './admin/permissions/permissions.module';
 
 import config from './config';
 

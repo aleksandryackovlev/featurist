@@ -14,7 +14,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { IFindEntitiesDto } from '../interfaces';
 
-import { MaxDate } from '../../utils/validators/max-date';
+import { MaxDate } from '../../../utils/validators/max-date';
 
 export const CrudFindEntitiesDto = (
   sortFields = ['id', 'name', 'createdAt', 'updatedAt'],
