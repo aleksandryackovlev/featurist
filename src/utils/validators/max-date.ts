@@ -19,7 +19,6 @@ export function MaxDate(date: Date, validationOptions?: ValidationOptions) {
             return false;
           }
           let date: Date;
-          console.log(value, /^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/.test(value));
 
           try {
             date = new Date(value);
