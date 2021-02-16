@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { ClassType } from 'class-transformer/ClassTransformer';
-import { validateOrReject, ValidationError } from 'class-validator';
+import { validateOrReject } from 'class-validator';
 
 export const Headers = createParamDecorator(
   async (value: ClassType<unknown>, ctx: ExecutionContext) => {
