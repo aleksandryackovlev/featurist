@@ -9,6 +9,8 @@ import { AuthModule } from './admin/auth/auth.module';
 import { RolesModule } from './admin/roles/roles.module';
 import { PermissionsModule } from './admin/permissions/permissions.module';
 
+import { ClientFeaturesModule } from './client/features/features.module';
+
 import config from './config';
 
 @Module({
@@ -40,6 +42,7 @@ import config from './config';
     AuthModule,
     RolesModule,
     PermissionsModule,
+    ClientFeaturesModule,
   ],
   providers: [],
 })
