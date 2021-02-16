@@ -10,5 +10,6 @@ import { ApplicationsModule } from '../applications/applications.module';
   imports: [TypeOrmModule.forFeature([Feature]), ApplicationsModule],
   controllers: [FeaturesController],
   providers: [FeaturesService],
+  exports: [FeaturesService],
 })
 export class FeaturesModule {}
