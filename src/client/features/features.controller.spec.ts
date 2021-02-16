@@ -53,7 +53,6 @@ describe('FeaturesController', () => {
 
   describe('find', () => {
     it('should return an array of features', async () => {
-      const findDto = { offset: 10, limit: 10 };
       expect(await controller.find({ appId })).toEqual({
         data: featuresArray,
         total: 10,
