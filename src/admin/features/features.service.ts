@@ -46,6 +46,22 @@ export class FeaturesService {
     return true;
   }
 
+  async findAll(appId: string): Promise<{ data: Feature[]; total: number }> {
+    const [features, total] = await this.repository.findAndCount({
+      where: {
+        applicationId: appId,
+      },
+      order: {
+        name: 'DESC',
+      },
+    });
+
+    return {
+      data: features,
+      total,
+    };
+  }
+
   async find(
     appId: string,
     findFeaturesDto: FindFeaturesDto,
@@ -115,6 +131,19 @@ export class FeaturesService {
   async findOne(appId: string, featureId: string): Promise<Feature> {
     const feature = await this.repository.findOne({
       id: featureId,
+      applicationId: appId,
+    });
+
+    if (!feature) {
+      throw new NotFoundException('Entity does not exist');
+    }
+
+    return feature;
+  }
+
+  async findOneByName(appId: string, featureName: string): Promise<Feature> {
+    const feature = await this.repository.findOne({
+      name: featureName,
       applicationId: appId,
     });
 
