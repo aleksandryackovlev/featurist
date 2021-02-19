@@ -11,7 +11,7 @@ import { PermissionsModule } from './admin/permissions/permissions.module';
 
 import { ClientFeaturesModule } from './client/features/features.module';
 
-import config from './config';
+import config from './core/config';
 
 @Module({
   imports: [

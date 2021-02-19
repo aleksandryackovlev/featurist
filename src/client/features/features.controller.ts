@@ -4,7 +4,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ApplicationsService } from '../../admin/applications/applications.service';
 import { FeaturesService } from '../../admin/features/features.service';
-import { Headers } from '../../utils/decorators/headers.decorator';
+import { Headers } from '../../core/decorators/headers.decorator';
 
 import { FeaturesListResponse } from './responses/features.list.response';
 import { FeatureSingleResponse } from './responses/feature.single.response';
