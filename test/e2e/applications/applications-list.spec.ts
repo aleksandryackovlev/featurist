@@ -82,5 +82,44 @@ describe('Applications', () => {
       });
       expect(result.statusCode).toEqual(400);
     });
+
+    it('should filter applications by name', async () => {
+      const adminApplication = entities.applications.find(({ users }) =>
+        users.some(({ username }) => username == 'admin'),
+      );
+
+      const result = await app
+        .get('/applications')
+        .query({
+          search: adminApplication.name.substring(1, adminApplication.name.length - 1),
+        })
+        .set({
+          Authorization: `Bearer ${credentials.adminToken}`,
+        });
+
+      expect(result.body.data.some(({ id }) => id === adminApplication.id)).toEqual(true);
+      expect(result.statusCode).toEqual(200);
+    });
+
+    it('should sort applications by the given field', async () => {
+      const adminApplications = entities.applications.filter(({ users }) =>
+        users.some(({ username }) => username == 'admin'),
+      ).sort((first, second) => first.name > second.name ? 1 : -1)
+      .map(({ users, features, ...rest }) => rest);
+
+      const result = await app
+        .get('/applications')
+        .query({
+          sortBy: 'name',
+          sortDirection: 'asc',
+        })
+        .set({
+          Authorization: `Bearer ${credentials.adminToken}`,
+        });
+
+      expect(result.statusCode).toEqual(200);
+      expect(result.body.data).toEqual(adminApplications);
+      expect(result.body.total).toEqual(adminApplications.length);
+    });
   });
 });
