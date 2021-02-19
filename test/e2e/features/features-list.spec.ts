@@ -77,5 +77,124 @@ describe('Features', () => {
       });
       expect(result.statusCode).toEqual(200);
     });
+
+    it('should not allow to use non-positive offsets and limits', async () => {
+      const application = entities.applications.find(({ users }) =>
+        users.some(({ username }) => username == 'admin'));
+
+      const result = await app
+        .get(`/applications/${application.id}/features`)
+        .query({
+          offset: -1,
+          limit: 0,
+        })
+        .set({
+          Authorization: `Bearer ${credentials.adminToken}`,
+        });
+
+      expect(result.body).toEqual({
+        error: 'Bad Request',
+        message: [
+          'offset must not be less than 1',
+          'limit must not be less than 1',
+        ],
+        statusCode: 400,
+      });
+      expect(result.statusCode).toEqual(400);
+    });
+
+    it('should paginate the result list', async () => {
+      const offset = 1;
+      const limit = 2;
+
+      const application = entities.applications.find(({ users }) =>
+        users.some(({ username }) => username == 'admin'));
+
+      const expected = application.features
+        .sort((first, second) => (first.updatedAt > second.updatedAt ? -1 : 1))
+        .slice(offset, offset + limit);
+
+      const result = await app
+        .get(`/applications/${application.id}/features`)
+        .query({
+          offset,
+          limit,
+        })
+        .set({
+          Authorization: `Bearer ${credentials.adminToken}`,
+        });
+
+      expect(result.body.data).toEqual(expected);
+      expect(result.body.total).toEqual(application.features.length);
+      expect(result.statusCode).toEqual(200);
+    });
+
+    it('should not allow to use invalid dates in filters', async () => {
+      const application = entities.applications.find(({ users }) =>
+        users.some(({ username }) => username == 'admin'));
+
+      const result = await app
+        .get(`/applications/${application.id}/features`)
+        .query({
+          createdFrom: '04-03-2020',
+          createdTo: '2020-12-12',
+          updatedFrom: '2075-05-05',
+          updatedTo: new Date('2020-01-01').toISOString(),
+        })
+        .set({
+          Authorization: `Bearer ${credentials.adminToken}`,
+        });
+
+      expect(result.body).toEqual({
+        error: 'Bad Request',
+        message: [
+          'createdFrom should in the YYYY-MM-DD format',
+          'createdFrom must be a valid ISO 8601 date string',
+          `maximal allowed date for updatedFrom is ${(new Date(new Date().toISOString().split('T')[0])).toString()}`,
+          'updatedTo should in the YYYY-MM-DD format',
+        ],
+        statusCode: 400,
+      });
+      expect(result.statusCode).toEqual(400);
+    });
+
+    it('should filter features by name', async () => {
+      const application = entities.applications.find(({ users }) =>
+        users.some(({ username }) => username == 'admin'));
+
+      const result = await app
+        .get(`/applications/${application.id}/features`)
+        .query({
+          search: application.features[0].name.substring(1, application.features[0].name.length - 1),
+        })
+        .set({
+          Authorization: `Bearer ${credentials.adminToken}`,
+        });
+
+      expect(result.body.data.some(({ id }) => id === application.features[0].id)).toEqual(true);
+      expect(result.statusCode).toEqual(200);
+    });
+
+    it('should sort features by the given field', async () => {
+      const application = entities.applications.find(({ users }) =>
+        users.some(({ username }) => username == 'admin'));
+
+      const expected = application.features
+        .sort((first, second) => (first.name > second.name ? 1 : -1));
+
+      const result = await app
+        .get(`/applications/${application.id}/features`)
+        .query({
+          sortBy: 'name',
+          sortDirection: 'asc',
+        })
+        .set({
+          Authorization: `Bearer ${credentials.adminToken}`,
+        });
+
+      expect(result.statusCode).toEqual(200);
+      expect(result.body.data).toEqual(expected);
+      expect(result.body.total).toEqual(expected.length);
+    });
   });
 });
