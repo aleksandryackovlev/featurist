@@ -84,7 +84,7 @@ describe('Applications', () => {
     });
 
     it('should filter applications by name', async () => {
-      const adminApplication = entities.applications.find(({ users }) =>
+      const adminApplication = adminApplications.find(({ users }) =>
         users.some(({ username }) => username == 'admin'),
       );
 
@@ -102,10 +102,9 @@ describe('Applications', () => {
     });
 
     it('should sort applications by the given field', async () => {
-      const adminApplications = entities.applications.filter(({ users }) =>
-        users.some(({ username }) => username == 'admin'),
-      ).sort((first, second) => first.name > second.name ? 1 : -1)
-      .map(({ users, features, ...rest }) => rest);
+      const applications = adminApplications
+        .sort((first, second) => first.name > second.name ? 1 : -1)
+        .map(({ users, features, ...rest }) => rest);
 
       const result = await app
         .get('/applications')
@@ -118,8 +117,8 @@ describe('Applications', () => {
         });
 
       expect(result.statusCode).toEqual(200);
-      expect(result.body.data).toEqual(adminApplications);
-      expect(result.body.total).toEqual(adminApplications.length);
+      expect(result.body.data).toEqual(applications);
+      expect(result.body.total).toEqual(applications.length);
     });
   });
 });
