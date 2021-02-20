@@ -31,7 +31,7 @@ export function MaxDate(date: Date, validationOptions?: ValidationOptions) {
         defaultMessage: buildMessage(
           /* istanbul ignore next */
           (eachPrefix) =>
-            `maximal allowed date for ${eachPrefix} $property is $constraint1`,
+            `maximal allowed date for${eachPrefix} $property is $constraint1`,
           validationOptions,
         ),
       },
