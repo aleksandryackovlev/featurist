@@ -22,9 +22,7 @@ import {
 
 import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
 
-import { PoliciesGuard } from '../permissions/guards/permissions.policies.guard';
-import { CheckPolicies } from '../permissions/decorators/permissions.check-policies';
-import { AppAbility } from '../permissions/permissions-ability.factory';
+import { IsAllowed } from '../permissions/decorators/permissions.is-allowed';
 
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
@@ -54,8 +52,7 @@ export class ApplicationsController {
     type: ApplicationsListResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid search parameters' })
-  @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('read', 'Application'))
+  @IsAllowed(['read', 'Application'])
   async find(
     @Query() findApplicationsDto: FindApplicationsDto,
     @Req() req: Request,
@@ -78,8 +75,7 @@ export class ApplicationsController {
     description: 'The application',
     type: ApplicationSingleResponse,
   })
-  @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('read', 'Application'))
+  @IsAllowed(['read', 'Application'])
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
     @Req() req: Request,
@@ -100,8 +96,7 @@ export class ApplicationsController {
     type: ApplicationSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
-  @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('create', 'Application'))
+  @IsAllowed(['create', 'Application'])
   async create(
     @Body() createApplicationDto: CreateApplicationDto,
     @Req() req: Request,
@@ -122,8 +117,7 @@ export class ApplicationsController {
     type: ApplicationSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
-  @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('update', 'Application'))
+  @IsAllowed(['update', 'Application'])
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateApplicationDto: UpdateApplicationDto,
@@ -145,8 +139,7 @@ export class ApplicationsController {
     type: ApplicationSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
-  @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('delete', 'Application'))
+  @IsAllowed(['delete', 'Application'])
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
     @Req() req: Request,

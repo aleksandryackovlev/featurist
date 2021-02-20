@@ -23,9 +23,7 @@ import {
 
 import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
 
-import { PoliciesGuard } from '../permissions/guards/permissions.policies.guard';
-import { CheckPolicies } from '../permissions/decorators/permissions.check-policies';
-import { AppAbility } from '../permissions/permissions-ability.factory';
+import { IsAllowed } from '../permissions/decorators/permissions.is-allowed';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -70,8 +68,7 @@ export class UsersController {
     type: UsersListResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid search parameters' })
-  @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('read', 'User'))
+  @IsAllowed(['read', 'User'])
   async find(@Query() findUsersDto: FindUsersDto): Promise<UsersListResponse> {
     const { data, total } = await this.usersService.find(findUsersDto);
 
@@ -89,8 +86,7 @@ export class UsersController {
     type: UserSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
-  @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('create', 'User'))
+  @IsAllowed(['create', 'User'])
   async create(
     @Body() createUserDto: CreateUserDto,
   ): Promise<UserSingleResponse> {
@@ -109,8 +105,7 @@ export class UsersController {
     description: 'The user',
     type: UserSingleResponse,
   })
-  @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('read', 'User'))
+  @IsAllowed(['read', 'User'])
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<UserSingleResponse> {
@@ -128,8 +123,7 @@ export class UsersController {
     type: UserSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
-  @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('update', 'User'))
+  @IsAllowed(['update', 'User'])
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -150,8 +144,7 @@ export class UsersController {
     type: UserSingleResponse,
   })
   @ApiResponse({ status: 400, description: 'Invalid id' })
-  @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can('delete', 'User'))
+  @IsAllowed(['delete', 'User'])
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<UserSingleResponse> {
