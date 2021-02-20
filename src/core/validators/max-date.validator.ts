@@ -5,6 +5,16 @@ import {
   ValidationArguments,
 } from 'class-validator';
 
+export function maxDate(value: unknown, max: Date): boolean {
+  if (typeof value !== 'string') {
+    return false;
+  }
+
+  const date = new Date(value);
+
+  return !isNaN(date.getTime()) && date.getTime() <= max.getTime();
+}
+
 export function MaxDate(date: Date, validationOptions?: ValidationOptions) {
   return function (object: any, propertyName: string) {
     registerDecorator({
@@ -14,28 +24,14 @@ export function MaxDate(date: Date, validationOptions?: ValidationOptions) {
       constraints: [date],
       options: validationOptions,
       validator: {
+        /* istanbul ignore next */
         validate(value: any, args: ValidationArguments) {
-          if (typeof value !== 'string') {
-            return false;
-          }
-          let date: Date;
-
-          try {
-            date = new Date(value);
-          } catch (e) {
-            return false;
-          }
-
-          return (
-            date instanceof Date &&
-            date.getTime() <= (<Date>args.constraints[0]).getTime()
-          );
+          return maxDate(value, <Date>args.constraints[0]);
         },
         defaultMessage: buildMessage(
+          /* istanbul ignore next */
           (eachPrefix) =>
-            'maximal allowed date for ' +
-            eachPrefix +
-            '$property is $constraint1',
+            `maximal allowed date for ${eachPrefix} $property is $constraint1`,
           validationOptions,
         ),
       },
