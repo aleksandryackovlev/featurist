@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { IFindEntitiesDto as FindDtoType } from '../crud/interfaces';
+import { User } from '../users/user.entity';
 
 import { ApplicationsService } from './applications.service';
 import { Application } from './application.entity';
@@ -15,6 +16,11 @@ app.description = 'Description';
 
 const resultArr = [app];
 
+const user = {
+  id: 'some-id',
+  username: 'testuser',
+};
+
 const query = {
   where: jest.fn(),
   andWhere: jest.fn(),
@@ -22,8 +28,10 @@ const query = {
   limit: jest.fn(),
   orderBy: jest.fn(),
   getManyAndCount: jest.fn().mockReturnValue([resultArr, 1]),
-  getOne: jest.fn().mockResolvedValue(app),
+  getOne: jest.fn().mockResolvedValue({ ...app }),
   innerJoin: jest.fn(),
+  leftJoinAndSelect: jest.fn(),
+  innerJoinAndSelect: jest.fn(),
 };
 
 describe('ApplicationsService', () => {
@@ -38,7 +46,11 @@ describe('ApplicationsService', () => {
           provide: getRepositoryToken(Application),
           useValue: {
             createQueryBuilder: jest.fn().mockReturnValue(query),
-            findOne: jest.fn().mockResolvedValue(null),
+            findOne: jest.fn().mockResolvedValue({ ...app }),
+            create: jest.fn().mockReturnValue({ ...app }),
+            save: jest.fn(),
+            update: jest.fn().mockResolvedValue(true),
+            delete: jest.fn().mockResolvedValue(true),
           },
         },
       ],
@@ -112,6 +124,84 @@ describe('ApplicationsService', () => {
       expect(query.where).toBeCalledWith('application.id = :id', { id: 'uid' });
 
       expect(query.getOne).toBeCalledTimes(1);
+    });
+  });
+
+  describe('create', () => {
+    it('should successfully insert an entity', async () => {
+      const result = await service.create(
+        {
+          name: 'Test Entity 1',
+          description: 'Test Desc 1',
+        },
+        user as User,
+      );
+
+      await expect(result).toEqual(app);
+      expect(repo.create).toBeCalledTimes(1);
+      expect(repo.create).toBeCalledWith({
+        name: 'Test Entity 1',
+        description: 'Test Desc 1',
+      });
+      expect(repo.save).toBeCalledTimes(1);
+    });
+  });
+
+  describe('update', () => {
+    it('should call the update method', async () => {
+      const entity = await service.update('a uuid', {
+        name: 'Test Entity 1',
+        description: 'Test Desc 1',
+      });
+
+      expect(entity).toEqual({
+        ...app,
+        name: 'Test Entity 1',
+        description: 'Test Desc 1',
+      });
+
+      expect(repo.update).toBeCalledTimes(1);
+      expect(repo.update).toBeCalledWith('a uuid', {
+        name: 'Test Entity 1',
+        description: 'Test Desc 1',
+      });
+    });
+
+    it('should throw an error if a entity does not exist', async () => {
+      const error = new Error('Entity does not exist!');
+
+      jest.spyOn(service, 'findOne').mockRejectedValueOnce(error);
+
+      await expect(
+        service.update('a uuid', {
+          name: 'Test Entity 1',
+          description: 'Test Desc 1',
+        }),
+      ).rejects.toThrow('Entity does not exist!');
+    });
+  });
+
+  describe('findOne', () => {
+    it('should get a single entity', async () => {
+      await expect(service.findOne('a uuid', 'userId')).resolves.toEqual(app);
+      expect(query.innerJoin).toBeCalledWith(
+        'application.users',
+        'user',
+        'application_user.user_id = :userId',
+        { userId: 'userId' },
+      );
+
+      expect(query.where).toBeCalledWith('application.id = :id', {
+        id: 'a uuid',
+      });
+    });
+
+    it('should throw an error if a entity does not exist', async () => {
+      jest.spyOn(query, 'getOne').mockResolvedValueOnce(null);
+
+      await expect(service.findOne('a uuid')).rejects.toThrow(
+        'Entity does not exist',
+      );
     });
   });
 
@@ -246,6 +336,24 @@ describe('ApplicationsService', () => {
 
       expect(query.limit).toBeCalledTimes(1);
       expect(query.limit).toBeCalledWith(200);
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove an enitity and return it', async () => {
+      const result = await service.remove('a uuid', 'userId');
+      /* eslint-disable @typescript-eslint/no-unused-vars */
+      const { users, features, ...expected } = app;
+      /* eslint-enable @typescript-eslint/no-unused-vars */
+      expect(result).toEqual(expected);
+    });
+
+    it('should throw an error if an entity with a given id does not exit', async () => {
+      jest.spyOn(query, 'getOne').mockResolvedValueOnce(null);
+
+      await expect(service.remove('a bad uuid')).rejects.toThrow(
+        'Entity does not exist',
+      );
     });
   });
 });

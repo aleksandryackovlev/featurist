@@ -179,10 +179,10 @@ export class ApplicationsService {
       );
     }
 
-    const result = await query
-      .leftJoinAndSelect('application.features', 'feature')
-      .where('application.id = :id', { id })
-      .getOne();
+    query.leftJoinAndSelect('application.features', 'feature');
+    query.where('application.id = :id', { id });
+
+    const result = await query.getOne();
 
     if (!result) {
       throw new NotFoundException('Entity does not exist');
