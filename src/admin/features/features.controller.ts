@@ -63,6 +63,7 @@ export class FeaturesController {
     @Query() findFeaturesDto: FindFeaturesDto,
     @Req() req,
   ): Promise<FeaturesListResponse> {
+    /* istanbul ignore if */
     if (
       !(await this.applicationsService.isApplicationExists(
         appId,
@@ -97,6 +98,7 @@ export class FeaturesController {
     @Body() createFeatureDto: CreateFeatureDto,
     @Req() req,
   ): Promise<FeatureSingleResponse> {
+    /* istanbul ignore if */
     if (
       !(await this.applicationsService.isApplicationExists(
         appId,
@@ -127,6 +129,7 @@ export class FeaturesController {
     @Param('id', ParseUUIDPipe) id: string,
     @Req() req,
   ): Promise<FeatureSingleResponse> {
+    /* istanbul ignore if */
     if (
       !(await this.applicationsService.isApplicationExists(
         appId,
@@ -159,6 +162,7 @@ export class FeaturesController {
     @Body() updateFeatureDto: UpdateFeatureDto,
     @Req() req,
   ): Promise<FeatureSingleResponse> {
+    /* istanbul ignore if */
     if (
       !(await this.applicationsService.isApplicationExists(
         appId,
@@ -190,6 +194,7 @@ export class FeaturesController {
     @Param('id', ParseUUIDPipe) id: string,
     @Req() req,
   ): Promise<FeatureSingleResponse> {
+    /* istanbul ignore if */
     if (
       !(await this.applicationsService.isApplicationExists(
         appId,
@@ -221,6 +226,7 @@ export class FeaturesController {
     @Param('id', ParseUUIDPipe) id: string,
     @Req() req,
   ): Promise<FeatureSingleResponse> {
+    /* istanbul ignore if */
     if (
       !(await this.applicationsService.isApplicationExists(
         appId,
@@ -252,6 +258,7 @@ export class FeaturesController {
     @Param('id', ParseUUIDPipe) id: string,
     @Req() req,
   ): Promise<FeatureSingleResponse> {
+    /* istanbul ignore if */
     if (
       !(await this.applicationsService.isApplicationExists(
         appId,
