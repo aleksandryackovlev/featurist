@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { applyDecorators, UseGuards } from '@nestjs/common';
 
 import { PoliciesGuard } from '../guards/permissions.policies.guard';

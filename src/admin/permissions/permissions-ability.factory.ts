@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { Injectable } from '@nestjs/common';
 import { Ability, RawRuleOf } from '@casl/ability';
 
