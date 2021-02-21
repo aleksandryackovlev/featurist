@@ -3,12 +3,11 @@ import {
   ExecutionContext,
   BadRequestException,
 } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
-import { ClassType } from 'class-transformer/ClassTransformer';
+import { plainToClass, ClassConstructor } from 'class-transformer';
 import { validateOrReject } from 'class-validator';
 
 export const getHeaders = async (
-  value: ClassType<unknown>,
+  value: ClassConstructor<any>,
   ctx: ExecutionContext,
 ) => {
   const headers = ctx.switchToHttp().getRequest().headers;
