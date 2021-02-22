@@ -40,8 +40,9 @@ describe('FeaturesService', () => {
           provide: getRepositoryToken(Feature),
           useValue: {
             createQueryBuilder: jest.fn().mockReturnValue(query),
-            findOne: jest.fn().mockResolvedValue(feature),
-            create: jest.fn().mockReturnValue(feature),
+            findOne: jest.fn().mockResolvedValue({ ...feature }),
+            findAndCount: jest.fn().mockResolvedValue([[feature], 1]),
+            create: jest.fn().mockReturnValue({ ...feature }),
             save: jest.fn(),
             update: jest.fn().mockResolvedValue(true),
             delete: jest.fn().mockResolvedValue(true),
@@ -119,6 +120,25 @@ describe('FeaturesService', () => {
 
       expect(repoSpy).toBeCalledTimes(1);
       expect(repoSpy).toBeCalledWith({ name: 'someName' });
+    });
+  });
+
+  describe('findAll', () => {
+    it('should return all the features of the given app sorted by name', async () => {
+      await expect(service.findAll('appId')).resolves.toEqual({
+        data: [feature],
+        total: 1,
+      });
+
+      expect(repo.findAndCount).toBeCalledTimes(1);
+      expect(repo.findAndCount).toBeCalledWith({
+        where: {
+          applicationId: 'appId',
+        },
+        order: {
+          name: 'DESC',
+        },
+      });
     });
   });
 
@@ -271,6 +291,153 @@ describe('FeaturesService', () => {
 
       expect(query.limit).toBeCalledTimes(1);
       expect(query.limit).toBeCalledWith(200);
+    });
+  });
+
+  describe('findOne', () => {
+    it('should get a single entity', async () => {
+      await expect(service.findOne('appId', 'featureId')).resolves.toEqual(
+        feature,
+      );
+
+      expect(repo.findOne).toBeCalledWith({
+        id: 'featureId',
+        applicationId: 'appId',
+      });
+    });
+
+    it('should throw an error if a entity does not exist', async () => {
+      jest.spyOn(repo, 'findOne').mockResolvedValueOnce(null);
+
+      await expect(service.findOne('appId', 'featureId')).rejects.toThrow(
+        'Entity does not exist',
+      );
+    });
+  });
+
+  describe('findOneByName', () => {
+    it('should get a single entity', async () => {
+      await expect(
+        service.findOneByName('appId', 'featureName'),
+      ).resolves.toEqual(feature);
+
+      expect(repo.findOne).toBeCalledWith({
+        name: 'featureName',
+        applicationId: 'appId',
+      });
+    });
+
+    it('should throw an error if a entity does not exist', async () => {
+      jest.spyOn(repo, 'findOne').mockResolvedValueOnce(null);
+
+      await expect(
+        service.findOneByName('appId', 'featureName'),
+      ).rejects.toThrow('Entity does not exist');
+    });
+  });
+
+  describe('enable', () => {
+    it('should enable the feature', async () => {
+      const entity = await service.enable('appId', 'a uuid');
+
+      expect(entity).toEqual({
+        ...feature,
+        isEnabled: true,
+      });
+
+      expect(repo.update).toBeCalledTimes(1);
+      expect(repo.update).toBeCalledWith('a uuid', {
+        isEnabled: true,
+      });
+    });
+
+    it('should throw an error if a entity does not exist', async () => {
+      const error = new Error('Entity does not exist!');
+
+      jest.spyOn(service, 'findOne').mockRejectedValueOnce(error);
+
+      await expect(service.enable('appId', 'a uuid')).rejects.toThrow(
+        'Entity does not exist!',
+      );
+    });
+  });
+
+  describe('disable', () => {
+    it('should disable the feature', async () => {
+      const entity = await service.disable('appId', 'a uuid');
+
+      expect(entity).toEqual({
+        ...feature,
+        isEnabled: false,
+      });
+
+      expect(repo.update).toBeCalledTimes(1);
+      expect(repo.update).toBeCalledWith('a uuid', {
+        isEnabled: false,
+      });
+    });
+
+    it('should throw an error if a entity does not exist', async () => {
+      const error = new Error('Entity does not exist!');
+
+      jest.spyOn(service, 'findOne').mockRejectedValueOnce(error);
+
+      await expect(service.disable('appId', 'a uuid')).rejects.toThrow(
+        'Entity does not exist!',
+      );
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove an enitity and return it', async () => {
+      const result = await service.remove('appId', 'featureId');
+      /* eslint-disable @typescript-eslint/no-unused-vars */
+      /* eslint-enable @typescript-eslint/no-unused-vars */
+      expect(result).toEqual(feature);
+    });
+
+    it('should throw an error if an entity with a given id does not exit', async () => {
+      const error = new Error('Entity does not exist!');
+
+      jest.spyOn(service, 'findOne').mockRejectedValueOnce(error);
+
+      await expect(service.remove('appId', 'featureId')).rejects.toThrow(
+        'Entity does not exist!',
+      );
+    });
+  });
+
+  describe('update', () => {
+    it('should update the feature', async () => {
+      const entity = await service.update('appId', 'a uuid', {
+        description: 'Test Desc 1',
+        isEnabled: true,
+      });
+
+      expect(entity).toEqual({
+        ...feature,
+        description: 'Test Desc 1',
+        isEnabled: true,
+      });
+
+      expect(repo.update).toBeCalledTimes(1);
+      expect(repo.update).toBeCalledWith('a uuid', {
+        description: 'Test Desc 1',
+        isEnabled: true,
+      });
+    });
+
+    it('should throw an error if a entity does not exist', async () => {
+      const error = new Error('Entity does not exist!');
+
+      jest.spyOn(service, 'findOne').mockRejectedValueOnce(error);
+
+      await expect(
+        service.update('appId', 'a uuid', {
+          description: 'Test Desc 1',
+          isEnabled: true,
+        }),
+      ).rejects.toThrow('Entity does not exist!');
     });
   });
 });

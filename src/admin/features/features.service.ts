@@ -155,37 +155,25 @@ export class FeaturesService {
   }
 
   async enable(appId: string, featureId: string): Promise<Feature> {
-    const feature = await this.repository.findOne({
-      id: featureId,
-      applicationId: appId,
-    });
+    const feature = await this.findOne(appId, featureId);
 
-    if (!feature) {
-      throw new NotFoundException('Entity does not exist');
-    }
+    await this.repository.update(featureId, { isEnabled: true });
 
-    feature.isEnabled = true;
-    feature.updatedAt = new Date();
-    await this.repository.save(feature);
-
-    return feature;
+    return {
+      ...feature,
+      isEnabled: true,
+    };
   }
 
   async disable(appId: string, featureId: string): Promise<Feature> {
-    const feature = await this.repository.findOne({
-      id: featureId,
-      applicationId: appId,
-    });
+    const feature = await this.findOne(appId, featureId);
 
-    if (!feature) {
-      throw new NotFoundException('Entity does not exist');
-    }
+    await this.repository.update(featureId, { isEnabled: false });
 
-    feature.isEnabled = false;
-    feature.updatedAt = new Date();
-    await this.repository.save(feature);
-
-    return feature;
+    return {
+      ...feature,
+      isEnabled: false,
+    };
   }
 
   async remove(appId: string, featureId: string): Promise<Feature> {
