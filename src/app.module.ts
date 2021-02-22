@@ -9,7 +9,7 @@ import { AuthModule } from './admin/auth/auth.module';
 import { RolesModule } from './admin/roles/roles.module';
 import { PermissionsModule } from './admin/permissions/permissions.module';
 
-import { ClientFeaturesModule } from './client/features/features.module';
+import { ClientFeaturesModule } from './api/features/features.module';
 
 import config from './core/config';
 
