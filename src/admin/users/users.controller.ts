@@ -19,6 +19,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiTags,
+  ApiParam,
 } from '@nestjs/swagger';
 
 import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
@@ -100,6 +101,13 @@ export class UsersController {
     summary: 'Get user by id',
     operationId: 'getUser',
   })
+  @ApiParam({
+    name: 'id',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'The user',
@@ -116,6 +124,13 @@ export class UsersController {
   @ApiOperation({
     summary: 'Update the user',
     operationId: 'updateUser',
+  })
+  @ApiParam({
+    name: 'id',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
   })
   @ApiResponse({
     status: 200,
@@ -137,6 +152,13 @@ export class UsersController {
   @ApiOperation({
     summary: 'Delete the user',
     operationId: 'deleteUser',
+  })
+  @ApiParam({
+    name: 'id',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
   })
   @ApiResponse({
     status: 200,

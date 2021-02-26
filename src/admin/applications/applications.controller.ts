@@ -18,6 +18,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiTags,
+  ApiParam,
 } from '@nestjs/swagger';
 
 import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
@@ -70,6 +71,13 @@ export class ApplicationsController {
     summary: 'Get application by id',
     operationId: 'getApplication',
   })
+  @ApiParam({
+    name: 'id',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'The application',
@@ -111,6 +119,13 @@ export class ApplicationsController {
     summary: 'Update the application',
     operationId: 'updateApplication',
   })
+  @ApiParam({
+    name: 'id',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'The updated application',
@@ -132,6 +147,13 @@ export class ApplicationsController {
   @ApiOperation({
     summary: 'Delete the application',
     operationId: 'deleteApplication',
+  })
+  @ApiParam({
+    name: 'id',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
   })
   @ApiResponse({
     status: 200,

@@ -22,12 +22,11 @@ export const CrudFindEntitiesDto = (
   class FindEntitiesDto {
     @IsOptional()
     @IsInt()
-    @Min(1)
+    @Min(0)
     @Type(() => Number)
     @ApiProperty({
-      default: 10,
-      example: 10,
-      minimum: 1,
+      default: 0,
+      minimum: 0,
       format: 'int32',
       description: 'The number of items to skip',
       required: false,

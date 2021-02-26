@@ -16,6 +16,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiTags,
+  ApiParam,
 } from '@nestjs/swagger';
 
 import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
@@ -61,6 +62,13 @@ export class RolesController {
     summary: 'Get role by id',
     operationId: 'getRole',
   })
+  @ApiParam({
+    name: 'id',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'The role',
@@ -96,6 +104,13 @@ export class RolesController {
     summary: 'Update the role',
     operationId: 'updateRole',
   })
+  @ApiParam({
+    name: 'id',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'The updated role',
@@ -114,6 +129,13 @@ export class RolesController {
   @ApiOperation({
     summary: 'Delete the role',
     operationId: 'deleteRole',
+  })
+  @ApiParam({
+    name: 'id',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
   })
   @ApiResponse({
     status: 200,

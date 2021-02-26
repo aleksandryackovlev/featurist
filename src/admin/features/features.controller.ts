@@ -18,6 +18,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiTags,
+  ApiParam,
 } from '@nestjs/swagger';
 
 import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
@@ -50,6 +51,13 @@ export class FeaturesController {
   @ApiOperation({
     summary: 'Find features by params',
     operationId: 'getFeatures',
+  })
+  @ApiParam({
+    name: 'appId',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
   })
   @ApiResponse({
     status: 200,
@@ -86,6 +94,13 @@ export class FeaturesController {
     summary: 'Create a new feature',
     operationId: 'createFeature',
   })
+  @ApiParam({
+    name: 'appId',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
   @ApiResponse({
     status: 201,
     description: 'The created feature',
@@ -118,6 +133,20 @@ export class FeaturesController {
     summary: 'Get feature by id',
     operationId: 'getFeature',
   })
+  @ApiParam({
+    name: 'appId',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
+  @ApiParam({
+    name: 'id',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'The feature',
@@ -148,6 +177,20 @@ export class FeaturesController {
   @ApiOperation({
     summary: 'Update the feature',
     operationId: 'updateFeature',
+  })
+  @ApiParam({
+    name: 'appId',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
+  @ApiParam({
+    name: 'id',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
   })
   @ApiResponse({
     status: 200,
@@ -182,6 +225,20 @@ export class FeaturesController {
     summary: 'Enable the feature',
     operationId: 'enableFeature',
   })
+  @ApiParam({
+    name: 'appId',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
+  @ApiParam({
+    name: 'id',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'The enabled feature',
@@ -214,6 +271,20 @@ export class FeaturesController {
     summary: 'Disable the feature',
     operationId: 'disableFeature',
   })
+  @ApiParam({
+    name: 'appId',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
+  @ApiParam({
+    name: 'id',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'The disabled feature',
@@ -245,6 +316,20 @@ export class FeaturesController {
   @ApiOperation({
     summary: 'Delete the feature',
     operationId: 'deleteFeature',
+  })
+  @ApiParam({
+    name: 'appId',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
+  @ApiParam({
+    name: 'id',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
   })
   @ApiResponse({
     status: 200,

@@ -1,6 +1,12 @@
 import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
 
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiParam,
+  ApiHeader,
+} from '@nestjs/swagger';
 
 import { ApplicationsService } from '../../admin/applications/applications.service';
 import { FeaturesService } from '../../admin/features/features.service';
@@ -28,6 +34,13 @@ export class ClientFeaturesController {
     description: 'The list of found features',
     type: FeaturesListResponse,
   })
+  @ApiHeader({
+    name: 'X-Application-ID',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
   @ApiResponse({ status: 400, description: 'Invalid search parameters' })
   async find(
     @Headers(HeadersDto) headers: HeadersDto,
@@ -45,6 +58,20 @@ export class ClientFeaturesController {
   @ApiOperation({
     summary: 'Get feature by id',
     operationId: 'getClientFeature',
+  })
+  @ApiHeader({
+    name: 'X-Application-ID',
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    schema: {
+      type: 'string',
+    },
+  })
+  @ApiParam({
+    name: 'name',
+    example: 'feature_dredd_2',
+    schema: {
+      type: 'string',
+    },
   })
   @ApiResponse({
     status: 200,
