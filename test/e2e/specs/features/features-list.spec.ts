@@ -95,7 +95,7 @@ describe('Features', () => {
       expect(result.body).toEqual({
         error: 'Bad Request',
         message: [
-          'offset must not be less than 1',
+          'offset must not be less than 0',
           'limit must not be less than 1',
         ],
         statusCode: 400,
