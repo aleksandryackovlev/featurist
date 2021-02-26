@@ -45,12 +45,17 @@ components:
         isActive:
           type: boolean
           description: Is user active
+        roleId:
+          type: string
+          description: The id of the role the user belongs to
+          x-faker: random.uuid
       required:
         - id
         - createdAt
         - updatedAt
         - username
         - isActive
+        - roleId
     UserSingleResponse:
       type: object
       properties:
@@ -66,7 +71,7 @@ components:
           example: 10
           description: The total amount of entities
         data:
-          description: The list of users
+          description: The list of entitites
           type: array
           items:
             $ref: '#/components/schemas/User'
@@ -121,21 +126,21 @@ components:
           type: string
           description: The description of the feature
           x-faker: hacker.phrase
+        isEnabled:
+          type: boolean
+          description: Is feature enabled
         applicationId:
           type: string
           description: The id of the application the feature belongs to
           x-faker: random.uuid
-        isEnabled:
-          type: boolean
-          description: Is the feature enabled
       required:
         - id
         - createdAt
         - updatedAt
         - name
         - description
-        - applicationId
         - isEnabled
+        - applicationId
     FeaturesListResponse:
       type: object
       properties:
@@ -144,10 +149,10 @@ components:
           example: 10
           description: The total amount of entities
         data:
-          description: The list of features
+          description: The list of entitites
           type: array
           items:
-            $ref: '#/components/schemas/Feature'
+            $ref: '#/components/schemas/ClientFeature'
       required:
         - total
         - data
@@ -169,7 +174,7 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/Feature'
+          $ref: '#/components/schemas/ClientFeature'
       required:
         - data
     UpdateFeatureDto:
@@ -225,7 +230,7 @@ components:
           example: 10
           description: The total amount of entities
         data:
-          description: The list of applications
+          description: The list of entitites
           type: array
           items:
             $ref: '#/components/schemas/Application'
@@ -264,8 +269,126 @@ components:
           type: string
           example: Application description
           description: The description of the application
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier
+          x-faker: random.uuid
+        createdAt:
+          format: date-time
+          type: string
+          description: The date of the creation
+          x-faker: date.past
+        updatedAt:
+          format: date-time
+          type: string
+          description: The date of the last update
+          x-faker: date.recent
+        name:
+          type: string
+          description: The name of the application
+          x-faker: git.branch
+        description:
+          type: string
+          description: The description of the application
+          x-faker: hacker.phrase
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - name
+        - description
+    RolesListResponse:
+      type: object
+      properties:
+        total:
+          type: number
+          example: 10
+          description: The total amount of entities
+        data:
+          description: The list of entitites
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+      required:
+        - total
+        - data
+    RoleSingleResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Role'
+      required:
+        - data
+    CreateRoleDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Role name
+          description: The name of a new role
+        description:
+          type: string
+          example: Role description
+          description: The description of a new role
+      required:
+        - name
+        - description
+    UpdateRoleDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Role name
+          description: The name of the role
+        description:
+          type: string
+          example: Role description
+          description: The description of the role
+    ClientFeature:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier
+          x-faker: random.uuid
+        createdAt:
+          format: date-time
+          type: string
+          description: The date of the creation
+          x-faker: date.past
+        updatedAt:
+          format: date-time
+          type: string
+          description: The date of the last update
+          x-faker: date.recent
+        name:
+          type: string
+          description: The name of the feature
+          x-faker: git.branch
+        description:
+          type: string
+          description: The description of the feature
+          x-faker: hacker.phrase
+        isEnabled:
+          type: boolean
+          description: Is feature enabled
+        applicationId:
+          type: string
+          description: The id of the application the feature belongs to
+          x-faker: random.uuid
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - name
+        - description
+        - isEnabled
+        - applicationId
 paths:
-  /users/me:
+  /admin/v1/users/me:
     get:
       operationId: getCurrentUser
       summary: Get current user
@@ -281,7 +404,7 @@ paths:
         - Users
       security:
         - bearer: []
-  /users:
+  /admin/v1/users:
     get:
       operationId: getUsers
       summary: Find users by params
@@ -289,12 +412,11 @@ paths:
         - name: offset
           required: false
           in: query
-          example: 10
           description: The number of items to skip
           schema:
-            minimum: 1
+            minimum: 0
             format: int32
-            default: 10
+            default: 0
             type: number
         - name: limit
           required: false
@@ -352,11 +474,6 @@ paths:
           description: The field by which the result should be ordered
           schema:
             default: createdAt
-            enum:
-              - id
-              - username
-              - createdAt
-              - updatedAt
             type: string
         - name: sortDirection
           required: false
@@ -405,7 +522,7 @@ paths:
         - Users
       security:
         - bearer: []
-  '/users/{id}':
+  '/admin/v1/users/{id}':
     get:
       operationId: getUser
       summary: Get user by id
@@ -413,6 +530,7 @@ paths:
         - name: id
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       responses:
@@ -433,6 +551,7 @@ paths:
         - name: id
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       requestBody:
@@ -461,6 +580,7 @@ paths:
         - name: id
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       responses:
@@ -476,7 +596,7 @@ paths:
         - Users
       security:
         - bearer: []
-  '/applications/{appId}/features':
+  '/admin/v1/applications/{appId}/features':
     get:
       operationId: getFeatures
       summary: Find features by params
@@ -484,17 +604,17 @@ paths:
         - name: appId
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
         - name: offset
           required: false
           in: query
-          example: 10
           description: The number of items to skip
           schema:
-            minimum: 1
+            minimum: 0
             format: int32
-            default: 10
+            default: 0
             type: number
         - name: limit
           required: false
@@ -552,11 +672,6 @@ paths:
           description: The field by which the result should be ordered
           schema:
             default: createdAt
-            enum:
-              - id
-              - name
-              - createdAt
-              - updatedAt
             type: string
         - name: sortDirection
           required: false
@@ -589,6 +704,7 @@ paths:
         - name: appId
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       requestBody:
@@ -610,7 +726,7 @@ paths:
         - Features
       security:
         - bearer: []
-  '/applications/{appId}/features/{id}':
+  '/admin/v1/applications/{appId}/features/{id}':
     get:
       operationId: getFeature
       summary: Get feature by id
@@ -618,11 +734,13 @@ paths:
         - name: appId
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
         - name: id
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       responses:
@@ -643,11 +761,13 @@ paths:
         - name: appId
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
         - name: id
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       requestBody:
@@ -676,11 +796,13 @@ paths:
         - name: appId
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
         - name: id
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       responses:
@@ -696,7 +818,7 @@ paths:
         - Features
       security:
         - bearer: []
-  '/applications/{appId}/features/{id}/enable':
+  '/admin/v1/applications/{appId}/features/{id}/enable':
     post:
       operationId: enableFeature
       summary: Enable the feature
@@ -704,11 +826,13 @@ paths:
         - name: appId
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
         - name: id
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       responses:
@@ -724,7 +848,7 @@ paths:
         - Features
       security:
         - bearer: []
-  '/applications/{appId}/features/{id}/disable':
+  '/admin/v1/applications/{appId}/features/{id}/disable':
     post:
       operationId: disableFeature
       summary: Disable the feature
@@ -732,11 +856,13 @@ paths:
         - name: appId
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
         - name: id
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       responses:
@@ -752,7 +878,7 @@ paths:
         - Features
       security:
         - bearer: []
-  /applications:
+  /admin/v1/applications:
     get:
       operationId: getApplications
       summary: Find applications by params
@@ -760,12 +886,11 @@ paths:
         - name: offset
           required: false
           in: query
-          example: 10
           description: The number of items to skip
           schema:
-            minimum: 1
+            minimum: 0
             format: int32
-            default: 10
+            default: 0
             type: number
         - name: limit
           required: false
@@ -823,11 +948,6 @@ paths:
           description: The field by which the result should be ordered
           schema:
             default: createdAt
-            enum:
-              - id
-              - name
-              - createdAt
-              - updatedAt
             type: string
         - name: sortDirection
           required: false
@@ -876,7 +996,7 @@ paths:
         - Applications
       security:
         - bearer: []
-  '/applications/{id}':
+  '/admin/v1/applications/{id}':
     get:
       operationId: getApplication
       summary: Get application by id
@@ -884,6 +1004,7 @@ paths:
         - name: id
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       responses:
@@ -904,6 +1025,7 @@ paths:
         - name: id
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       requestBody:
@@ -932,6 +1054,7 @@ paths:
         - name: id
           required: true
           in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       responses:
@@ -947,3 +1070,241 @@ paths:
         - Applications
       security:
         - bearer: []
+  /admin/v1/roles:
+    get:
+      operationId: getRoles
+      summary: Find roles by params
+      parameters:
+        - name: offset
+          required: false
+          in: query
+          description: The number of items to skip
+          schema:
+            minimum: 0
+            format: int32
+            default: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          example: 10
+          description: The number of items to return
+          schema:
+            minimum: 1
+            format: int32
+            default: 10
+            type: number
+        - name: search
+          required: false
+          in: query
+          example: Search string
+          description: The search string by which items should be searched
+          schema:
+            type: string
+        - name: createdFrom
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The start of the creation date range
+          schema:
+            format: date
+            type: string
+        - name: createdTo
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The end of the creation date range
+          schema:
+            format: date
+            type: string
+        - name: updatedFrom
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The start of the updating date range
+          schema:
+            format: date
+            type: string
+        - name: updatedTo
+          required: false
+          in: query
+          example: '2020-09-09'
+          description: The end of the updating date range
+          schema:
+            format: date
+            type: string
+        - name: sortBy
+          required: false
+          in: query
+          example: createdAt
+          description: The field by which the result should be ordered
+          schema:
+            default: createdAt
+            type: string
+        - name: sortDirection
+          required: false
+          in: query
+          example: desc
+          description: The sort derection
+          schema:
+            default: desc
+            enum:
+              - asc
+              - desc
+            type: string
+      responses:
+        '200':
+          description: The list of found roles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RolesListResponse'
+        '400':
+          description: Invalid search parameters
+      tags:
+        - Roles
+      security:
+        - bearer: []
+    post:
+      operationId: createRole
+      summary: Create a new role
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoleDto'
+      responses:
+        '201':
+          description: The created role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleSingleResponse'
+        '400':
+          description: Invalid request
+      tags:
+        - Roles
+      security:
+        - bearer: []
+  '/admin/v1/roles/{id}':
+    get:
+      operationId: getRole
+      summary: Get role by id
+      parameters:
+        - name: id
+          required: true
+          in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleSingleResponse'
+      tags:
+        - Roles
+      security:
+        - bearer: []
+    put:
+      operationId: updateRole
+      summary: Update the role
+      parameters:
+        - name: id
+          required: true
+          in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoleDto'
+      responses:
+        '200':
+          description: The updated role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleSingleResponse'
+        '400':
+          description: Invalid request
+      tags:
+        - Roles
+      security:
+        - bearer: []
+    delete:
+      operationId: deleteRole
+      summary: Delete the role
+      parameters:
+        - name: id
+          required: true
+          in: path
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The deleted role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleSingleResponse'
+        '400':
+          description: Invalid id
+      tags:
+        - Roles
+      security:
+        - bearer: []
+  /api/v1/features:
+    get:
+      operationId: getClientFeatures
+      summary: Find features all features
+      parameters:
+        - name: X-Application-ID
+          in: header
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The list of found features
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeaturesListResponse'
+        '400':
+          description: Invalid search parameters
+      tags:
+        - Client features
+  '/api/v1/features/{name}':
+    get:
+      operationId: getClientFeature
+      summary: Get feature by id
+      parameters:
+        - name: name
+          required: true
+          in: path
+          example: feature_dredd_2
+          schema:
+            type: string
+        - name: X-Application-ID
+          in: header
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The feature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureSingleResponse'
+      tags:
+        - Client features
