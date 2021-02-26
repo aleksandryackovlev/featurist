@@ -17,3 +17,11 @@ items:
     updatedAt: '{{date.recent}}'
     users:
       - '@user2'
+  application3:
+    id: '977a3934-ee5f-4a6f-beed-42a7529ce648'
+    name: 'application_dredd'
+    description: '<p>{{lorem.paragraph}}</p>'
+    createdAt: '{{date.past}}'
+    updatedAt: '{{date.recent}}'
+    users:
+      - '@user4'

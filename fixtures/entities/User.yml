@@ -22,3 +22,10 @@ items:
     createdAt: '{{date.past}}'
     updatedAt: '{{date.recent}}'
     role: '@manager'
+  user4:
+    id: '977a3934-ee5f-4a6f-beed-42a7529ce648'
+    username: 'admin_dredd'
+    password: 'test'
+    createdAt: '{{date.past}}'
+    updatedAt: '{{date.recent}}'
+    role: '@admin'

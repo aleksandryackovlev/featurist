@@ -18,3 +18,21 @@ items:
     updatedAt: '{{date.recent}}'
     application: '@application2'
     isEnabled: '{{random.boolean}}'
+
+  feature11:
+    id: '{{random.uuid}}'
+    name: 'feature_dredd_1'
+    description: '<p>{{lorem.paragraph}}</p>'
+    createdAt: '{{date.past}}'
+    updatedAt: '{{date.recent}}'
+    application: '@application3'
+    isEnabled: '{{random.boolean}}'
+
+  feature12:
+    id: '977a3934-ee5f-4a6f-beed-42a7529ce648'
+    name: 'feature_dredd_2'
+    description: '<p>{{lorem.paragraph}}</p>'
+    createdAt: '{{date.past}}'
+    updatedAt: '{{date.recent}}'
+    application: '@application3'
+    isEnabled: '{{random.boolean}}'
