@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "typeRoots": ["./test/typings", "./node_modules/@types"]
+    "typeRoots": ["./test/e2e/typings", "./node_modules/@types"]
   }
 }
