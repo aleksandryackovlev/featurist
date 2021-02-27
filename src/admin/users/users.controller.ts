@@ -26,6 +26,8 @@ import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
 
 import { IsAllowed } from '../permissions/decorators/permissions.is-allowed';
 
+import { CrudErrorResponse } from '../crud/responses/crud.error.response';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FindUsersDto } from './dto/find-users.dto';
@@ -53,6 +55,16 @@ export class UsersController {
     description: 'Current user',
     type: UserSingleResponse,
   })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized access',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: CrudErrorResponse,
+  })
   getCurrentUser(@Req() req: Request): { data: User } {
     const { password, ...currentUser } = <User>req.user;
     return new UserSingleResponse(<User>currentUser);
@@ -65,10 +77,29 @@ export class UsersController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The list of found users',
+    description: 'List of found users',
     type: UsersListResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid search parameters' })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid request',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized access',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: CrudErrorResponse,
+  })
   @IsAllowed(['read', 'User'])
   async find(@Query() findUsersDto: FindUsersDto): Promise<UsersListResponse> {
     const { data, total } = await this.usersService.find(findUsersDto);
@@ -78,15 +109,34 @@ export class UsersController {
 
   @Post()
   @ApiOperation({
-    summary: 'Create a new user',
+    summary: 'Create user',
     operationId: 'createUser',
   })
   @ApiResponse({
     status: 201,
-    description: 'The created user',
+    description: 'Created user',
     type: UserSingleResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid request',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized access',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: CrudErrorResponse,
+  })
   @IsAllowed(['create', 'User'])
   async create(
     @Body() createUserDto: CreateUserDto,
@@ -110,8 +160,33 @@ export class UsersController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The user',
+    description: 'User',
     type: UserSingleResponse,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid request',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized access',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not found',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: CrudErrorResponse,
   })
   @IsAllowed(['read', 'User'])
   async findOne(
@@ -122,7 +197,7 @@ export class UsersController {
 
   @Put(':id')
   @ApiOperation({
-    summary: 'Update the user',
+    summary: 'Update user',
     operationId: 'updateUser',
   })
   @ApiParam({
@@ -134,10 +209,34 @@ export class UsersController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The updated user',
+    description: 'Updated user',
     type: UserSingleResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid request',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized access',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not found',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: CrudErrorResponse,
+  })
   @IsAllowed(['update', 'User'])
   async update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -150,7 +249,7 @@ export class UsersController {
 
   @Delete(':id')
   @ApiOperation({
-    summary: 'Delete the user',
+    summary: 'Delete user',
     operationId: 'deleteUser',
   })
   @ApiParam({
@@ -162,10 +261,34 @@ export class UsersController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The deleted user',
+    description: 'Deleted user',
     type: UserSingleResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid id' })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid request',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized access',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not found',
+    type: CrudErrorResponse,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: CrudErrorResponse,
+  })
   @IsAllowed(['delete', 'User'])
   async remove(
     @Param('id', ParseUUIDPipe) id: string,

@@ -51,7 +51,6 @@ export const CrudFindEntitiesDto = (
     @IsString()
     @IsNotEmpty()
     @ApiProperty({
-      example: 'Search string',
       description: 'The search string by which items should be searched',
       required: false,
     })
@@ -79,7 +78,6 @@ export const CrudFindEntitiesDto = (
     })
     @MaxDate(new Date(new Date().toISOString().split('T')[0]))
     @ApiProperty({
-      example: '2020-09-09',
       description: 'The end of the creation date range',
       required: false,
       type: 'string',
@@ -109,7 +107,6 @@ export const CrudFindEntitiesDto = (
     })
     @MaxDate(new Date(new Date().toISOString().split('T')[0]))
     @ApiProperty({
-      example: '2020-09-09',
       description: 'The end of the updating date range',
       required: false,
       type: 'string',
