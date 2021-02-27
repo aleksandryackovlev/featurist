@@ -4,6 +4,7 @@ import {
   Matches,
   MinLength,
   MaxLength,
+  IsUUID,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -14,7 +15,7 @@ export class CreateUserDto {
   @MaxLength(150)
   @Matches(/^[a-zA-Z][-._a-zA-Z\d]{3,}[a-zA-Z\d]$/)
   @ApiProperty({
-    example: 'username',
+    example: 'someusername',
     description: 'The username of a new user',
   })
   username: string;
@@ -28,4 +29,13 @@ export class CreateUserDto {
     description: 'The password of a new user',
   })
   password: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsUUID()
+  @ApiProperty({
+    example: '977a3934-ee5f-4a6f-beed-42a7529ce648',
+    description: 'The role id of a new user',
+  })
+  roleId: string;
 }
