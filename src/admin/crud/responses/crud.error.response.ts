@@ -12,6 +12,7 @@ export class CrudErrorResponse {
     oneOf: [
       {
         type: 'string',
+        example: 'value must not be empty',
       },
       {
         type: 'array',
@@ -25,6 +26,8 @@ export class CrudErrorResponse {
 
   @ApiProperty({
     description: 'Error message',
+    example: 'Bad Request',
+    required: false,
   })
-  error: 'Bad Request';
+  error: string;
 }
