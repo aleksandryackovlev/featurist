@@ -63,29 +63,6 @@ components:
           $ref: '#/components/schemas/User'
       required:
         - data
-    CrudErrorResponse:
-      type: object
-      properties:
-        statusCode:
-          type: number
-          example: 400
-          description: HTTP status code
-        message:
-          description: The list of error messages
-          oneOf:
-            - type: string
-            - type: array
-              items:
-                type: string
-          items:
-            type: string
-        error:
-          type: string
-          description: Error message
-      required:
-        - statusCode
-        - message
-        - error
     UsersListResponse:
       type: object
       properties:
@@ -101,6 +78,30 @@ components:
       required:
         - total
         - data
+    CrudErrorResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 400
+          description: HTTP status code
+        message:
+          description: The list of error messages
+          oneOf:
+            - type: string
+              example: value must not be empty
+            - type: array
+              items:
+                type: string
+          items:
+            type: string
+        error:
+          type: string
+          description: Error message
+          example: Bad Request
+      required:
+        - statusCode
+        - message
     CreateUserDto:
       type: object
       properties:
@@ -432,12 +433,18 @@ paths:
           description: Unauthorized access
           content:
             application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
         '500':
           description: Internal server error
           content:
             application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
       tags:
@@ -540,18 +547,28 @@ paths:
           description: Unauthorized access
           content:
             application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
         '403':
           description: Forbidden
           content:
             application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
         '500':
           description: Internal server error
           content:
             application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
       tags:
@@ -585,18 +602,28 @@ paths:
           description: Unauthorized access
           content:
             application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
         '403':
           description: Forbidden
           content:
             application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
         '500':
           description: Internal server error
           content:
             application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
       tags:
@@ -631,24 +658,38 @@ paths:
           description: Unauthorized access
           content:
             application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
         '403':
           description: Forbidden
           content:
             application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
         '404':
           description: Not found
           content:
             application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
         '500':
           description: Internal server error
           content:
             application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
       tags:
@@ -688,24 +729,38 @@ paths:
           description: Unauthorized access
           content:
             application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
         '403':
           description: Forbidden
           content:
             application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
         '404':
           description: Not found
           content:
             application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
         '500':
           description: Internal server error
           content:
             application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
       tags:
@@ -739,24 +794,38 @@ paths:
           description: Unauthorized access
           content:
             application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
         '403':
           description: Forbidden
           content:
             application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
         '404':
           description: Not found
           content:
             application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
         '500':
           description: Internal server error
           content:
             application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
               schema:
                 $ref: '#/components/schemas/CrudErrorResponse'
       tags:

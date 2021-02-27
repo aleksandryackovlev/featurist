@@ -25,6 +25,7 @@ import {
 import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
 
 import { IsAllowed } from '../permissions/decorators/permissions.is-allowed';
+import { ApiErrorResponses } from '../../core/decorators/api-error.responses.decorator';
 
 import { CrudErrorResponse } from '../crud/responses/crud.error.response';
 
@@ -55,16 +56,7 @@ export class UsersController {
     description: 'Current user',
     type: UserSingleResponse,
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized access',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal server error',
-    type: CrudErrorResponse,
-  })
+  @ApiErrorResponses(401, 500)
   getCurrentUser(@Req() req: Request): { data: User } {
     const { password, ...currentUser } = <User>req.user;
     return new UserSingleResponse(<User>currentUser);
@@ -80,26 +72,7 @@ export class UsersController {
     description: 'List of found users',
     type: UsersListResponse,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid request',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized access',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal server error',
-    type: CrudErrorResponse,
-  })
+  @ApiErrorResponses(400, 401, 403, 500)
   @IsAllowed(['read', 'User'])
   async find(@Query() findUsersDto: FindUsersDto): Promise<UsersListResponse> {
     const { data, total } = await this.usersService.find(findUsersDto);
@@ -117,26 +90,7 @@ export class UsersController {
     description: 'Created user',
     type: UserSingleResponse,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid request',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized access',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal server error',
-    type: CrudErrorResponse,
-  })
+  @ApiErrorResponses(400, 401, 403, 500)
   @IsAllowed(['create', 'User'])
   async create(
     @Body() createUserDto: CreateUserDto,
@@ -163,31 +117,7 @@ export class UsersController {
     description: 'User',
     type: UserSingleResponse,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid request',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized access',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Not found',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal server error',
-    type: CrudErrorResponse,
-  })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['read', 'User'])
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
@@ -212,31 +142,7 @@ export class UsersController {
     description: 'Updated user',
     type: UserSingleResponse,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid request',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized access',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Not found',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal server error',
-    type: CrudErrorResponse,
-  })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['update', 'User'])
   async update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -264,31 +170,7 @@ export class UsersController {
     description: 'Deleted user',
     type: UserSingleResponse,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid request',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized access',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Not found',
-    type: CrudErrorResponse,
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal server error',
-    type: CrudErrorResponse,
-  })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['delete', 'User'])
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
