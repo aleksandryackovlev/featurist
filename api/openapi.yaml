@@ -63,6 +63,29 @@ components:
           $ref: '#/components/schemas/User'
       required:
         - data
+    CrudErrorResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 400
+          description: HTTP status code
+        message:
+          description: The list of error messages
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+          items:
+            type: string
+        error:
+          type: string
+          description: Error message
+      required:
+        - statusCode
+        - message
+        - error
     UsersListResponse:
       type: object
       properties:
@@ -83,15 +106,20 @@ components:
       properties:
         username:
           type: string
-          example: username
+          example: someusername
           description: The username of a new user
         password:
           type: string
           example: somePassword
           description: The password of a new user
+        roleId:
+          type: string
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
+          description: The role id of a new user
       required:
         - username
         - password
+        - roleId
     UpdateUserDto:
       type: object
       properties:
@@ -400,6 +428,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserSingleResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Users
       security:
@@ -431,7 +471,6 @@ paths:
         - name: search
           required: false
           in: query
-          example: Search string
           description: The search string by which items should be searched
           schema:
             type: string
@@ -446,7 +485,6 @@ paths:
         - name: createdTo
           required: false
           in: query
-          example: '2020-09-09'
           description: The end of the creation date range
           schema:
             format: date
@@ -462,7 +500,6 @@ paths:
         - name: updatedTo
           required: false
           in: query
-          example: '2020-09-09'
           description: The end of the updating date range
           schema:
             format: date
@@ -488,20 +525,42 @@ paths:
             type: string
       responses:
         '200':
-          description: The list of found users
+          description: List of found users
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UsersListResponse'
         '400':
-          description: Invalid search parameters
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Users
       security:
         - bearer: []
     post:
       operationId: createUser
-      summary: Create a new user
+      summary: Create user
       parameters: []
       requestBody:
         required: true
@@ -511,13 +570,35 @@ paths:
               $ref: '#/components/schemas/CreateUserDto'
       responses:
         '201':
-          description: The created user
+          description: Created user
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserSingleResponse'
         '400':
           description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Users
       security:
@@ -535,18 +616,48 @@ paths:
             type: string
       responses:
         '200':
-          description: The user
+          description: User
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserSingleResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Users
       security:
         - bearer: []
     put:
       operationId: updateUser
-      summary: Update the user
+      summary: Update user
       parameters:
         - name: id
           required: true
@@ -562,20 +673,48 @@ paths:
               $ref: '#/components/schemas/UpdateUserDto'
       responses:
         '200':
-          description: The updated user
+          description: Updated user
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserSingleResponse'
         '400':
           description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Users
       security:
         - bearer: []
     delete:
       operationId: deleteUser
-      summary: Delete the user
+      summary: Delete user
       parameters:
         - name: id
           required: true
@@ -585,13 +724,41 @@ paths:
             type: string
       responses:
         '200':
-          description: The deleted user
+          description: Deleted user
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserSingleResponse'
         '400':
-          description: Invalid id
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Users
       security:
@@ -629,7 +796,6 @@ paths:
         - name: search
           required: false
           in: query
-          example: Search string
           description: The search string by which items should be searched
           schema:
             type: string
@@ -644,7 +810,6 @@ paths:
         - name: createdTo
           required: false
           in: query
-          example: '2020-09-09'
           description: The end of the creation date range
           schema:
             format: date
@@ -660,7 +825,6 @@ paths:
         - name: updatedTo
           required: false
           in: query
-          example: '2020-09-09'
           description: The end of the updating date range
           schema:
             format: date
@@ -905,7 +1069,6 @@ paths:
         - name: search
           required: false
           in: query
-          example: Search string
           description: The search string by which items should be searched
           schema:
             type: string
@@ -920,7 +1083,6 @@ paths:
         - name: createdTo
           required: false
           in: query
-          example: '2020-09-09'
           description: The end of the creation date range
           schema:
             format: date
@@ -936,7 +1098,6 @@ paths:
         - name: updatedTo
           required: false
           in: query
-          example: '2020-09-09'
           description: The end of the updating date range
           schema:
             format: date
@@ -1097,7 +1258,6 @@ paths:
         - name: search
           required: false
           in: query
-          example: Search string
           description: The search string by which items should be searched
           schema:
             type: string
@@ -1112,7 +1272,6 @@ paths:
         - name: createdTo
           required: false
           in: query
-          example: '2020-09-09'
           description: The end of the creation date range
           schema:
             format: date
@@ -1128,7 +1287,6 @@ paths:
         - name: updatedTo
           required: false
           in: query
-          example: '2020-09-09'
           description: The end of the updating date range
           schema:
             format: date
@@ -1269,7 +1427,6 @@ paths:
       parameters:
         - name: X-Application-ID
           in: header
-          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       responses:
@@ -1296,7 +1453,6 @@ paths:
             type: string
         - name: X-Application-ID
           in: header
-          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       responses:
