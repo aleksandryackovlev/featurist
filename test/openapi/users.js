@@ -6,7 +6,6 @@ const hooks = require('hooks');
 hooks.after(
   '/admin/v1/users > Create user > 201 > application/json',
   (transaction, done) => {
-    console.log(transaction.real.body);
     axios({
       url: `${transaction.environment.baseUrl}/admin/v1/users/${
         JSON.parse(transaction.real.body).data.id
