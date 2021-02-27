@@ -97,11 +97,13 @@ describe('UsersController', () => {
         await controller.create({
           username: 'name',
           password: 'password',
+          roleId: 'roleId',
         }),
       ).toEqual({ data: user });
       expect(serviceSpy).toBeCalledWith({
         username: 'name',
         password: 'password',
+        roleId: 'roleId',
       });
     });
   });
