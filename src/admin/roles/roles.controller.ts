@@ -22,6 +22,7 @@ import {
 import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
 
 import { IsAllowed } from '../permissions/decorators/permissions.is-allowed';
+import { ApiErrorResponses } from '../../core/decorators/api-error.responses.decorator';
 
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
@@ -49,7 +50,7 @@ export class RolesController {
     description: 'The list of found roles',
     type: RolesListResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid search parameters' })
+  @ApiErrorResponses(400, 401, 403, 500)
   @IsAllowed(['read', 'Role'])
   async find(@Query() findRolesDto: FindRolesDto): Promise<RolesListResponse> {
     const { data, total } = await this.service.find(findRolesDto);
@@ -71,9 +72,10 @@ export class RolesController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The role',
+    description: 'Role',
     type: RoleSingleResponse,
   })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['read', 'Role'])
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
@@ -83,15 +85,15 @@ export class RolesController {
 
   @Post()
   @ApiOperation({
-    summary: 'Create a new role',
+    summary: 'Create role',
     operationId: 'createRole',
   })
   @ApiResponse({
     status: 201,
-    description: 'The created role',
+    description: 'Created role',
     type: RoleSingleResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiErrorResponses(400, 401, 403, 500)
   @IsAllowed(['create', 'Role'])
   async create(
     @Body() createRoleDto: CreateRoleDto,
@@ -101,7 +103,7 @@ export class RolesController {
 
   @Put(':id')
   @ApiOperation({
-    summary: 'Update the role',
+    summary: 'Update role',
     operationId: 'updateRole',
   })
   @ApiParam({
@@ -113,10 +115,10 @@ export class RolesController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The updated role',
+    description: 'Updated role',
     type: RoleSingleResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['update', 'Role'])
   async update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -127,7 +129,7 @@ export class RolesController {
 
   @Delete(':id')
   @ApiOperation({
-    summary: 'Delete the role',
+    summary: 'Delete role',
     operationId: 'deleteRole',
   })
   @ApiParam({
@@ -139,10 +141,10 @@ export class RolesController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The deleted role',
+    description: 'Deleted role',
     type: RoleSingleResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid id' })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['delete', 'Role'])
   async remove(
     @Param('id', ParseUUIDPipe) id: string,

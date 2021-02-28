@@ -24,6 +24,7 @@ import {
 import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
 
 import { IsAllowed } from '../permissions/decorators/permissions.is-allowed';
+import { ApiErrorResponses } from '../../core/decorators/api-error.responses.decorator';
 
 import { ApplicationsService } from '../applications/applications.service';
 import { User } from '../users/user.entity';
@@ -64,7 +65,7 @@ export class FeaturesController {
     description: 'The list of found features',
     type: FeaturesListResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid search parameters' })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['read', 'Application'], ['read', 'Feature'])
   async find(
     @Param('appId', ParseUUIDPipe) appId: string,
@@ -91,7 +92,7 @@ export class FeaturesController {
 
   @Post()
   @ApiOperation({
-    summary: 'Create a new feature',
+    summary: 'Create feature',
     operationId: 'createFeature',
   })
   @ApiParam({
@@ -103,10 +104,10 @@ export class FeaturesController {
   })
   @ApiResponse({
     status: 201,
-    description: 'The created feature',
+    description: 'Created feature',
     type: FeatureSingleResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['read', 'Application'], ['create', 'Feature'])
   async create(
     @Param('appId', ParseUUIDPipe) appId: string,
@@ -149,9 +150,10 @@ export class FeaturesController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The feature',
+    description: 'Feature',
     type: FeatureSingleResponse,
   })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['read', 'Application'], ['read', 'Feature'])
   async findOne(
     @Param('appId', ParseUUIDPipe) appId: string,
@@ -175,7 +177,7 @@ export class FeaturesController {
 
   @Put(':id')
   @ApiOperation({
-    summary: 'Update the feature',
+    summary: 'Update feature',
     operationId: 'updateFeature',
   })
   @ApiParam({
@@ -194,10 +196,10 @@ export class FeaturesController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The updated feature',
+    description: 'Updated feature',
     type: FeatureSingleResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['read', 'Application'], ['update', 'Feature'])
   async update(
     @Param('appId', ParseUUIDPipe) appId: string,
@@ -222,7 +224,7 @@ export class FeaturesController {
 
   @Post(':id/enable')
   @ApiOperation({
-    summary: 'Enable the feature',
+    summary: 'Enable feature',
     operationId: 'enableFeature',
   })
   @ApiParam({
@@ -241,10 +243,10 @@ export class FeaturesController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The enabled feature',
+    description: 'Enabled feature',
     type: FeatureSingleResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid id' })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['read', 'Application'], ['update', 'Feature'])
   async enable(
     @Param('appId', ParseUUIDPipe) appId: string,
@@ -268,7 +270,7 @@ export class FeaturesController {
 
   @Post(':id/disable')
   @ApiOperation({
-    summary: 'Disable the feature',
+    summary: 'Disable feature',
     operationId: 'disableFeature',
   })
   @ApiParam({
@@ -287,10 +289,10 @@ export class FeaturesController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The disabled feature',
+    description: 'Disabled feature',
     type: FeatureSingleResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid id' })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['read', 'Application'], ['update', 'Feature'])
   async disable(
     @Param('appId', ParseUUIDPipe) appId: string,
@@ -314,7 +316,7 @@ export class FeaturesController {
 
   @Delete(':id')
   @ApiOperation({
-    summary: 'Delete the feature',
+    summary: 'Delete feature',
     operationId: 'deleteFeature',
   })
   @ApiParam({
@@ -333,10 +335,10 @@ export class FeaturesController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The deleted feature',
+    description: 'Deleted feature',
     type: FeatureSingleResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid id' })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['read', 'Application'], ['delete', 'Feature'])
   async remove(
     @Param('appId', ParseUUIDPipe) appId: string,
