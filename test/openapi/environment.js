@@ -8,7 +8,7 @@ hooks.beforeAll((transactions, done) => {
 
   Promise.all([
     axios.post(`${protocol}//${host}:${port}/admin/v1/auth/login`, {
-      username: 'admin',
+      username: 'admin_dredd',
       password: 'test',
     }),
     axios.post(`${protocol}//${host}:${port}/admin/v1/auth/login`, {
