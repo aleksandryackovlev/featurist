@@ -190,7 +190,7 @@ components:
       properties:
         name:
           type: string
-          example: Feature name
+          example: feature-name
           description: The name of a new feature
         description:
           type: string
@@ -376,41 +376,6 @@ components:
           type: string
           example: Role description
           description: The description of the role
-    ClientFeature:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the feature
-          x-faker: git.branch
-        isEnabled:
-          type: boolean
-          description: Is feature enabled
-      required:
-        - name
-        - isEnabled
-    ClientFeaturesListResponse:
-      type: object
-      properties:
-        total:
-          type: number
-          example: 10
-          description: The total amount of entities
-        data:
-          description: The list of entitites
-          type: array
-          items:
-            $ref: '#/components/schemas/ClientFeature'
-      required:
-        - total
-        - data
-    ClientFeatureSingleResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/ClientFeature'
-      required:
-        - data
 paths:
   /admin/v1/users/me:
     get:
@@ -2164,77 +2129,3 @@ paths:
         - Roles
       security:
         - bearer: []
-  /api/v1/features:
-    get:
-      operationId: getClientFeatures
-      summary: Find all features
-      parameters:
-        - name: X-Application-ID
-          required: true
-          in: header
-          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The list of found features
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClientFeaturesListResponse'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              example:
-                statusCode: 500
-                message: Internal server error
-              schema:
-                $ref: '#/components/schemas/CrudErrorResponse'
-      tags:
-        - Client features
-  '/api/v1/features/{name}':
-    get:
-      operationId: getClientFeature
-      summary: Get feature by name
-      parameters:
-        - name: name
-          required: true
-          in: path
-          example: feature_dredd_2
-          schema:
-            type: string
-        - name: X-Application-ID
-          required: true
-          in: header
-          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Feature
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClientFeatureSingleResponse'
-        '404':
-          description: Not found
-          content:
-            application/json:
-              example:
-                statusCode: 404
-                message: Entity does not exist
-                error: Not Found
-              schema:
-                $ref: '#/components/schemas/CrudErrorResponse'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              example:
-                statusCode: 500
-                message: Internal server error
-              schema:
-                $ref: '#/components/schemas/CrudErrorResponse'
-      tags:
-        - Client features
