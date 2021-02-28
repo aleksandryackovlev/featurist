@@ -181,7 +181,7 @@ components:
           description: The list of entitites
           type: array
           items:
-            $ref: '#/components/schemas/ClientFeature'
+            $ref: '#/components/schemas/Feature'
       required:
         - total
         - data
@@ -203,7 +203,7 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/ClientFeature'
+          $ref: '#/components/schemas/Feature'
       required:
         - data
     UpdateFeatureDto:
@@ -379,43 +379,38 @@ components:
     ClientFeature:
       type: object
       properties:
-        id:
-          type: string
-          description: The unique identifier
-          x-faker: random.uuid
-        createdAt:
-          format: date-time
-          type: string
-          description: The date of the creation
-          x-faker: date.past
-        updatedAt:
-          format: date-time
-          type: string
-          description: The date of the last update
-          x-faker: date.recent
         name:
           type: string
           description: The name of the feature
           x-faker: git.branch
-        description:
-          type: string
-          description: The description of the feature
-          x-faker: hacker.phrase
         isEnabled:
           type: boolean
           description: Is feature enabled
-        applicationId:
-          type: string
-          description: The id of the application the feature belongs to
-          x-faker: random.uuid
       required:
-        - id
-        - createdAt
-        - updatedAt
         - name
-        - description
         - isEnabled
-        - applicationId
+    ClientFeaturesListResponse:
+      type: object
+      properties:
+        total:
+          type: number
+          example: 10
+          description: The total amount of entities
+        data:
+          description: The list of entitites
+          type: array
+          items:
+            $ref: '#/components/schemas/ClientFeature'
+      required:
+        - total
+        - data
+    ClientFeatureSingleResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ClientFeature'
+      required:
+        - data
 paths:
   /admin/v1/users/me:
     get:
@@ -925,14 +920,56 @@ paths:
               schema:
                 $ref: '#/components/schemas/FeaturesListResponse'
         '400':
-          description: Invalid search parameters
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Features
       security:
         - bearer: []
     post:
       operationId: createFeature
-      summary: Create a new feature
+      summary: Create feature
       parameters:
         - name: appId
           required: true
@@ -948,13 +985,55 @@ paths:
               $ref: '#/components/schemas/CreateFeatureDto'
       responses:
         '201':
-          description: The created feature
+          description: Created feature
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/FeatureSingleResponse'
         '400':
           description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Features
       security:
@@ -978,18 +1057,62 @@ paths:
             type: string
       responses:
         '200':
-          description: The feature
+          description: Feature
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/FeatureSingleResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Features
       security:
         - bearer: []
     put:
       operationId: updateFeature
-      summary: Update the feature
+      summary: Update feature
       parameters:
         - name: appId
           required: true
@@ -1011,20 +1134,62 @@ paths:
               $ref: '#/components/schemas/UpdateFeatureDto'
       responses:
         '200':
-          description: The updated feature
+          description: Updated feature
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/FeatureSingleResponse'
         '400':
           description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Features
       security:
         - bearer: []
     delete:
       operationId: deleteFeature
-      summary: Delete the feature
+      summary: Delete feature
       parameters:
         - name: appId
           required: true
@@ -1040,13 +1205,55 @@ paths:
             type: string
       responses:
         '200':
-          description: The deleted feature
+          description: Deleted feature
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/FeatureSingleResponse'
         '400':
-          description: Invalid id
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Features
       security:
@@ -1054,7 +1261,7 @@ paths:
   '/admin/v1/applications/{appId}/features/{id}/enable':
     post:
       operationId: enableFeature
-      summary: Enable the feature
+      summary: Enable feature
       parameters:
         - name: appId
           required: true
@@ -1070,13 +1277,55 @@ paths:
             type: string
       responses:
         '200':
-          description: The enabled feature
+          description: Enabled feature
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/FeatureSingleResponse'
         '400':
-          description: Invalid id
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Features
       security:
@@ -1084,7 +1333,7 @@ paths:
   '/admin/v1/applications/{appId}/features/{id}/disable':
     post:
       operationId: disableFeature
-      summary: Disable the feature
+      summary: Disable feature
       parameters:
         - name: appId
           required: true
@@ -1100,13 +1349,55 @@ paths:
             type: string
       responses:
         '200':
-          description: The disabled feature
+          description: Disabled feature
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/FeatureSingleResponse'
         '400':
-          description: Invalid id
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Features
       security:
@@ -1579,14 +1870,46 @@ paths:
               schema:
                 $ref: '#/components/schemas/RolesListResponse'
         '400':
-          description: Invalid search parameters
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Roles
       security:
         - bearer: []
     post:
       operationId: createRole
-      summary: Create a new role
+      summary: Create role
       parameters: []
       requestBody:
         required: true
@@ -1596,13 +1919,45 @@ paths:
               $ref: '#/components/schemas/CreateRoleDto'
       responses:
         '201':
-          description: The created role
+          description: Created role
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RoleSingleResponse'
         '400':
           description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Roles
       security:
@@ -1620,18 +1975,62 @@ paths:
             type: string
       responses:
         '200':
-          description: The role
+          description: Role
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RoleSingleResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Roles
       security:
         - bearer: []
     put:
       operationId: updateRole
-      summary: Update the role
+      summary: Update role
       parameters:
         - name: id
           required: true
@@ -1647,20 +2046,62 @@ paths:
               $ref: '#/components/schemas/UpdateRoleDto'
       responses:
         '200':
-          description: The updated role
+          description: Updated role
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RoleSingleResponse'
         '400':
           description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Roles
       security:
         - bearer: []
     delete:
       operationId: deleteRole
-      summary: Delete the role
+      summary: Delete role
       parameters:
         - name: id
           required: true
@@ -1670,13 +2111,55 @@ paths:
             type: string
       responses:
         '200':
-          description: The deleted role
+          description: Deleted role
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RoleSingleResponse'
         '400':
-          description: Invalid id
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Roles
       security:
@@ -1684,10 +2167,12 @@ paths:
   /api/v1/features:
     get:
       operationId: getClientFeatures
-      summary: Find features all features
+      summary: Find all features
       parameters:
         - name: X-Application-ID
+          required: true
           in: header
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       responses:
@@ -1696,15 +2181,22 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FeaturesListResponse'
-        '400':
-          description: Invalid search parameters
+                $ref: '#/components/schemas/ClientFeaturesListResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Client features
   '/api/v1/features/{name}':
     get:
       operationId: getClientFeature
-      summary: Get feature by id
+      summary: Get feature by name
       parameters:
         - name: name
           required: true
@@ -1713,15 +2205,36 @@ paths:
           schema:
             type: string
         - name: X-Application-ID
+          required: true
           in: header
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
           schema:
             type: string
       responses:
         '200':
-          description: The feature
+          description: Feature
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FeatureSingleResponse'
+                $ref: '#/components/schemas/ClientFeatureSingleResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Client features
