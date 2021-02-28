@@ -24,6 +24,7 @@ import {
 import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
 
 import { IsAllowed } from '../permissions/decorators/permissions.is-allowed';
+import { ApiErrorResponses } from '../../core/decorators/api-error.responses.decorator';
 
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
@@ -52,7 +53,7 @@ export class ApplicationsController {
     description: 'The list of found applications',
     type: ApplicationsListResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid search parameters' })
+  @ApiErrorResponses(400, 401, 403, 500)
   @IsAllowed(['read', 'Application'])
   async find(
     @Query() findApplicationsDto: FindApplicationsDto,
@@ -80,9 +81,10 @@ export class ApplicationsController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The application',
+    description: 'Application',
     type: ApplicationSingleResponse,
   })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['read', 'Application'])
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
@@ -95,15 +97,15 @@ export class ApplicationsController {
 
   @Post()
   @ApiOperation({
-    summary: 'Create a new application',
+    summary: 'Create application',
     operationId: 'createApplication',
   })
   @ApiResponse({
     status: 201,
-    description: 'The created application',
+    description: 'Created application',
     type: ApplicationSingleResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiErrorResponses(400, 401, 403, 500)
   @IsAllowed(['create', 'Application'])
   async create(
     @Body() createApplicationDto: CreateApplicationDto,
@@ -116,7 +118,7 @@ export class ApplicationsController {
 
   @Put(':id')
   @ApiOperation({
-    summary: 'Update the application',
+    summary: 'Update application',
     operationId: 'updateApplication',
   })
   @ApiParam({
@@ -128,10 +130,10 @@ export class ApplicationsController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The updated application',
+    description: 'Updated application',
     type: ApplicationSingleResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['update', 'Application'])
   async update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -145,7 +147,7 @@ export class ApplicationsController {
 
   @Delete(':id')
   @ApiOperation({
-    summary: 'Delete the application',
+    summary: 'Delete application',
     operationId: 'deleteApplication',
   })
   @ApiParam({
@@ -157,10 +159,10 @@ export class ApplicationsController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The deleted application',
+    description: 'Deleted application',
     type: ApplicationSingleResponse,
   })
-  @ApiResponse({ status: 400, description: 'Invalid id' })
+  @ApiErrorResponses(400, 401, 403, 404, 500)
   @IsAllowed(['delete', 'Application'])
   async remove(
     @Param('id', ParseUUIDPipe) id: string,

@@ -1198,14 +1198,46 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApplicationsListResponse'
         '400':
-          description: Invalid search parameters
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Applications
       security:
         - bearer: []
     post:
       operationId: createApplication
-      summary: Create a new application
+      summary: Create application
       parameters: []
       requestBody:
         required: true
@@ -1215,13 +1247,45 @@ paths:
               $ref: '#/components/schemas/CreateApplicationDto'
       responses:
         '201':
-          description: The created application
+          description: Created application
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApplicationSingleResponse'
         '400':
           description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Applications
       security:
@@ -1239,18 +1303,62 @@ paths:
             type: string
       responses:
         '200':
-          description: The application
+          description: Application
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApplicationSingleResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Applications
       security:
         - bearer: []
     put:
       operationId: updateApplication
-      summary: Update the application
+      summary: Update application
       parameters:
         - name: id
           required: true
@@ -1266,20 +1374,62 @@ paths:
               $ref: '#/components/schemas/UpdateApplicationDto'
       responses:
         '200':
-          description: The updated application
+          description: Updated application
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApplicationSingleResponse'
         '400':
           description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Applications
       security:
         - bearer: []
     delete:
       operationId: deleteApplication
-      summary: Delete the application
+      summary: Delete application
       parameters:
         - name: id
           required: true
@@ -1289,13 +1439,55 @@ paths:
             type: string
       responses:
         '200':
-          description: The deleted application
+          description: Deleted application
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApplicationSingleResponse'
         '400':
-          description: Invalid id
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Forbidden resource
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
       tags:
         - Applications
       security:
