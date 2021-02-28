@@ -16,7 +16,7 @@ export class CreateFeatureDto {
     message: 'name should contain only letters digits and -._ symbols',
   })
   @ApiProperty({
-    example: 'Feature name',
+    example: 'feature-name',
     description: 'The name of a new feature',
   })
   readonly name: string;

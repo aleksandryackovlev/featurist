@@ -11,6 +11,7 @@ import {
   UseGuards,
   ParseUUIDPipe,
   NotFoundException,
+  HttpCode,
 } from '@nestjs/common';
 
 import {
@@ -223,6 +224,7 @@ export class FeaturesController {
   }
 
   @Post(':id/enable')
+  @HttpCode(200)
   @ApiOperation({
     summary: 'Enable feature',
     operationId: 'enableFeature',
@@ -269,6 +271,7 @@ export class FeaturesController {
   }
 
   @Post(':id/disable')
+  @HttpCode(200)
   @ApiOperation({
     summary: 'Disable feature',
     operationId: 'disableFeature',

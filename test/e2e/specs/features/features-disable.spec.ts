@@ -120,7 +120,7 @@ describe('Features', () => {
           Authorization: `Bearer ${credentials.adminToken}`,
         });
 
-      expect(result.status).toEqual(201);
+      expect(result.status).toEqual(200);
       expect(result.body.data).toMatchObject({
         description: 'Some description',
         isEnabled: false,
