@@ -27,8 +27,6 @@ import { AuthJwtGuard } from '../auth/guards/auth.jwt.guard';
 import { IsAllowed } from '../permissions/decorators/permissions.is-allowed';
 import { ApiErrorResponses } from '../../core/decorators/api-error.responses.decorator';
 
-import { CrudErrorResponse } from '../crud/responses/crud.error.response';
-
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FindUsersDto } from './dto/find-users.dto';
