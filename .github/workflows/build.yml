@@ -3,7 +3,8 @@ name: build
 on: [ push, pull_request ]
 
 jobs:
-  install-dependencies:
+  unit-tests:
+    needs: install-dependencies
     runs-on: ubuntu-latest
 
     steps:
@@ -17,29 +18,6 @@ jobs:
     - name: Install dependencies
       run: |
         yarn install --frozen-lockfile
-
-    - uses: actions/upload-artifact@v2
-      with:
-        name: dependencies
-        path: node_modules
-
-
-  unit-tests:
-    needs: install-dependencies
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 14
-
-    - uses: actions/download-artifact@v2
-      with:
-        name: dependencies
-        path: node_modules
 
     - name: Run unit tests
       run: |
@@ -60,10 +38,9 @@ jobs:
       with:
         node-version: 14
 
-    - uses: actions/download-artifact@v2
-      with:
-        name: dependencies
-        path: node_modules
+    - name: Install dependencies
+      run: |
+        yarn install --frozen-lockfile
 
     - name: Setup environment
       run: |
@@ -94,10 +71,9 @@ jobs:
       with:
         node-version: 14
 
-    - uses: actions/download-artifact@v2
-      with:
-        name: dependencies
-        path: node_modules
+    - name: Install dependencies
+      run: |
+        yarn install --frozen-lockfile
 
     - name: Setup environment
       run: |
