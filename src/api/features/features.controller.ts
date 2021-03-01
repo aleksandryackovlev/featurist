@@ -46,7 +46,7 @@ export class ClientFeaturesController {
       type: 'string',
     },
   } as ApiParamOptions)
-  @ApiErrorResponses(500)
+  @ApiErrorResponses(400, 404, 500)
   async find(
     @Headers(HeadersDto) headers: HeadersDto,
   ): Promise<FeaturesListResponse> {
@@ -85,7 +85,7 @@ export class ClientFeaturesController {
     description: 'Feature',
     type: ClientFeatureSingleResponse,
   })
-  @ApiErrorResponses(404, 500)
+  @ApiErrorResponses(400, 404, 500)
   async findOne(
     @Headers(HeadersDto) headers: HeadersDto,
     @Param('name') name: string,

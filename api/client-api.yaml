@@ -90,6 +90,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClientFeaturesListResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              example:
+                statusCode: 404
+                message: Entity does not exist
+                error: Not Found
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
         '500':
           description: Internal server error
           content:
@@ -125,6 +141,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClientFeatureSingleResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
         '404':
           description: Not found
           content:
