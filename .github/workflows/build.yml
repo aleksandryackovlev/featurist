@@ -3,26 +3,73 @@ name: build
 on: [ push, pull_request ]
 
 jobs:
-  build:
-
+  install-dependencies:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
+
     - name: Setup Node.js
       uses: actions/setup-node@v1
       with:
         node-version: 14
-    - name: Run unit tests
+
+    - name: Install dependencies
       run: |
         yarn install --frozen-lockfile
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: dependencies
+        path: node_modules
+
+
+  unit-tests:
+    needs: install-dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: dependencies
+        path: node_modules
+
+    - name: Run unit tests
+      run: |
         yarn test:cov
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
-    - name: Setup application for e2e tests
+
+  e2e-tests:
+    needs: install-dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: dependencies
+        path: node_modules
+
+    - name: Setup environment
       run: |
         make start-detached
         ./third_party/wait-for-it.sh 0.0.0.0:3000
+
     - name: Run e2e tests
       env:
         DATABASE_HOST: localhost
@@ -33,5 +80,30 @@ jobs:
         DATABASE_SCHEMA: public
         TZ: Etc/UTC
       run: |
-        yarn install --frozen-lockfile
         yarn test:e2e
+
+  openapi-tests:
+    needs: install-dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: dependencies
+        path: node_modules
+
+    - name: Setup environment
+      run: |
+        make start-detached
+        ./third_party/wait-for-it.sh 0.0.0.0:3000
+
+    - name: Run open tests
+      run: |
+        yarn test:openapi
