@@ -1,6 +1,6 @@
 color: true
 dry-run: null
-hookfiles: ./test/openapi/*.js
+hookfiles: ./test/openapi/client-api/*.js
 language: nodejs
 require: null
 server: null
@@ -27,6 +27,6 @@ hooks-worker-term-timeout: 5000
 hooks-worker-term-retry: 500
 hooks-worker-handler-host: 127.0.0.1
 hooks-worker-handler-port: 61321
-config: ./dredd.yml
-blueprint: api/admin-api.yaml
+config: ./test/openapi/dredd-client.yml
+blueprint: api/client-api.yaml
 endpoint: 'http://127.0.0.1:3000'
