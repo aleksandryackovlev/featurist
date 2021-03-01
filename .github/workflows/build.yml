@@ -77,6 +77,6 @@ jobs:
         make start-detached
         ./third_party/wait-for-it.sh 0.0.0.0:3000
 
-    - name: Run open tests
+    - name: Run openapi tests
       run: |
         yarn test:openapi
