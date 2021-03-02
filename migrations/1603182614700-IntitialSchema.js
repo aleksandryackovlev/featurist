@@ -289,7 +289,7 @@ class IntitialSchema1603182614700 {
         columnNames: ['role_id'],
         referencedColumnNames: ['id'],
         referencedTableName: 'role',
-        onDelete: 'NO ACTION',
+        onDelete: 'CASCADE',
         onUpdate: 'NO ACTION',
       }),
     );

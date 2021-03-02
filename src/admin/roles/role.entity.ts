@@ -23,7 +23,7 @@ export class Role extends CrudEntity {
   users: User[];
 
   @OneToMany(() => Permission, (permission) => permission.role, {
-    onDelete: 'RESTRICT',
+    onDelete: 'CASCADE',
   })
   permissions: Permission[];
 
