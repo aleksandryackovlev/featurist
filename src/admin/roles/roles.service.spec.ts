@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
 import { IFindEntitiesDto as FindDtoType } from '../crud/interfaces';
+import { User } from '../users/user.entity';
 
 import { RolesService } from './roles.service';
 import { Role } from './role.entity';
@@ -10,7 +13,7 @@ import { Role } from './role.entity';
 const role = new Role();
 role.id = '935a38e8-ec14-41b8-8066-2bc5c818577a';
 role.name = 'admin';
-role.users = [];
+role.users = [{ username: 'username' } as User];
 role.description = 'Description';
 
 const resultArr = [role];
@@ -37,6 +40,7 @@ describe('RolesService', () => {
           useValue: {
             createQueryBuilder: jest.fn().mockReturnValue(query),
             findOne: jest.fn().mockResolvedValue(null),
+            delete: jest.fn().mockResolvedValue({ ...role }),
           },
         },
       ],
@@ -199,6 +203,48 @@ describe('RolesService', () => {
 
       expect(query.limit).toBeCalledTimes(1);
       expect(query.limit).toBeCalledWith(200);
+    });
+  });
+
+  describe('remove', () => {
+    it('should return a deleted entity', async () => {
+      jest.spyOn(repo, 'findOne').mockResolvedValueOnce({ ...role, users: [] });
+      const result = await service.remove('a uuid');
+
+      const { users, ...expected } = role;
+      expect(result).toEqual(expected);
+    });
+
+    it('should throw an error if an entity with a given id does not exit', async () => {
+      const repoSpy = jest.spyOn(repo, 'findOne').mockResolvedValueOnce(null);
+
+      const repoDelSpy = jest.spyOn(repo, 'delete').mockResolvedValueOnce(null);
+
+      try {
+        await service.remove('a bad uuid');
+        throw new Error('Prevent pass through');
+      } catch (error) {
+        expect(error instanceof NotFoundException).toEqual(true);
+        expect(repoSpy).toBeCalledTimes(1);
+        expect(repoDelSpy).toBeCalledTimes(0);
+      }
+    });
+
+    it('should throw an error if an entity with a given id has users', async () => {
+      const repoSpy = jest
+        .spyOn(repo, 'findOne')
+        .mockResolvedValueOnce({ ...role });
+
+      const repoDelSpy = jest.spyOn(repo, 'delete').mockResolvedValueOnce(null);
+
+      try {
+        await service.remove('a bad uuid');
+        throw new Error('Prevent pass through');
+      } catch (error) {
+        expect(error instanceof BadRequestException).toEqual(true);
+        expect(repoSpy).toBeCalledTimes(1);
+        expect(repoDelSpy).toBeCalledTimes(0);
+      }
     });
   });
 });
