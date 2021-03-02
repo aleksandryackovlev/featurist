@@ -121,7 +121,7 @@ describe('CrudService Factory', () => {
       expect(query.offset).toBeCalledTimes(0);
 
       expect(query.orderBy).toBeCalledTimes(1);
-      expect(query.orderBy).toBeCalledWith('application.createdAt', 'DESC');
+      expect(query.orderBy).toBeCalledWith('application.updatedAt', 'DESC');
 
       expect(query.limit).toBeCalledTimes(1);
       expect(query.limit).toBeCalledWith(10);

@@ -41,7 +41,7 @@ export const CrudService = <
         updatedFrom,
         updatedTo,
         search,
-        sortBy = 'createdAt',
+        sortBy = 'updatedAt',
         sortDirection = 'desc',
         offset,
         limit = 10,

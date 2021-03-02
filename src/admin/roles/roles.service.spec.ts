@@ -80,7 +80,7 @@ describe('RolesService', () => {
       expect(query.offset).toBeCalledTimes(0);
 
       expect(query.orderBy).toBeCalledTimes(1);
-      expect(query.orderBy).toBeCalledWith('role.createdAt', 'DESC');
+      expect(query.orderBy).toBeCalledWith('role.updatedAt', 'DESC');
 
       expect(query.limit).toBeCalledTimes(1);
       expect(query.limit).toBeCalledWith(10);
