@@ -87,7 +87,7 @@ describe('AuthService', () => {
   describe('login', () => {
     it('should return an access token for a given user', async () => {
       const user = {
-        username: 'username',
+        id: 'user-id',
       };
 
       const jwtSpy = jest
@@ -101,7 +101,7 @@ describe('AuthService', () => {
       });
 
       expect(jwtSpy).toBeCalledWith({
-        username: 'username',
+        id: 'user-id',
       });
     });
   });
