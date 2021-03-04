@@ -16,4 +16,19 @@ export class UsersService extends CrudService({
   findByUsername(username: string): Promise<User | null> {
     return this.repository.findOne({ username });
   }
+
+  getUserWithPermissions(id: string): Promise<User | null> {
+    const query = this.repository.createQueryBuilder('user');
+
+    query.where('user.id = :id', { id });
+    query.andWhere('permission.isAllowed = true');
+    query.leftJoinAndMapMany(
+      'user.permissions',
+      'permission',
+      'permission',
+      'permission.roleId = user.roleId',
+    );
+
+    return query.getOne();
+  }
 }

@@ -21,6 +21,8 @@ const query = {
   limit: jest.fn(),
   orderBy: jest.fn(),
   getManyAndCount: jest.fn().mockReturnValue([resultArr, 10]),
+  leftJoinAndMapMany: jest.fn(),
+  getOne: jest.fn().mockResolvedValue({ ...user }),
 };
 
 describe('UsersService', () => {
@@ -54,6 +56,29 @@ describe('UsersService', () => {
       await expect(service.findByUsername('uid')).resolves.toEqual(null);
       expect(repoSpy).toBeCalledTimes(1);
       expect(repoSpy).toBeCalledWith({ username: 'uid' });
+    });
+  });
+
+  describe('getUserWithPermissions', () => {
+    it('should return a user with permissions by its id', async () => {
+      await expect(service.getUserWithPermissions('uid')).resolves.toEqual(
+        user,
+      );
+      expect(query.where).toBeCalledTimes(1);
+      expect(query.where).toBeCalledWith('user.id = :id', { id: 'uid' });
+
+      expect(query.andWhere).toBeCalledTimes(1);
+      expect(query.andWhere).toBeCalledWith('permission.isAllowed = true');
+
+      expect(query.leftJoinAndMapMany).toBeCalledTimes(1);
+      expect(query.leftJoinAndMapMany).toBeCalledWith(
+        'user.permissions',
+        'permission',
+        'permission',
+        'permission.roleId = user.roleId',
+      );
+
+      expect(query.getOne).toBeCalledTimes(1);
     });
   });
 
