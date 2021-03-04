@@ -11,6 +11,7 @@ import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 import * as bcrypt from 'bcryptjs';
 
 import { Role } from '../roles/role.entity';
+import { Permission } from '../permissions/permission.entity';
 import { Application } from '../applications/application.entity';
 import { CrudEntity } from '../crud/crud.entity';
 
@@ -57,6 +58,8 @@ export class User extends CrudEntity {
   })
   @JoinColumn([{ name: 'role_id', referencedColumnName: 'id' }])
   role: Role;
+
+  permissions?: Permission[];
 
   @ManyToMany(() => Application, (application) => application.users)
   applications: Application[];

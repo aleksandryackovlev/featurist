@@ -33,6 +33,10 @@ import { FindUsersDto } from './dto/find-users.dto';
 
 import { UsersListResponse } from './responses/users.list.response';
 import { UserSingleResponse } from './responses/user.single.response';
+import {
+  UserCurrentResponse,
+  UserCurrent,
+} from './responses/user.current.response';
 
 import { User } from './user.entity';
 import { UsersService } from './users.service';
@@ -52,12 +56,12 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: 'Current user',
-    type: UserSingleResponse,
+    type: UserCurrentResponse,
   })
   @ApiErrorResponses(401, 500)
-  getCurrentUser(@Req() req: Request): { data: User } {
-    const { password, ...currentUser } = <User>req.user;
-    return new UserSingleResponse(<User>currentUser);
+  getCurrentUser(@Req() req: Request): { data: UserCurrent } {
+    // const { password, ...currentUser } = <User>req.user;
+    return new UserCurrentResponse(<UserCurrent>req.user);
   }
 
   @Get()
