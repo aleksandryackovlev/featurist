@@ -21,6 +21,48 @@ components:
       bearerFormat: JWT
       type: http
   schemas:
+    Permission:
+      type: object
+      properties:
+        action:
+          type: string
+          description: Action
+          enum:
+            - create
+            - read
+            - update
+            - delete
+          example: read
+        subject:
+          type: string
+          description: Subject
+          example: Role
+      required:
+        - action
+        - subject
+    UserCurrent:
+      type: object
+      properties:
+        username:
+          type: string
+          description: The username of the user
+          x-faker: internet.userName
+        permissions:
+          description: Permissions
+          x-featurist: permissions
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+      required:
+        - username
+        - permissions
+    UserCurrentResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/UserCurrent'
+      required:
+        - data
     User:
       type: object
       properties:
@@ -56,13 +98,6 @@ components:
         - username
         - isActive
         - roleId
-    UserSingleResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/User'
-      required:
-        - data
     UsersListResponse:
       type: object
       properties:
@@ -121,6 +156,13 @@ components:
         - username
         - password
         - roleId
+    UserSingleResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/User'
+      required:
+        - data
     UpdateUserDto:
       type: object
       properties:
@@ -388,7 +430,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserSingleResponse'
+                $ref: '#/components/schemas/UserCurrentResponse'
         '401':
           description: Unauthorized access
           content:
