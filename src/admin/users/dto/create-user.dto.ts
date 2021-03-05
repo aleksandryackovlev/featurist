@@ -13,7 +13,9 @@ export class CreateUserDto {
   @IsString()
   @MinLength(5)
   @MaxLength(150)
-  @Matches(/^[a-zA-Z][-._a-zA-Z\d]{3,}[a-zA-Z\d]$/)
+  @Matches(/^[a-zA-Z][-._a-zA-Z\d]{3,}[a-zA-Z\d]$/, {
+    message: 'username contains illegal characters',
+  })
   @ApiProperty({
     example: 'someusername',
     description: 'The username of a new user',
@@ -23,7 +25,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   @MinLength(5)
-  @Matches(/^[A-Za-z\d@$!%*#?&]{5,}$/)
+  @Matches(/^[-A-Za-z\d@$!%*_#?&]{5,}$/, {
+    message: 'password contains illegal characters',
+  })
   @ApiProperty({
     example: 'somePassword',
     description: 'The password of a new user',
