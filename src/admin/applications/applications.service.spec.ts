@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { IFindEntitiesDto as FindDtoType } from '../crud/interfaces';
+import { IFindEntitiesDto as FindDtoType } from '../../core/crud/interfaces';
 import { User } from '../users/user.entity';
 
 import { ApplicationsService } from './applications.service';

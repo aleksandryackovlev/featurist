@@ -13,7 +13,7 @@ import * as bcrypt from 'bcryptjs';
 import { Role } from '../roles/role.entity';
 import { Permission } from '../permissions/permission.entity';
 import { Application } from '../applications/application.entity';
-import { CrudEntity } from '../crud/crud.entity';
+import { CrudEntity } from '../../core/crud/crud.entity';
 
 @Entity()
 export class User extends CrudEntity {

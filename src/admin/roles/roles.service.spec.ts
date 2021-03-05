@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { IFindEntitiesDto as FindDtoType } from '../crud/interfaces';
+import { IFindEntitiesDto as FindDtoType } from '../../core/crud/interfaces';
 import { User } from '../users/user.entity';
 
 import { RolesService } from './roles.service';

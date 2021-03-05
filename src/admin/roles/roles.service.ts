@@ -1,6 +1,6 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
-import { CrudService } from '../crud/crud.service';
+import { CrudService } from '../../core/crud/crud.service';
 
 import { Role } from './role.entity';
 import { CreateRoleDto } from './dto/create-role.dto';

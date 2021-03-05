@@ -1,6 +1,6 @@
 import { Type, Exclude, Expose } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
-import { CrudSingleResponse } from '../../crud/responses/crud.single.response';
+import { CrudSingleResponse } from '../../../core/crud/responses/crud.single.response';
 
 @Exclude()
 export class Permission {

@@ -1,4 +1,4 @@
-import { CrudService } from '../crud/crud.service';
+import { CrudService } from '../../core/crud/crud.service';
 
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';

@@ -1,4 +1,4 @@
-import { CrudFindEntitiesDto } from '../../crud/dto/find-entities.dto';
+import { CrudFindEntitiesDto } from '../../../core/crud/dto/find-entities.dto';
 
 export class FindUsersDto extends CrudFindEntitiesDto([
   'id',

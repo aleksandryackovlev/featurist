@@ -1,7 +1,7 @@
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 
-import { CrudEntity } from '../crud/crud.entity';
+import { CrudEntity } from '../../core/crud/crud.entity';
 import { Role } from '../roles/role.entity';
 
 @Entity()

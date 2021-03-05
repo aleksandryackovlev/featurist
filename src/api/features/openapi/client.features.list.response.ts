@@ -1,4 +1,4 @@
-import { CrudListResponse } from '../../../admin/crud/responses/crud.list.response';
+import { CrudListResponse } from '../../../core/crud/responses/crud.list.response';
 
 import { ClientFeature } from './client.feature';
 

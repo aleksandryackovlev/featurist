@@ -1,4 +1,4 @@
-import { CrudListResponse } from '../../crud/responses/crud.list.response';
+import { CrudListResponse } from '../../../core/crud/responses/crud.list.response';
 
 import { Feature } from '../feature.entity';
 

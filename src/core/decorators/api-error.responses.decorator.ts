@@ -3,7 +3,7 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 
-import { CrudErrorResponse } from '../../admin/crud/responses/crud.error.response';
+import { CrudErrorResponse } from '../crud/responses/crud.error.response';
 
 export type HttpErrorStatusCode = 400 | 401 | 403 | 404 | 500;
 

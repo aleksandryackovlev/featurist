@@ -2,7 +2,7 @@ import { Entity, Index, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 
 import { Application } from '../applications/application.entity';
-import { CrudEntity } from '../crud/crud.entity';
+import { CrudEntity } from '../../core/crud/crud.entity';
 
 @Index(['id', 'applicationId'], { unique: true })
 @Entity()
