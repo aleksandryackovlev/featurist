@@ -85,27 +85,6 @@ items:
     isAllowed: true
     role: '@admin'
 
-  adminCreatePermission:
-    action: 'create'
-    subject: 'Permission'
-    isAllowed: true
-    role: '@admin'
-  adminReadPermission:
-    action: 'read'
-    subject: 'Permission'
-    isAllowed: true
-    role: '@admin'
-  adminUpdatePermission:
-    action: 'update'
-    subject: 'Permission'
-    isAllowed: true
-    role: '@admin'
-  adminDeletePermission:
-    action: 'delete'
-    subject: 'Permission'
-    isAllowed: true
-    role: '@admin'
-
   developerCreateApplication:
     action: 'create'
     subject: 'Application'
@@ -190,27 +169,6 @@ items:
     isAllowed: false
     role: '@developer'
 
-  developerCreatePermission:
-    action: 'create'
-    subject: 'Permission'
-    isAllowed: false
-    role: '@developer'
-  developerReadPermission:
-    action: 'read'
-    subject: 'Permission'
-    isAllowed: false
-    role: '@developer'
-  developerUpdatePermission:
-    action: 'update'
-    subject: 'Permission'
-    isAllowed: false
-    role: '@developer'
-  developerDeletePermission:
-    action: 'delete'
-    subject: 'Permission'
-    isAllowed: false
-    role: '@developer'
-
   managerCreateApplication:
     action: 'create'
     subject: 'Application'
@@ -292,26 +250,5 @@ items:
   managerDeleteRole:
     action: 'delete'
     subject: 'Role'
-    isAllowed: false
-    role: '@manager'
-
-  managerCreatePermission:
-    action: 'create'
-    subject: 'Permission'
-    isAllowed: false
-    role: '@manager'
-  managerReadPermission:
-    action: 'read'
-    subject: 'Permission'
-    isAllowed: false
-    role: '@manager'
-  managerUpdatePermission:
-    action: 'update'
-    subject: 'Permission'
-    isAllowed: false
-    role: '@manager'
-  managerDeletePermission:
-    action: 'delete'
-    subject: 'Permission'
     isAllowed: false
     role: '@manager'
