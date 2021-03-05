@@ -1,3 +1,5 @@
+import { BadRequestException } from '@nestjs/common';
+
 import { CrudService } from '../../core/crud/crud.service';
 
 import { User } from './user.entity';
@@ -13,6 +15,18 @@ export class UsersService extends CrudService({
   UpdateDto: UpdateUserDto,
   FindDto: FindUsersDto,
 }) {
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    if (await this.findByUsername(createUserDto.username)) {
+      throw new BadRequestException('User already exists');
+    }
+
+    const entity = this.repository.create(createUserDto);
+
+    await this.repository.save(entity);
+
+    return entity;
+  }
+
   findByUsername(username: string): Promise<User | null> {
     return this.repository.findOne({ username });
   }

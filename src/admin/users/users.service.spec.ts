@@ -38,6 +38,8 @@ describe('UsersService', () => {
           useValue: {
             createQueryBuilder: jest.fn().mockReturnValue(query),
             findOne: jest.fn().mockResolvedValue(null),
+            create: jest.fn().mockResolvedValue({ ...user }),
+            save: jest.fn(),
           },
         },
       ],
@@ -79,6 +81,39 @@ describe('UsersService', () => {
       );
 
       expect(query.getOne).toBeCalledTimes(1);
+    });
+  });
+
+  describe('create', () => {
+    it('should successfully insert an entity', async () => {
+      jest.spyOn(service, 'findByUsername').mockResolvedValueOnce(null);
+
+      await expect(
+        service.create({
+          username: 'Test Entity 1',
+          password: 'Test Desc 1',
+          roleId: 'roleId',
+        }),
+      ).resolves.toEqual(user);
+      expect(repo.create).toBeCalledTimes(1);
+      expect(repo.create).toBeCalledWith({
+        username: 'Test Entity 1',
+        password: 'Test Desc 1',
+        roleId: 'roleId',
+      });
+      expect(repo.save).toBeCalledTimes(1);
+    });
+
+    it('should throw an error if users with the given username already exists', async () => {
+      jest.spyOn(service, 'findByUsername').mockResolvedValueOnce(user);
+
+      await expect(
+        service.create({
+          username: 'Test Entity 1',
+          password: 'Test Desc 1',
+          roleId: 'roleId',
+        }),
+      ).rejects.toThrow('User already exists');
     });
   });
 
