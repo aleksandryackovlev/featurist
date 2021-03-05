@@ -52,6 +52,7 @@ export class User extends CrudEntity {
   })
   roleId: string;
 
+  @Exclude()
   @ManyToOne(() => Role, (role) => role.users, {
     nullable: false,
     eager: true,
