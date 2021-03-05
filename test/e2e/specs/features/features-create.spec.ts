@@ -41,6 +41,26 @@ describe('Features', () => {
       expect(result.statusCode).toEqual(400);
     });
 
+    it('should throw an 400 if feature with the given name already exists', async () => {
+      const application = entities.applications.find(({ users }) =>
+        users.some(({ username }) => username == 'admin'),
+      );
+
+      const result = await app
+        .post(`/applications/${application.id}/features`)
+        .send({ description: 'Some description', name: application.features[0].name })
+        .set({
+          Authorization: `Bearer ${credentials.adminToken}`,
+        });
+
+      expect(result.body).toEqual({
+        statusCode: 400,
+        message: 'Feature already exists',
+        error: 'Bad Request',
+      });
+      expect(result.statusCode).toEqual(400);
+    });
+
     it('should return 403 error if current user is not allowed to read applications', async () => {
       const result = await app
         .post(`/applications/${entities.applications[0].id}/features`)
