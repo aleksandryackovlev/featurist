@@ -114,10 +114,12 @@ describe('UsersController', () => {
       expect(
         await controller.update('some-id-to-update', {
           password: 'password',
+          roleId: 'roleId',
         }),
       ).toEqual({ data: user });
       expect(serviceSpy).toBeCalledWith('some-id-to-update', {
         password: 'password',
+        roleId: 'roleId',
       });
     });
   });
