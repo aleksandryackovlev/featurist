@@ -73,6 +73,10 @@ class Environment extends NodeEnvironment {
       global.app = request('http://localhost:3000/admin/v1');
     }
 
+    if (!global.clientApp) {
+      global.clientApp = request('http://localhost:3000/api/v1');
+    }
+
     if (!global.credentials) {
       const [admin, developer, restrictedUser] = await Promise.all([
         global.app
@@ -95,6 +99,7 @@ class Environment extends NodeEnvironment {
 
     this.global.entities = global.entities;
     this.global.app = global.app;
+    this.global.clientApp = global.clientApp;
     this.global.credentials = global.credentials;
 
     await super.setup();
