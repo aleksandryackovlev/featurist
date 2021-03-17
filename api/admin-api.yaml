@@ -11,6 +11,10 @@ tags:
     description: Methods for managing features
   - name: Users
     description: Methods for managing users
+  - name: Auth
+    description: Methods for users' authentication
+  - name: Roles
+    description: Methods for managing users' roles
 servers:
   - url: 'http://localhost:3000'
     description: development server
@@ -170,8 +174,13 @@ components:
           type: string
           example: somePassword
           description: User password
+        roleId:
+          type: string
+          example: 977a3934-ee5f-4a6f-beed-42a7529ce648
+          description: The role id of a new user
       required:
         - password
+        - roleId
     Feature:
       type: object
       properties:
@@ -340,6 +349,36 @@ components:
           type: string
           example: Application description
           description: The description of the application
+    AuthLoginDto:
+      type: object
+      properties:
+        username:
+          type: string
+          example: admin
+          description: Username
+        password:
+          type: string
+          example: test
+          description: Password
+      required:
+        - username
+        - password
+    LoginResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: Access token
+          x-faker: internet.password
+      required:
+        - access_token
+    AuthLoginResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/LoginResponse'
+      required:
+        - data
     Role:
       type: object
       properties:
@@ -1790,6 +1829,44 @@ paths:
         - Applications
       security:
         - bearer: []
+  /admin/v1/auth/login:
+    post:
+      operationId: login
+      summary: Login
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthLoginDto'
+      responses:
+        '200':
+          description: Access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthLoginResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Unauthorized
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal server error
+              schema:
+                $ref: '#/components/schemas/CrudErrorResponse'
+      tags:
+        - Auth
   /admin/v1/roles:
     get:
       operationId: getRoles
