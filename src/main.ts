@@ -55,6 +55,8 @@ async function bootstrap() {
     .addTag('Applications', 'Methods for managing applications')
     .addTag('Features', 'Methods for managing features')
     .addTag('Users', 'Methods for managing users')
+    .addTag('Auth', "Methods for users' authentication")
+    .addTag('Roles', "Methods for managing users' roles")
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
