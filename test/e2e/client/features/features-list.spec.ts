@@ -51,7 +51,7 @@ describe('Client features', () => {
       expect(result.body).toEqual({
         data: application.features
           .sort((first, second) =>
-            new Date(first.updatedAt) > new Date(second.updatedAt) ? -1 : 1,
+            first.name > second.name ? -1 : 1,
           )
           .map(({ isEnabled, name }) => ({ isEnabled, name })),
         total: application.features.length,
