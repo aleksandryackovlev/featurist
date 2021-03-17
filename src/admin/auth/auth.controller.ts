@@ -1,4 +1,4 @@
-import { Controller, Request, Post, UseGuards } from '@nestjs/common';
+import { Controller, Request, Post, UseGuards, HttpCode } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
 
 import { ApiErrorResponses } from '../../core/decorators/api-error.responses.decorator';
@@ -28,6 +28,7 @@ export class AuthController {
     type: AuthLoginResponse,
   })
   @ApiErrorResponses(401, 500)
+  @HttpCode(200)
   async login(@Request() req) {
     return this.authService.login(req.user);
   }
