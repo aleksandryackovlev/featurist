@@ -3,6 +3,7 @@ import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 import * as helmet from 'helmet';
+import * as morgan from 'morgan';
 
 import { AppModule } from './app.module';
 
@@ -37,6 +38,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   app.use(helmet());
+  app.use(morgan('combined'));
 
   app.enableCors({
     origin: verifyOrigin(process.env.CLIENT_URL || '*'),
