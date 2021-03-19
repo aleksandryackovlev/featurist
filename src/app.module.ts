@@ -10,6 +10,7 @@ import { RolesModule } from './admin/roles/roles.module';
 import { PermissionsModule } from './admin/permissions/permissions.module';
 
 import { ClientFeaturesModule } from './api/features/features.module';
+import { HealthModule } from './health/health.module';
 
 import config from './core/config';
 
@@ -43,6 +44,7 @@ import config from './core/config';
     RolesModule,
     PermissionsModule,
     ClientFeaturesModule,
+    HealthModule,
   ],
   providers: [],
 })
