@@ -1,24 +1,7 @@
 import { Type, Exclude, Expose } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 import { CrudSingleResponse } from '../../../core/crud/responses/crud.single.response';
-
-@Exclude()
-export class Permission {
-  @ApiProperty(<ApiPropertyOptions>{
-    description: 'Action',
-    enum: ['create', 'read', 'update', 'delete'],
-    example: 'read',
-  })
-  @Expose()
-  action: string;
-
-  @ApiProperty(<ApiPropertyOptions>{
-    description: 'Subject',
-    example: 'Role',
-  })
-  @Expose()
-  subject: string;
-}
+import { Permission } from '../../permissions/permission.entity';
 
 @Exclude()
 export class UserCurrent {
