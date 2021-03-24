@@ -55,3 +55,22 @@ export class Permission extends CrudEntity {
   @JoinColumn([{ name: 'role_id', referencedColumnName: 'id' }])
   role: Role;
 }
+
+export class SwaggerPermission {
+  @ApiProperty(<ApiPropertyOptions>{
+    description: 'Action',
+    enum: ['create', 'read', 'update', 'delete'],
+    example: 'read',
+  })
+  action: string;
+
+  @ApiProperty(<ApiPropertyOptions>{
+    description: 'The subject',
+  })
+  subject: string;
+
+  @ApiProperty(<ApiPropertyOptions>{
+    description: 'Is the action allowed with the subject',
+  })
+  isAllowed: boolean;
+}
