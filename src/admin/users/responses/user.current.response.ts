@@ -1,7 +1,10 @@
 import { Type, Exclude, Expose } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 import { CrudSingleResponse } from '../../../core/crud/responses/crud.single.response';
-import { Permission } from '../../permissions/permission.entity';
+import {
+  SwaggerPermission,
+  Permission,
+} from '../../permissions/permission.entity';
 
 @Exclude()
 export class UserCurrent {
@@ -14,7 +17,7 @@ export class UserCurrent {
 
   @ApiProperty(<ApiPropertyOptions>{
     description: 'Permissions',
-    type: () => [Permission],
+    type: () => [SwaggerPermission],
     'x-featurist': 'permissions',
   })
   @Expose()
