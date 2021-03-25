@@ -48,6 +48,10 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
   });
 
+  if (process.env.NODE_ENV === 'production') {
+    app.enableShutdownHooks();
+  }
+
   const options = new DocumentBuilder()
     .setTitle('Feature toggle server')
     .setDescription('API for manging feature toggles')
