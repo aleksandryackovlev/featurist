@@ -6,9 +6,9 @@ import {
   SwaggerPermission,
 } from '../../permissions/permission.entity';
 
-import { Role as RoleEntity } from '../role.entity';
+import { Role } from '../role.entity';
 
-class Role extends RoleEntity {
+class RoleSingle extends Role {
   @ApiProperty(<ApiPropertyOptions>{
     description: 'Permissions',
     type: () => [SwaggerPermission],
@@ -17,4 +17,4 @@ class Role extends RoleEntity {
   permissions: Permission[];
 }
 
-export class RoleSingleResponse extends CrudSingleResponse(Role) {}
+export class RoleSingleResponse extends CrudSingleResponse(RoleSingle) {}
