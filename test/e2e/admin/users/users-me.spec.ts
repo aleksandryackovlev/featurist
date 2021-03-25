@@ -15,7 +15,7 @@ describe('Users', () => {
           username: 'developer',
           permissions: entities.permissions
             .filter(({ roleId, isAllowed }) => roleId === user.roleId && isAllowed)
-            .map(({ action, subject }) => ({ action, subject }))
+            .map(({ action, subject, isAllowed }) => ({ action, subject, isAllowed }))
         },
       });
 
