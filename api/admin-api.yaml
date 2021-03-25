@@ -407,19 +407,12 @@ components:
           type: string
           description: The description of the application
           x-faker: hacker.phrase
-        permissions:
-          description: Permissions
-          x-featurist: permissions
-          type: array
-          items:
-            $ref: '#/components/schemas/SwaggerPermission'
       required:
         - id
         - createdAt
         - updatedAt
         - name
         - description
-        - permissions
     RolesListResponse:
       type: object
       properties:
@@ -435,11 +428,49 @@ components:
       required:
         - total
         - data
+    RoleSingle:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier
+          x-faker: random.uuid
+        createdAt:
+          format: date-time
+          type: string
+          description: The date of the creation
+          x-faker: date.past
+        updatedAt:
+          format: date-time
+          type: string
+          description: The date of the last update
+          x-faker: date.recent
+        name:
+          type: string
+          description: The name of the application
+          x-faker: git.branch
+        description:
+          type: string
+          description: The description of the application
+          x-faker: hacker.phrase
+        permissions:
+          description: Permissions
+          x-featurist: permissions
+          type: array
+          items:
+            $ref: '#/components/schemas/SwaggerPermission'
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - name
+        - description
+        - permissions
     RoleSingleResponse:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/Role'
+          $ref: '#/components/schemas/RoleSingle'
       required:
         - data
     CreateRoleDto:
@@ -2258,106 +2289,3 @@ paths:
         - Roles
       security:
         - bearer: []
-  /health:
-    get:
-      operationId: HealthController_check
-      parameters: []
-      responses:
-        '200':
-          description: The Health Check is successful
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: ok
-                  info:
-                    type: object
-                    example:
-                      database:
-                        status: up
-                    additionalProperties:
-                      type: object
-                      properties:
-                        status:
-                          type: string
-                      additionalProperties:
-                        type: string
-                    nullable: true
-                  error:
-                    type: object
-                    example: {}
-                    additionalProperties:
-                      type: object
-                      properties:
-                        status:
-                          type: string
-                      additionalProperties:
-                        type: string
-                    nullable: true
-                  details:
-                    type: object
-                    example:
-                      database:
-                        status: up
-                    additionalProperties:
-                      type: object
-                      properties:
-                        status:
-                          type: string
-                      additionalProperties:
-                        type: string
-        '503':
-          description: The Health Check is not successful
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: error
-                  info:
-                    type: object
-                    example:
-                      database:
-                        status: up
-                    additionalProperties:
-                      type: object
-                      properties:
-                        status:
-                          type: string
-                      additionalProperties:
-                        type: string
-                    nullable: true
-                  error:
-                    type: object
-                    example:
-                      redis:
-                        status: down
-                        message: Could not connect
-                    additionalProperties:
-                      type: object
-                      properties:
-                        status:
-                          type: string
-                      additionalProperties:
-                        type: string
-                    nullable: true
-                  details:
-                    type: object
-                    example:
-                      database:
-                        status: up
-                      redis:
-                        status: down
-                        message: Could not connect
-                    additionalProperties:
-                      type: object
-                      properties:
-                        status:
-                          type: string
-                      additionalProperties:
-                        type: string
