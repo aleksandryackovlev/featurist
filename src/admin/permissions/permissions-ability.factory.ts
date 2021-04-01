@@ -8,12 +8,7 @@ import { PermissionsService } from './permissions.service';
 
 export type Action = 'create' | 'read' | 'update' | 'delete';
 
-export type Subjects =
-  | 'Application'
-  | 'Feature'
-  | 'User'
-  | 'Role'
-  | 'Permission';
+export type Subjects = 'Application' | 'Feature' | 'User' | 'Role';
 
 export type Abilities = [Action, Subjects];
 
