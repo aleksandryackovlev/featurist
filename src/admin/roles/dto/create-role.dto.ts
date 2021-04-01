@@ -1,5 +1,9 @@
+import { Type } from 'class-transformer';
 import { IsString, IsNotEmpty, MinLength, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+
+import { IsPermissions } from '../../permissions/validators/permissions.validator';
+import { Permission } from '../../permissions/permission.entity';
 
 export class CreateRoleDto {
   @IsNotEmpty()
@@ -21,4 +25,8 @@ export class CreateRoleDto {
     description: 'The description of a new role',
   })
   readonly description: string;
+
+  @IsPermissions()
+  @Type(() => Permission)
+  permissions: Permission[];
 }
