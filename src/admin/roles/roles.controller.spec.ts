@@ -4,6 +4,7 @@ import { PermissionsAbilityFactory } from '../permissions/permissions-ability.fa
 
 import { RolesController } from './roles.controller';
 import { RolesService } from './roles.service';
+import { CreateRoleDto } from './dto/create-role.dto';
 
 import { Role } from './role.entity';
 import { FindRolesDto } from './dto/find-roles.dto';
@@ -84,14 +85,28 @@ describe('RolesController', () => {
     it('should create an role', async () => {
       const serviceSpy = jest.spyOn(service, 'create');
       expect(
-        await controller.create({
+        await controller.create(<CreateRoleDto>{
           name: 'Some name',
           description: 'Some desc',
+          permissions: [
+            {
+              action: 'create',
+              subject: 'Application',
+              isAllowed: true,
+            },
+          ],
         }),
       ).toEqual({ data: role });
       expect(serviceSpy).toBeCalledWith({
         name: 'Some name',
         description: 'Some desc',
+        permissions: [
+          {
+            action: 'create',
+            subject: 'Application',
+            isAllowed: true,
+          },
+        ],
       });
     });
   });
