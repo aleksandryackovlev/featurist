@@ -7,7 +7,10 @@ import { Repository } from 'typeorm';
 import { IFindEntitiesDto as FindDtoType } from '../../core/crud/interfaces';
 import { User } from '../users/user.entity';
 
+import { Permission } from '../permissions/permission.entity';
+
 import { RolesService } from './roles.service';
+import { CreateRoleDto } from './dto/create-role.dto';
 import { Role } from './role.entity';
 
 const role = new Role();
@@ -15,6 +18,10 @@ role.id = '935a38e8-ec14-41b8-8066-2bc5c818577a';
 role.name = 'admin';
 role.users = [{ username: 'username' } as User];
 role.description = 'Description';
+
+const permission = {
+  action: 'create',
+};
 
 const resultArr = [role];
 
@@ -41,6 +48,11 @@ describe('RolesService', () => {
             createQueryBuilder: jest.fn().mockReturnValue(query),
             findOne: jest.fn().mockResolvedValue(null),
             delete: jest.fn().mockResolvedValue({ ...role }),
+            save: jest.fn().mockResolvedValue({ ...role }),
+            create: jest.fn().mockResolvedValue({ ...role }),
+            manager: {
+              save: jest.fn().mockResolvedValue([permission]),
+            },
           },
         },
       ],
@@ -203,6 +215,32 @@ describe('RolesService', () => {
 
       expect(query.limit).toBeCalledTimes(1);
       expect(query.limit).toBeCalledWith(200);
+    });
+  });
+
+  describe('create', () => {
+    it('should successfully create a role', async () => {
+      const result = await service.create(<CreateRoleDto>{
+        name: 'Test Role',
+        description: 'Test Desc',
+        permissions: [
+          {
+            subject: 'Application',
+            action: 'create',
+            isAllowed: true,
+          },
+        ],
+      });
+
+      expect(result).toEqual(role);
+
+      expect(repo.create).toBeCalledTimes(1);
+      expect(repo.create).toBeCalledWith({
+        name: 'Test Role',
+        description: 'Test Desc',
+      });
+      expect(repo.manager.save).toBeCalledTimes(1);
+      expect(repo.save).toBeCalledTimes(1);
     });
   });
 

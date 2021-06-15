@@ -1,6 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 import { CrudService } from '../../core/crud/crud.service';
+import { Permission } from '../permissions/permission.entity';
 
 import { Role } from './role.entity';
 import { CreateRoleDto } from './dto/create-role.dto';
@@ -34,6 +35,30 @@ export class RolesService extends CrudService({
     }
 
     await this.repository.delete(id);
+
+    return role as Role;
+  }
+
+  async create(createRoleDto: CreateRoleDto): Promise<Role> {
+    const { name, description, permissions } = createRoleDto;
+
+    const role = this.repository.create({ name, description });
+
+    await this.repository.save(role);
+
+    const savedPermissions = await this.repository.manager.save(
+      permissions.map(({ action, subject, isAllowed }: Permission) => {
+        const permission = new Permission();
+        permission.action = action;
+        permission.subject = subject;
+        permission.isAllowed = isAllowed;
+        permission.role = role;
+
+        return permission;
+      }),
+    );
+
+    role.permissions = savedPermissions;
 
     return role as Role;
   }

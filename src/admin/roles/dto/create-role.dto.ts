@@ -3,7 +3,24 @@ import { IsString, IsNotEmpty, MinLength, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { IsPermissions } from '../../permissions/validators/permissions.validator';
-import { Permission } from '../../permissions/permission.entity';
+import {
+  SwaggerPermission,
+  Permission,
+} from '../../permissions/permission.entity';
+
+const permissions = ['create', 'read', 'update', 'delete'].reduce(
+  (acc, action) => {
+    return [
+      ...acc,
+      ...['Application', 'Feature', 'User', 'Role'].map((subject) => ({
+        subject,
+        action,
+        isAllowed: true,
+      })),
+    ];
+  },
+  [],
+);
 
 export class CreateRoleDto {
   @IsNotEmpty()
@@ -28,5 +45,10 @@ export class CreateRoleDto {
 
   @IsPermissions()
   @Type(() => Permission)
+  @ApiProperty({
+    example: permissions,
+    description: 'Permissions',
+    type: [SwaggerPermission],
+  })
   permissions: Permission[];
 }
