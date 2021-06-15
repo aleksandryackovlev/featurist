@@ -484,9 +484,64 @@ components:
           type: string
           example: Role description
           description: The description of a new role
+        permissions:
+          example:
+            - subject: Application
+              action: create
+              isAllowed: true
+            - subject: Feature
+              action: create
+              isAllowed: true
+            - subject: User
+              action: create
+              isAllowed: true
+            - subject: Role
+              action: create
+              isAllowed: true
+            - subject: Application
+              action: read
+              isAllowed: true
+            - subject: Feature
+              action: read
+              isAllowed: true
+            - subject: User
+              action: read
+              isAllowed: true
+            - subject: Role
+              action: read
+              isAllowed: true
+            - subject: Application
+              action: update
+              isAllowed: true
+            - subject: Feature
+              action: update
+              isAllowed: true
+            - subject: User
+              action: update
+              isAllowed: true
+            - subject: Role
+              action: update
+              isAllowed: true
+            - subject: Application
+              action: delete
+              isAllowed: true
+            - subject: Feature
+              action: delete
+              isAllowed: true
+            - subject: User
+              action: delete
+              isAllowed: true
+            - subject: Role
+              action: delete
+              isAllowed: true
+          description: Permissions
+          type: array
+          items:
+            $ref: '#/components/schemas/SwaggerPermission'
       required:
         - name
         - description
+        - permissions
     UpdateRoleDto:
       type: object
       properties:
