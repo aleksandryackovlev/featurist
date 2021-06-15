@@ -3,9 +3,33 @@
 const axios = require('axios');
 const hooks = require('hooks');
 
+hooks.before(
+  '/admin/v1/roles > Create role > 201 > application/json',
+  (transaction, done) => {
+    transaction.request.body = JSON.stringify({
+      ...JSON.parse(transaction.request.body),
+      permissions: ['create', 'read', 'update', 'delete'].reduce(
+        (acc, action) => {
+          return [
+            ...acc,
+            ...['Application', 'Feature', 'User', 'Role'].map((subject) => ({
+              subject,
+              action,
+              isAllowed: true,
+            })),
+          ];
+        },
+        [],
+      ),
+    });
+    done();
+  },
+);
+
 hooks.after(
   '/admin/v1/roles > Create role > 201 > application/json',
   (transaction, done) => {
+    console.log(transaction.real.body);
     axios({
       url: `${transaction.environment.baseUrl}/admin/v1/roles/${
         JSON.parse(transaction.real.body).data.id
@@ -29,6 +53,19 @@ hooks.before(
       data: {
         name: 'roleName',
         description: '<p>Role description</p>',
+        permissions: ['create', 'read', 'update', 'delete'].reduce(
+          (acc, action) => {
+            return [
+              ...acc,
+              ...['Application', 'Feature', 'User', 'Role'].map((subject) => ({
+                subject,
+                action,
+                isAllowed: true,
+              })),
+            ];
+          },
+          [],
+        ),
       },
       headers: {
         Authorization: `Bearer ${transaction.environment.token}`,
