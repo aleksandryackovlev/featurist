@@ -1,4 +1,13 @@
 describe('Roles', () => {
+  const permissionsActions = ['create', 'read', 'update', 'delete'];
+  const permissionsSubjects = ['Application', 'Feature', 'User', 'Role'];
+  const permissions = permissionsActions.reduce((acc, action) => {
+    return [
+      ...acc,
+      ...permissionsSubjects.map((subject) => ({ subject, action, isAllowed: true })),
+    ];
+  }, []);
+
   describe('PUT /roles/:id', () => {
     it('should throw an 400 if invalid body is sent', async () => {
       const result = await app
@@ -79,7 +88,7 @@ describe('Roles', () => {
     it('should update an role and return it', async () => {
       const created = await app
         .post('/roles')
-        .send({ description: 'Some description', name: 'test' })
+        .send({ description: 'Some description', name: 'test', permissions })
         .set({
           Authorization: `Bearer ${credentials.adminToken}`
         });
